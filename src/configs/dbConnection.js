@@ -17,13 +17,21 @@ const sequelize = new Sequelize(DB_NAME, DB_USERNAME, DB_PASSWORD, {
 // const sequelize = new Sequelize(`${DB}://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}.oregon-postgres.render.com/${DB_NAME}?ssl=true`)
 
 
-const dbConnection = () => {
-  sequelize
-    .authenticate()
-    .then(() => console.log("* DB Connected *"))
-    .catch((err) => console.log("* DB Not Connected *", err));
+const dbConnection = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("* DB Connected *");
 
-  // sequelize.sync({ force: true });
+    // Drop all tables
+    // await sequelize.dropAllSchemas();
+    // console.log("* All tables dropped *");
+
+
+    // await sequelize.sync({ force: true });
+
+  } catch (err) {
+    console.log("* DB Not Connected *", err);
+  }
 };
 
 /* testing db connection */
