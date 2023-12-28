@@ -4,9 +4,9 @@ const User = require("../models/user");
 
 module.exports = {
   list: async (req, res) => {
+    console.log(req.user);
     const data = await User.findAndCountAll();
     res.status(200).send({
-      error: false,
       result: data,
     });
   },
@@ -14,7 +14,6 @@ module.exports = {
   create: async (req, res) => {
     const data = await User.create(req.body);
     res.status(201).send({
-      error: false,
       data,
     });
   },
@@ -22,7 +21,6 @@ module.exports = {
   read: async (req, res) => {
     const data = await User.findByPk(req.params.id);
     res.status(200).send({
-      error: false,
       data,
     });
   },
@@ -33,7 +31,6 @@ module.exports = {
     });
     // isUpdated return: [ 1 ] or [ 0 ]
     res.status(202).send({
-      error: false,
       isUpdated: Boolean(isUpdated[0]),
       data: await User.findByPk(req.params.id),
     });
