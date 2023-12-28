@@ -7,11 +7,12 @@ To run this project, you will need to add the following environment variables to
 `DB = 'postgres'`
 
 `DB_NAME = 'Strong-Concrete'`
-`DB_PASSWORD = '18Mart2020'`
+`DB_PASSWORD = 'alidrl'`
 `DB_USERNAME = 'postgres'`
 
-`SECRET_KEY = agdasfkhf349rtfbasekjfdhn8129yrsakbhfc723891rdfbsakf293fs`
-
+`SECRET_KEY `
+`ACCESS_KEY `
+`REFRESH_KEY `
 
 
 ## Run Locally
