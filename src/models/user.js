@@ -1,6 +1,14 @@
 const { sequelize, DataTypes } = require("../configs/dbConnection");
 const passwordEncrypt = require("../helpers/passEncrypt");
 
+const roles = {
+  4: "ADMIN",
+  3: "SALER",
+  2: "ACCOUNTANT",
+  1: "PRODUCER",
+  0: "DRIVER",
+};
+
 const User = sequelize.define("User", {
   firstName: {
     type: DataTypes.STRING(64),
@@ -24,7 +32,7 @@ const User = sequelize.define("User", {
     allowNull: false,
   },
   role: {
-    type: DataTypes.STRING(10),
+    type: DataTypes.STRING,
     allowNull: false,
   },
   email: {
@@ -63,22 +71,28 @@ User.beforeCreate(async (user) => {
       throw new Error("Password not validated.");
     }
   }
+
+  if (roles[user.role]) {
+    user.role = roles[user.role];
+  } else {
+    throw new Error("Invalid role");
+  }
 });
 
 User.beforeUpdate(async (user) => {
-  if (user.password) {
+  if (user.changed("password")) {
     const isPasswordValidated =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&+.,])[A-Za-z\d@$!%*?&+.,].{8,}$/.test(
         user.password
       );
 
-    if (isPasswordValidated) {
-      user.password = await passwordEncrypt(user.password);
-    } else {
-      throw new Error("Password not validated.");
-    }
+    if (isPasswordValidated) user.password = await passwordEncrypt(user.password);
+    else throw new Error("Password not validated.");
+  }
+  if (user.changed("role")) {
+    if (roles[user.role]) user.role = roles[user.role];
+    else throw new Error("Invalid role");
   }
 });
-
 
 module.exports = User;
