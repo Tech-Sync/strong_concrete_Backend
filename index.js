@@ -15,6 +15,7 @@ require("./src/configs/dbConnection").dbConnection();
 
 // MIDDLEWARES
 app.use(express.json());
+app.use(require('./src/middlewares/authentication'))
 
 // HOME
 app.all("/", (req, res) => {
