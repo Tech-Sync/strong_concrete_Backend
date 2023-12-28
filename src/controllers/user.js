@@ -29,6 +29,7 @@ module.exports = {
   update: async (req, res) => {
     const isUpdated = await User.update(req.body, {
       where: { id: req.params.id },
+      individualHooks: true,
     });
     // isUpdated return: [ 1 ] or [ 0 ]
     res.status(202).send({
@@ -38,10 +39,9 @@ module.exports = {
     });
   },
   delete: async (req, res) => {
-    const isDeleted = await User.destroy({ where: { id: req.params.id } })
+    const isDeleted = await User.destroy({ where: { id: req.params.id } });
     res.status(isDeleted ? 204 : 404).send({
-      error: isDeleted,
-      data,
+      error: Boolean(isDeleted),
     });
   },
 };
