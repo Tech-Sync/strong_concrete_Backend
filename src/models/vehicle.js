@@ -12,15 +12,15 @@ const roles = {
 
 const Vehicle= sequelize.define("Vehicle", {
     plateNumber:{
-        type: DataTypes.BIGINT,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     model:{
-        type: DataTypes.BIGINT,
+        type: DataTypes.STRING,
         allowNull: false,
     },
     capacity:{
-        type: DataTypes.BIGINT,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     status: {
