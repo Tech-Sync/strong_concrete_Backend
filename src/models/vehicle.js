@@ -1,4 +1,5 @@
 "use strict"
+const { STRING } = require("sequelize");
 const { sequelize, DataTypes } = require("../configs/dbConnection");
 
 const roles = {
@@ -16,7 +17,18 @@ const Vehicle= sequelize.define("Vehicle", {
     },
     model:{
         type: DataTypes.BIGINT,
-        allowNull:false,
+        allowNull: false,
     },
-    capacity:{}
-})
+    capacity:{
+        type: DataTypes.BIGINT,
+        allowNull: false,
+    },
+    status: {
+        type: DataTypes.ENUM(Object.keys(roles)),
+        allowNull: false,
+        defaultValue: "5"
+    }
+
+});
+
+module.exports = Vehicle;
