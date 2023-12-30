@@ -2,11 +2,11 @@ const { sequelize, DataTypes } = require("../configs/dbConnection");
 const passwordEncrypt = require("../helpers/passEncrypt");
 
 const roles = {
-  4: "ADMIN",
-  3: "SALER",
-  2: "ACCOUNTANT",
-  1: "PRODUCER",
-  0: "DRIVER",
+  5: "ADMIN",
+  4: "SALER",
+  3: "ACCOUNTANT",
+  2: "PRODUCER",
+  1: "DRIVER",
 };
 
 const User = sequelize.define("User", {
@@ -55,6 +55,14 @@ const User = sequelize.define("User", {
   isActive: {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
+  },
+  isVerified: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  isDeleted: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
   },
 });
 

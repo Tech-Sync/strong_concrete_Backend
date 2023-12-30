@@ -1,12 +1,15 @@
-"use strict"
+"use strict";
 
-const router = require('express').Router()
+const router = require("express").Router();
 
+const { isAdmin } = require("../middlewares/permissions");
+const auth = require("../controllers/auth");
+const user = require("../controllers/user");
 
-const auth = require('../controllers/auth')
+router.post("/login", auth.login);
+// Lee - only admin can create user
+router.post("/register", isAdmin, user.register);
+router.post("/refresh", auth.refresh);
+router.all("/logout", auth.logout);
 
-router.post('/login', auth.login)
-router.post('/refresh', auth.refresh )
-router.all('/logout', auth.logout )
-
-module.exports = router
+module.exports = router;
