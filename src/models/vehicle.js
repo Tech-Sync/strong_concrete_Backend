@@ -3,6 +3,7 @@ const { STRING } = require("sequelize");
 const { sequelize, DataTypes } = require("../configs/dbConnection");
 
 const roles = {
+    6: "Ready for Loading",
     5: "Package Loading",
     4: "In transit",
     3: "Package Unloading",
@@ -26,7 +27,7 @@ const Vehicle= sequelize.define("Vehicle", {
     status: {
         type: DataTypes.ENUM(Object.keys(roles)),
         allowNull: false,
-        defaultValue: "5"
+        defaultValue: "6"
     }
 
 });
