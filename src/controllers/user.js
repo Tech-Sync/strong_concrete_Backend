@@ -56,9 +56,11 @@ module.exports = {
         "new Password, reNew Password must be the same"
       );
     } else {
-      const updatedUser = await User.update(newPassword,{where:
-        {password: passwordEncrypt(password)},
-      });
+      const updatedUser = await User.update(
+        { password: passwordEncrypt(newPassword) },
+        { where: { password: passwordEncrypt(password) } },
+    );
+     console.log(updatedUser);
       res.status(200).send({ message: "Password updated successfully!" });
     }
   },
