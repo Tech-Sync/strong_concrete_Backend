@@ -3,9 +3,10 @@ const router = require("express").Router();
 
 // Call TODO Controller:
 const user = require("../controllers/user");
+const { isAdmin } = require("../middlewares/permissions");
 
-router.route("/").get(user.list).post(user.create);
+router.route("/").get(isAdmin, user.list);
 
-router.route("/:id").get(user.read).put(user.update).delete(user.delete);
+router.route("/:id").get(user.read).put(user.update).delete(isAdmin, user.delete);
 
 module.exports = router;

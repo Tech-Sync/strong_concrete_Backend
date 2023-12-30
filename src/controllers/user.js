@@ -4,14 +4,13 @@ const User = require("../models/user");
 
 module.exports = {
   list: async (req, res) => {
-    console.log(req.user);
     const data = await User.findAndCountAll();
     res.status(200).send({
       result: data,
     });
   },
 
-  create: async (req, res) => {
+  register: async (req, res) => {
     const data = await User.create(req.body);
     res.status(201).send({
       data,
