@@ -10,6 +10,9 @@ To run this project, you will need to add the following environment variables to
 `DB_PASSWORD = 'alidrl'`
 `DB_USERNAME = 'postgres'`
 
+`EMAIL_ADDRESS = 'your own email address'`
+`EMAIL_APP_PASS = 'should be generated from your google account'`
+
 `SECRET_KEY `
 `ACCESS_KEY `
 `REFRESH_KEY `

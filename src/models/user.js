@@ -19,7 +19,7 @@ const User = sequelize.define("User", {
     allowNull: false,
   },
   nrcNo: {
-    type: DataTypes.BIGINT,
+    type: DataTypes.STRING(20),
     allowNull: false,
     unique: true,
   },
@@ -60,6 +60,7 @@ const User = sequelize.define("User", {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
+  emailToken: { type: DataTypes.STRING },
   isDeleted: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
@@ -94,7 +95,8 @@ User.beforeUpdate(async (user) => {
         user.password
       );
 
-    if (isPasswordValidated) user.password = await passwordEncrypt(user.password);
+    if (isPasswordValidated)
+      user.password = await passwordEncrypt(user.password);
     else throw new Error("Password not validated.");
   }
   if (user.changed("role")) {
