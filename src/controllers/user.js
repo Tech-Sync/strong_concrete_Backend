@@ -1,40 +1,21 @@
 "use strict";
 
+const { decode } = require("../helpers/encode&decode");
+const sendEmail = require("../helpers/sendEmail");
 const User = require("../models/user");
-const cyrpto = require('node:crypto');
-const sendEmail = require("../middlewares/sendMail");
 
 module.exports = {
   list: async (req, res) => {
     const data = await User.findAndCountAll();
-    res.status(200).send({
-      result: data,
-    });
-  },
-
-  register: async (req, res) => {
-    const { email } = req.body;
-
-    const user = await User.findOne({ where: { email } });
-
-    if (user) throw new Error("A user is already exist with this email !");
-
-    req.body.emailToken = cyrpto.randomBytes(64).toString('hex')
-
-    const data = await User.create(req.body);
-
-    sendEmail(data)
-
-    res.status(201).send({
-      data,
-    });
+    res.status(200).send(data);
   },
 
   read: async (req, res) => {
     const data = await User.findByPk(req.params.id);
-    res.status(200).send({
-      data,
-    });
+
+    if (!data) throw new Error("User not found !");
+
+    res.status(200).send(data);
   },
   update: async (req, res) => {
     const isUpdated = await User.update(req.body, {
@@ -53,22 +34,43 @@ module.exports = {
       error: Boolean(isDeleted),
     });
   },
-  verifyEmail: async (req, res) => {
-    const emailToken = req.query.emailToken
-    console.log(emailToken);
 
-    if(!emailToken) throw new Error("Email token not found..")
+  forgetPassword: async (req, res) => {
+    const email = req.body.email;
 
-    const user = await User.findOne({where:{emailToken}})
+    const user = await User.findOne({ where: { email } });
 
-    if(!user) throw new Error("Email verification failed, invalid token !")
+    if (!user) throw new Error("Email verification failed, invalid Email !");
 
-    user.emailToken = null;
-    user.isVerified = true;
+    if (!user.isActive)throw new Error("You do not have the appropriate authorizations for this operation.");
 
-    await user.save()
+    // userInfo, fileName, Subject
+    sendEmail(user, "reset-password", "Reset Password");
 
-    res.status(202).send(user);
+    res.status(200).send({
+      message: "Email has been sent.",
+    });
+  },
 
-  }
+  resetPassword: async (req, res) => {
+    const { uid, emailToken } = req.params;
+    const { password, password2 } = req.body;
+    const id = decode(uid);
+
+    if (password != password2) throw new Error("Passwords are not matching !");
+
+    const user = await User.findByPk(id);
+
+    if(!user) throw new Error('User Not Found !')
+
+    if(emailToken != user.emailToken) throw new Error('Token Invalid !')
+
+    user.password = password
+
+    await user.save();
+
+    res.status(200).send({
+      message:'Your password has been changed successfully.'
+     });
+  },
 };

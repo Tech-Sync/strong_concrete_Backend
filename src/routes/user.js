@@ -6,7 +6,8 @@ const user = require("../controllers/user");
 const { isAdmin } = require("../middlewares/permissions");
 
 router.route("/").get(isAdmin, user.list);
-router.all("/verify-email", user.verifyEmail);
+router.route("/forget-password").post(user.forgetPassword);
+router.route("/reset-password/:uid/:emailToken").post(user.resetPassword);
 router
   .route("/:id")
   .get(user.read)
