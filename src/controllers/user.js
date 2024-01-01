@@ -3,18 +3,30 @@
 const passwordEncrypt = require("../helpers/passEncrypt");
 
 const User = require("../models/user");
+const cyrpto = require('node:crypto');
+const sendEmail = require("../middlewares/sendMail");
 
 module.exports = {
   list: async (req, res) => {
-    console.log(req.user);
     const data = await User.findAndCountAll();
     res.status(200).send({
       result: data,
     });
   },
 
-  create: async (req, res) => {
+  register: async (req, res) => {
+    const { email } = req.body;
+
+    const user = await User.findOne({ where: { email } });
+
+    if (user) throw new Error("A user is already exist with this email !");
+
+    req.body.emailToken = cyrpto.randomBytes(64).toString('hex')
+
     const data = await User.create(req.body);
+
+    sendEmail(data)
+
     res.status(201).send({
       data,
     });
@@ -71,4 +83,22 @@ module.exports = {
       error: Boolean(isDeleted),
     });
   },
+  verifyEmail: async (req, res) => {
+    const emailToken = req.query.emailToken
+    console.log(emailToken);
+
+    if(!emailToken) throw new Error("Email token not found..")
+
+    const user = await User.findOne({where:{emailToken}})
+
+    if(!user) throw new Error("Email verification failed, invalid token !")
+
+    user.emailToken = null;
+    user.isVerified = true;
+
+    await user.save()
+
+    res.status(202).send(user);
+
+  }
 };

@@ -2,11 +2,11 @@ const { sequelize, DataTypes } = require("../configs/dbConnection");
 const passwordEncrypt = require("../helpers/passEncrypt");
 
 const roles = {
-  4: "ADMIN",
-  3: "SALER",
-  2: "ACCOUNTANT",
-  1: "PRODUCER",
-  0: "DRIVER",
+  5: "ADMIN",
+  4: "SALER",
+  3: "ACCOUNTANT",
+  2: "PRODUCER",
+  1: "DRIVER",
 };
 
 const User = sequelize.define("User", {
@@ -19,7 +19,7 @@ const User = sequelize.define("User", {
     allowNull: false,
   },
   nrcNo: {
-    type: DataTypes.BIGINT,
+    type: DataTypes.STRING(20),
     allowNull: false,
     unique: true,
   },
@@ -56,6 +56,15 @@ const User = sequelize.define("User", {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
   },
+  isVerified: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  emailToken: { type: DataTypes.STRING },
+  isDeleted: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
 });
 
 User.beforeCreate(async (user) => {
@@ -86,7 +95,8 @@ User.beforeUpdate(async (user) => {
         user.password
       );
 
-    if (isPasswordValidated) user.password = await passwordEncrypt(user.password);
+    if (isPasswordValidated)
+      user.password = await passwordEncrypt(user.password);
     else throw new Error("Password not validated.");
   }
   if (user.changed("role")) {
