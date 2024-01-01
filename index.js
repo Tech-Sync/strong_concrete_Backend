@@ -19,6 +19,7 @@ app.use(require('./src/middlewares/authentication'))
 
 // HOME
 app.all("/", (req, res) => {
+  console.log(req.query),
   res.send({
     error: false,
     message: "Tech-Sync",

@@ -5,6 +5,11 @@ const router = require("express").Router();
 const user = require("../controllers/user");
 const { isAdmin } = require("../middlewares/permissions");
 
+router.route("/").get(user.list).post(user.create);
+
+router.route("/updatePassword").post(user.uptadePassword);
+
+router.route("/:id").get(user.read).put(user.update).delete(user.delete);
 router.route("/").get(isAdmin, user.list);
 router.all("/verify-email", user.verifyEmail);
 router
@@ -12,5 +17,6 @@ router
   .get(user.read)
   .put(user.update)
   .delete(isAdmin, user.delete);
+
 
 module.exports = router;

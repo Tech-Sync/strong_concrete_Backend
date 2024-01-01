@@ -1,5 +1,7 @@
 "use strict";
 
+const passwordEncrypt = require("../helpers/passEncrypt");
+
 const User = require("../models/user");
 const cyrpto = require('node:crypto');
 const sendEmail = require("../middlewares/sendMail");
@@ -47,6 +49,34 @@ module.exports = {
       data: await User.findByPk(req.params.id),
     });
   },
+
+  uptadePassword: async (req, res) => {
+    const { password, newPassword, reNewPassword } = req.body;
+    const user = await User.findOne({
+      where: { password: passwordEncrypt(password) },
+    });
+    if (!user) {
+      res.errorStatusCode = 402;
+      throw new Error("Check your current password! ");
+    }
+    if (newPassword == password) {
+      throw new Error(
+        "Your new password must be different from your old password!"
+      );
+    } else if (newPassword !== reNewPassword) {
+      throw new Error(
+        "new Password, reNew Password must be the same"
+      );
+    } else {
+      const updatedUser = await User.update(
+        { password: passwordEncrypt(newPassword) },
+        { where: { password: passwordEncrypt(password) } },
+    );
+     console.log(updatedUser);
+      res.status(200).send({ message: "Password updated successfully!" });
+    }
+  },
+
   delete: async (req, res) => {
     const isDeleted = await User.destroy({ where: { id: req.params.id } });
     res.status(isDeleted ? 204 : 404).send({
