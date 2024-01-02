@@ -39,6 +39,11 @@ module.exports = {
       throw new Error(" Invalid Email or Password!");
     }
 
+    if (!user.isVerified) {
+      res.errorStatusCode = 402;
+      throw new Error(" Please verify your email address !");
+    }
+
     if (!user.isActive) {
       res.errorStatusCode = 402;
       throw new Error(" User is not active!");
