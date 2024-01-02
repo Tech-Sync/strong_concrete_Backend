@@ -65,7 +65,7 @@ const User = sequelize.define("User", {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
-});
+},{paranoid:true});
 
 User.beforeCreate(async (user) => {
   if (user.password) {

@@ -52,29 +52,40 @@ module.exports = {
 
   uptadePassword: async (req, res) => {
     const { password, newPassword, reNewPassword } = req.body;
+    
+    const {id} = req.user
+    
     const user = await User.findOne({
-      where: { password: passwordEncrypt(password) },
+      where: {id },
     });
+
+   
     if (!user) {
       res.errorStatusCode = 402;
-      throw new Error("Check your current password! ");
+      throw new Error("User not found! ");
     }
-    if (newPassword == password) {
+    if (user.password != passwordEncrypt(password)) {
       throw new Error(
-        "Your new password must be different from your old password!"
+        "Current password didn't match!"
       );
-    } else if (newPassword !== reNewPassword) {
+    } 
+
+    if (passwordEncrypt(password) === passwordEncrypt(newPassword)) {
+      throw new Error(
+        "new Password, can't be old  password!"
+      );
+    } 
+     if (newPassword != reNewPassword) {
       throw new Error(
         "new Password, reNew Password must be the same"
       );
-    } else {
-      const updatedUser = await User.update(
-        { password: passwordEncrypt(newPassword) },
-        { where: { password: passwordEncrypt(password) } },
-    );
-     console.log(updatedUser);
-      res.status(200).send({ message: "Password updated successfully!" });
-    }
+    } 
+    
+   
+    user.password=newPassword
+    await user.save()
+      res.status(200).send({ message: "Password updated successfully!" , user});
+    
   },
 
   delete: async (req, res) => {
