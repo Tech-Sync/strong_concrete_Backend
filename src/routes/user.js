@@ -7,6 +7,7 @@ const { isAdmin } = require("../middlewares/permissions");
 
 router.route("/").get(isAdmin, user.list);
 
+
 router.route("/updatePassword").post(user.uptadePassword);
 
 router.route("/:id").get(user.read).put(user.update).delete(user.delete);
