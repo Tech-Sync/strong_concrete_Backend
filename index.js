@@ -16,6 +16,7 @@ require("./src/configs/dbConnection").dbConnection();
 // MIDDLEWARES
 app.use(express.json());
 app.use(require('./src/middlewares/authentication'))
+app.use(require('./src/middlewares/findSearchSortPage'))
 
 // HOME
 app.all("/", (req, res) => {
