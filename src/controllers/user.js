@@ -4,12 +4,12 @@ const { decode } = require("../helpers/encode&decode");
 const sendEmail = require("../helpers/sendEmail");
 const passwordEncrypt = require("../helpers/passEncrypt");
 
-const { User } = require("../models/association");
+const  User  = require("../models/user");
 
 module.exports = {
   list: async (req, res) => {
-    const data = await User.findAndCountAll({ paranoid: false }); // to see deleted users as well -> findAndCountAll({paranoid:false})
-    
+    const data = await User.findAndCountAll({ paranoid: false });
+
     res.status(200).send(data);
   },
 
@@ -24,7 +24,7 @@ module.exports = {
       where: { id: req.params.id },
       individualHooks: true,
     });
-   
+
     res.status(202).send({
       isUpdated: Boolean(isUpdated[0]),
       data: await User.findByPk(req.params.id),
@@ -33,7 +33,7 @@ module.exports = {
 
   delete: async (req, res) => {
     const isDeleted = await User.destroy({ where: { id: req.params.id } }); // add this att. for hard delete ->   force: true
-    
+
     res.status(isDeleted ? 204 : 404).send({
       error: !Boolean(isDeleted),
       message: isDeleted
@@ -44,7 +44,7 @@ module.exports = {
 
   restore: async (req, res) => {
     const isRestored = await User.restore({ where: { id: req.params.id } });
-   
+
     res.status(200).send({
       error: !Boolean(isRestored),
       message: isRestored

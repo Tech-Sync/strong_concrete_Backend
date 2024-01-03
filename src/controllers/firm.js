@@ -1,10 +1,10 @@
 "use strict";
 
-const { Firm } = require("../models/association");
+const  Firm  = require("../models/firm");
 
 module.exports = {
   list: async (req, res) => {
-    const data = await Firm.findAndCountAll({ include: ["creator", 'updater'] });
+    const data = await Firm.findAndCountAll();
     
     res.status(200).send(data);
   },
