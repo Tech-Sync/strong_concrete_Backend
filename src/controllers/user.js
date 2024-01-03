@@ -12,7 +12,11 @@ module.exports = {
 
     const data = await req.getModelList(User)
 // console.log(data);
-    res.status(200).send(data);
+    res.status(200).send({
+      error:false,
+      details: await req.getModelListDetails(User),
+      data}
+      );
   },
 
   read: async (req, res) => {

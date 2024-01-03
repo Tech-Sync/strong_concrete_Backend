@@ -42,9 +42,33 @@ module.exports = (req, res, next) => {
     order: orderClause,
     offset,
     limit})
-    
+
   };
 
+  req.getModelListDetails = async (Model) => {
+    const data = await Model.findAll({
+      where: Object.keys(whereClause).length > 0 ? { [Op.or]: [whereClause] } : {},
+      order: orderClause,
+    });
+    let details = {
+        search,
+        sort,
+        offset,
+        limit,
+        page,
+        pages: {
+            previous: (page > 0 ? page : false),
+            current: page + 1,
+            next: page + 2,
+            total: Math.ceil(data.length / limit)
+        },
+        totalRecords: data.length,
+    }
+    details.pages.next = (details.pages.next > details.pages.total ? false : details.pages.next)
+    if (details.totalRecords <= limit) details.pages = false
+    return details
+}
+  
   next();
 };
 
