@@ -6,6 +6,10 @@ router.use('/users', require('./user'))
 router.use('/auth', require('./auth'))
 // Firm
 router.use('/firms', require('./firm'))
+// Stock
+router.use('/stocks', require('./stock'))
+// Account
+router.use('/accounts', require('./account'))
 
 
 module.exports = router
