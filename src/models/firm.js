@@ -1,5 +1,6 @@
 "use strict";
 const { sequelize, DataTypes } = require("../configs/dbConnection");
+const User = require("./user");
 
 const statusOption = {
   2: "SUPPLIER",
@@ -62,5 +63,6 @@ const Firm = sequelize.define(
   },
   { paranoid: true }
 );
+
 
 module.exports = Firm;
