@@ -28,6 +28,11 @@ const Vehicle= sequelize.define("Vehicle", {
         type: DataTypes.ENUM(Object.keys(roles)),
         allowNull: false,
         defaultValue: "6"
+    },
+    isPublic:{
+        type: DataTypes.BOOLEAN,
+        allowNull:false,
+        defaultValue:true,
     }
 
 });
