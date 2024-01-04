@@ -1,5 +1,8 @@
 const { sequelize, DataTypes } = require("../configs/dbConnection");
 const passwordEncrypt = require("../helpers/passEncrypt");
+const Account = require("./account");
+const Firm = require("./firm");
+const Stock = require("./stock");
 
 const roles = {
   5: "ADMIN",
@@ -111,6 +114,22 @@ User.beforeUpdate(async (user) => {
   }
 });
 
+// user - firm
+User.hasMany(Firm, { as: "createdFirms" });
+User.hasMany(Firm, { as: "updatedFirms" });
+Firm.belongsTo(User, { as: "creator" });
+Firm.belongsTo(User, { as: "updater" });
 
+// user - stock
+User.hasMany(Stock, { as: "createdStocks" });
+User.hasMany(Stock, { as: "updatedStocks" });
+Stock.belongsTo(User, { as: "creator" });
+Stock.belongsTo(User, { as: "updater" });
+
+// user - account
+User.hasMany(Account, { as: "createdAccounts" });
+User.hasMany(Account, { as: "updatedAccounts" });
+Account.belongsTo(User, { as: "creator" });
+Account.belongsTo(User, { as: "updater" });
 
 module.exports = User;
