@@ -2,18 +2,17 @@
 const router = require("express").Router();
 
 const firm = require("../controllers/firm");
-const { hasFirmAccess, isAdmin } = require("../middlewares/permissions");
 
 router
   .route("/")
-  .get(hasFirmAccess, firm.list)
-  .post(hasFirmAccess, firm.create);
+  .get(firm.list)
+  .post(firm.create);
 router
   .route("/:id")
-  .get(hasFirmAccess, firm.read)
-  .put(hasFirmAccess, firm.update)
-  .delete(isAdmin, firm.delete);
+  .get(firm.read)
+  .put(firm.update)
+  .delete( firm.delete);
 
-router.route("/restore/:id").all(isAdmin, firm.restore);
+router.route("/restore/:id").all( firm.restore);
 
 module.exports = router;

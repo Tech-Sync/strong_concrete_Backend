@@ -26,6 +26,7 @@ module.exports = {
     req.body.updaterId = req.user.id;
     const isUpdated = await Firm.update(req.body, {
       where: { id: req.params.id },
+      individualHooks: true,
     });
 
     res.status(202).send({
