@@ -1,6 +1,5 @@
 "use strict";
 const { sequelize, DataTypes } = require("../configs/dbConnection");
-const Firm = require("./firm");
 
 const Material = sequelize.define(
   "Material",
@@ -30,5 +29,7 @@ const Material = sequelize.define(
   },
   { paranoid: true }
 );
+
+
 
 module.exports = Material;
