@@ -38,8 +38,8 @@ module.exports= {
 
         res.status(isDeleted ? 204 : 404).send({
             error: !Boolean(isDeleted),
-            message: isDeleted ? 
-            "Vehicle deleted successfully" 
+            message: isDeleted 
+            ? "Vehicle deleted successfully" 
             : " Vehicle not found or something went wrong."
         })
 
