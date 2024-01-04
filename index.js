@@ -29,6 +29,12 @@ app.all("/", (req, res) => {
 // ROUTES
 app.use(require("./src/routes"));
 
+//! cary them to related file
+require('./src/models/product')
+require('./src/models/sale')
+require('./src/models/production')
+require('./src/models/delivery')
+
 // ERROR HANDLER
 app.use(require("./src/middlewares/errorHandler"));
 
