@@ -13,14 +13,17 @@ const Production = sequelize.define("Production", {
     allowNull: false,
     defaultValue:1
   },
+
   creatorId: {                      // referans alacağımız yer var mı?
     type: DataTypes.INTEGER,
     allowNull: false
   },
+
   updaterId: {
     type: DataTypes.INTEGER,
     allowNull: false
   },
+
   vehicleId: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -28,12 +31,13 @@ const Production = sequelize.define("Production", {
         model: 'Vehicle', 
         key: 'id',
   }},
+
   saleId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
         model: 'Sales', 
         key: 'id',
-  }
-  },
+  }},
+  
 });
