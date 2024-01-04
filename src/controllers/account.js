@@ -6,7 +6,7 @@ const Account = require("../models/account");
 module.exports = {
   list: async (req, res) => {
     const data = await Account.findAndCountAll({
-      include: ["Firm", "Stock"],
+      // include: ["Firm", "Material"],
     });
 
     res.status(200).send(data);
@@ -30,6 +30,7 @@ module.exports = {
     req.body.updaterId = req.user.id;
     const isUpdated = await Account.update(req.body, {
       where: { id: req.params.id },
+      individualHooks: true,
     });
 
     res.status(202).send({

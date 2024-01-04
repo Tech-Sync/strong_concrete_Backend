@@ -1,30 +1,21 @@
 "use strict";
 const { sequelize, DataTypes } = require("../configs/dbConnection");
 const Firm = require("./firm");
-const Stock = require("./stock");
+const Purchase = require("./purchase");
 
 const Account = sequelize.define(
   "Account",
   {
-    StockId: {
+    PurchaseId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
       references: {
-        model: Stock,
-        key: "id",
-      },
-    },
-    FirmId: {
-      type: DataTypes.INTEGER,
-      //   allowNull:false,
-      references: {
-        model: Firm,
+        model: Purchase,
         key: "id",
       },
     },
     debit: {
       type: DataTypes.FLOAT,
-      //   allowNull: false,
+      defaultValue: 0,
     },
     credit: {
       type: DataTypes.FLOAT,
@@ -32,33 +23,42 @@ const Account = sequelize.define(
     },
     balance: {
       type: DataTypes.FLOAT,
+      allowNull: false,
+    },
+    FirmId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: Firm,
+        key: "id",
+      },
     },
   },
   {
     paranoid: true,
     hooks: {
       beforeCreate: async (account) => {
-        const stock = await Stock.findByPk(account.StockId);
-        account.FirmId = stock.FirmId;
-        account.debit = stock.totalPrice;
+        const purchase = await Purchase.findByPk(account.PurchaseId);
+        account.FirmId = purchase.FirmId;
+        account.debit = purchase.totalPrice;
         account.balance = (account.debit - account.credit).toFixed(2);
       },
       beforeUpdate: async (account) => {
-        const stock = await Stock.findByPk(account.StockId);
-        account.FirmId = stock.FirmId;
-        account.debit = stock.totalPrice;
+        const purchase = await Purchase.findByPk(account.PurchaseId);
+        account.FirmId = purchase.FirmId;
+        account.debit = purchase.totalPrice;
         account.balance = (account.debit - account.credit).toFixed(2);
       },
     },
   }
 );
 
-// Firm  - account
+// Purchase  - Account
+Purchase.hasOne(Account);
+Account.belongsTo(Purchase);
+
+// Firm - Account
 Firm.hasMany(Account);
 Account.belongsTo(Firm);
-
-// stock - account
-Stock.hasOne(Account);
-Account.belongsTo(Stock);
 
 module.exports = Account;
