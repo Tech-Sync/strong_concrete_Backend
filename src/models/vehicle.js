@@ -15,6 +15,7 @@ const Vehicle= sequelize.define("Vehicle", {
     plateNumber:{
         type: DataTypes.INTEGER,
         allowNull: false,
+        unique: true,
     },
     model:{
         type: DataTypes.STRING,
