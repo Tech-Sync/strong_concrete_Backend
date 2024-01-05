@@ -8,8 +8,8 @@ const  User  = require("../models/user");
 
 module.exports = {
   list: async (req, res) => {
-    const data = await User.findAndCountAll({ paranoid: false }); // to see deleted users as well -> findAndCountAll({paranoid:false})
-    
+    // const data = await User.findAndCountAll({ paranoid: false }); // to see deleted users as well -> findAndCountAll({paranoid:false})
+    const data = await req.getModelList(User)
     res.status(200).send({
       error:false,
       details: await req.getModelListDetails(User),
