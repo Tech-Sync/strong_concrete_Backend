@@ -1,5 +1,9 @@
 const { sequelize, DataTypes } = require("../configs/dbConnection");
 const passwordEncrypt = require("../helpers/passEncrypt");
+const Account = require("./account");
+const Firm = require("./firm");
+const Material = require("./material");
+const Purchase = require("./purchase");
 
 const roles = {
   5: "ADMIN",
@@ -110,5 +114,29 @@ User.beforeUpdate(async (user) => {
     else throw new Error("Invalid role");
   }
 });
+
+// user - firm
+User.hasMany(Firm, { foreignKey: "creatorId", as: "createdFirms" });
+User.hasMany(Firm, { foreignKey: "updaterId", as: "updatedFirms" });
+Firm.belongsTo(User, { foreignKey: "creatorId", as: "creator" });
+Firm.belongsTo(User, { foreignKey: "updaterId", as: "updater" });
+
+// user - material
+User.hasMany(Material, { foreignKey: "creatorId", as: "createdMaterials" });
+User.hasMany(Material, { foreignKey: "updaterId", as: "updatedMaterials" });
+Material.belongsTo(User, { foreignKey: "creatorId", as: "creator" });
+Material.belongsTo(User, { foreignKey: "updaterId", as: "updater" });
+
+// user - Purchase
+User.hasMany(Purchase, { foreignKey: "creatorId", as: "createdPurchases" });
+User.hasMany(Purchase, { foreignKey: "updaterId", as: "updatedPurchases" });
+Purchase.belongsTo(User, { foreignKey: "creatorId", as: "creator" });
+Purchase.belongsTo(User, { foreignKey: "updaterId", as: "updater" });
+
+// user - account
+User.hasMany(Account, { foreignKey: "creatorId", as: "createdAccounts" });
+User.hasMany(Account, { foreignKey: "updaterId", as: "updatedAccounts" });
+Account.belongsTo(User, { foreignKey: "creatorId", as: "creator" });
+Account.belongsTo(User, { foreignKey: "updaterId", as: "updater" });
 
 module.exports = User;
