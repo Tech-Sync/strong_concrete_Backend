@@ -41,7 +41,9 @@ module.exports = (req, res, next) => {
     return await Model.findAll({where: Object.keys(whereClause).length > 0 ? { [Op.or]: [whereClause] } : {},
     order: orderClause,
     offset,
-    limit})
+    limit,
+    paranoid: false
+  })
 
   };
 
@@ -49,6 +51,7 @@ module.exports = (req, res, next) => {
     const data = await Model.findAll({
       where: Object.keys(whereClause).length > 0 ? { [Op.or]: [whereClause] } : {},
       order: orderClause,
+      paranoid: false
     });
     let details = {
         search,
