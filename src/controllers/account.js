@@ -2,18 +2,28 @@
 
 const { sequelize } = require("../configs/dbConnection");
 const Account = require("../models/account");
+const Purchase = require("../models/purchase");
 
 module.exports = {
   list: async (req, res) => {
+    const FirmId = req.query.firmId;
+
     const data = await Account.findAndCountAll({
       // include: ["Firm", "Material"],
+      where: { FirmId },
     });
+    const balance = await Account.sum("balance", { where: { FirmId : FirmId} });
+
+    data.totalBalance = balance
 
     res.status(200).send(data);
   },
 
   create: async (req, res) => {
     req.body.creatorId = req.user.id;
+
+    if (!req.body.debit) req.body.balance = (0 - req.body.credit).toFixed(2);
+
     const data = await Account.create(req.body);
 
     res.status(200).send(data);
