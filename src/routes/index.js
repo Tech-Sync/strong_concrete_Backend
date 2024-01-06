@@ -6,6 +6,8 @@ router.use('/users', require('./user'))
 router.use('/auth', require('./auth'))
 // Firm
 router.use('/firms', require('./firm'))
+// Product
+router.use('/products', require('./product'))
 // Material
 router.use('/materials', require('./material'))
 // Purchase

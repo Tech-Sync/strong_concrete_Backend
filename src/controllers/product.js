@@ -1,10 +1,10 @@
 "use strict";
 
-const { Product } = require("../models/product");
+const Product  = require("../models/product");
 
 module.exports = {
   list: async (req, res) => {
-    const data = await Product.findAndCountAll({ paranoid: false });
+    const data = await Product.findAndCountAll();
 
     res.status(200).send(data);
   },
@@ -19,7 +19,7 @@ module.exports = {
     const hasRequiredKeys = requiredKeys.every(key => materials.hasOwnProperty(key));
 
     if (!hasRequiredKeys) {
-      return res.status(400).send({ error: 'Malzeme bilgilerinde eksik veya geçersiz anahtarlar.' });
+      return res.status(400).send({ error: 'Missing or invalid keys in material information!' });
     }
 
     // Diğer kontrolleri buraya ekleyebilirsiniz.
@@ -30,8 +30,8 @@ module.exports = {
 
     res.status(200).send(data);
   } catch (error) {
-    console.error('Ürün oluşturulurken bir hata oluştu:', error);
-    res.status(500).send({ error: 'Bir hata oluştu, lütfen tekrar deneyin.' });
+    console.error('An error occurred while creating the product:', error);
+    res.status(500).send({ error: 'An error occurred, please try again!' });
   }
 },
 
