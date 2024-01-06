@@ -38,10 +38,14 @@ const Account = sequelize.define(
     paranoid: true,
     hooks: {
       beforeCreate: async (account) => {
-        const purchase = await Purchase.findByPk(account.PurchaseId);
-        account.FirmId = purchase.FirmId;
-        account.debit = purchase.totalPrice;
-        account.balance = (account.debit - account.credit).toFixed(2);
+        console.log('before calisti');
+        if(account.PurchaseId){
+          const purchase = await Purchase.findByPk(account.PurchaseId);
+          account.FirmId = purchase?.FirmId;
+          account.debit = purchase?.totalPrice;
+          account.balance = (account.debit - account.credit).toFixed(2);
+        }
+  
       },
       beforeUpdate: async (account) => {
         const purchase = await Purchase.findByPk(account.PurchaseId);

@@ -44,11 +44,15 @@ module.exports = {
     });
 
     const updatedPurchase = await Purchase.findByPk(req.params.id);
+    const oldAccount = await Account.findOne({
+      where: { PurchaseId: req.params.id },
+    });
 
     const account = await Account.update(
       {
         debit: updatedPurchase.totalPrice,
         FirmId: updatedPurchase.FirmId,
+        balance: updatedPurchase.totalPrice - oldAccount.credit,
       },
       { where: { PurchaseId: req.params.id } }
     );
