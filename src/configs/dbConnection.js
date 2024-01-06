@@ -17,7 +17,7 @@ const dbConnection = () => {
     .then(() => console.log("* DB Connected *"))
     .catch((err) => console.log("* DB Not Connected *", err));
 
-  sequelize.sync({ alter: true });
+  // sequelize.sync({ alter: true });
 };
 
 module.exports = { sequelize, DataTypes, dbConnection };
