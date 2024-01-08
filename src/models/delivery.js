@@ -4,10 +4,10 @@ const Production = require("./production");
 const User = require("./user");
 
 const statuses = {
-  4: "Cancelled",
-  3: "Delivered",
-  2: "On the Way",
-  1: "Preparing",
+  CANCELLED: 4,
+  DELIVERIED: 3,
+  "ON THE WAY": 2,
+  PREPARING: 1,
 };
 
 const Delivery = sequelize.define(
@@ -29,19 +29,24 @@ const Delivery = sequelize.define(
       },
     },
     status: {
-      type: DataTypes.ENUM,
-      values: Object.values(statuses),
-      defaultValue: "Preparing",
+      type: DataTypes.INTEGER,
     },
   },
   {
     paranoid: true,
     hooks: {
       beforeCreate: (delivery) => {
-        if (statuses[delivery.status]) {
+        if (!delivery.status) delivery.status = "PREPARING";
+
+        if (statuses[delivery.status])
           delivery.status = statuses[delivery.status];
-        } else {
-          throw new Error("Invalid role");
+        else throw new Error("Invalid role");
+      },
+      beforeUpdate: (delivery) => {
+        if (delivery.changed("status")) {
+          if (statuses[delivery.status])
+            delivery.status = statuses[delivery.status];
+          else throw new Error("Invalid role");
         }
       },
     },

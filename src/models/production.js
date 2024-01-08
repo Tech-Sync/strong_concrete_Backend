@@ -5,10 +5,10 @@ const User = require("./user");
 const Vehicle = require("./vehicle");
 
 const statuses = {
-  4: "Cancelled",
-  3: "Completed",
-  2: "In Progress",
-  1: "Planned",
+  CANCELLED: 4,
+  COMPLETED: 3,
+  "IN PROGRESS": 2,
+  PLANNED: 1,
 };
 
 const Production = sequelize.define(
@@ -29,33 +29,39 @@ const Production = sequelize.define(
       },
     },
     status: {
-      type: DataTypes.ENUM,
-      values: Object.values(statuses),
-      defaultValue: "Planned",
+      type: DataTypes.INTEGER,
     },
   },
   {
     paranoid: true,
     hooks: {
       beforeCreate: (production) => {
+        if (!production.status) production.status = "PLANNED";
+
         if (statuses[production.status]) {
           production.status = statuses[production.status];
         } else {
           throw new Error("Invalid role");
         }
       },
+      beforeUpdate: (production) => {
+        if (production.changed("status")) {
+          if (statuses[production.status])
+            production.status = statuses[production.status];
+          else throw new Error("Invalid role");
+        }
+      },
     },
   }
 );
 
-
 // Sale - production
-Sale.hasOne(Production)
-Production.belongsTo(Sale)
+Sale.hasOne(Production);
+Production.belongsTo(Sale);
 
 // Vehicle - production
-Vehicle.hasMany(Production)
-Production.belongsTo(Vehicle)
+Vehicle.hasMany(Production);
+Production.belongsTo(Vehicle);
 
 // user - production
 User.hasMany(Production, { foreignKey: "creatorId", as: "createdProductions" });

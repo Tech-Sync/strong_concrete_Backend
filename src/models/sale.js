@@ -5,9 +5,9 @@ const Product = require("./product");
 const User = require("./user");
 
 const statuses = {
-  3: "Rejected",
-  2: "Approved",
-  1: "Pending",
+  REJECTED: 3,
+  APPROVED: 2,
+  PENDING: 1,
 };
 
 const Sale = sequelize.define(
@@ -61,34 +61,43 @@ const Sale = sequelize.define(
       type: DataTypes.DATE,
     },
     status: {
-      type: DataTypes.ENUM,
-      values: Object.values(statuses),
-      allowNull: false,
+      type: DataTypes.INTEGER,
     },
   },
   {
     paranoid: true,
     hooks: {
       beforeCreate: (sale) => {
+        // console.log(sale.status);
+
+        sale.totalPrice = sale.quantity * sale.unitPrice + sale.otherCharges - sale.discount;
+
+        if (!sale.status) sale.status = "PENDING";
+
         if (statuses[sale.status]) {
           sale.status = statuses[sale.status];
-          console.log(sale.status);
         } else {
           throw new Error("Invalid role");
         }
+      },
+      beforeUpdate: (sale) => {
+        if (sale.changed("status")) {
+          if (statuses[sale.status]) sale.status = statuses[sale.status];
+          else throw new Error("Invalid role");
+        }
+        sale.totalPrice = sale.quantity * sale.unitPrice + sale.otherCharges - sale.discount;
       },
     },
   }
 );
 
 // Firm - sale
-Firm.hasMany(Sale)
-Sale.belongsTo(Firm)
+Firm.hasMany(Sale);
+Sale.belongsTo(Firm);
 
 // Product - sale
-Product.hasMany(Sale)
-Sale.belongsTo(Product)
-
+Product.hasMany(Sale);
+Sale.belongsTo(Product);
 
 // user - sale
 User.hasMany(Sale, { foreignKey: "creatorId", as: "createdSales" });

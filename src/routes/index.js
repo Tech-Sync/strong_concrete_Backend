@@ -16,6 +16,12 @@ router.use('/purchases', require('./purchase'))
 router.use('/accounts', require('./account'))
 // Vehicle
 router.use('/vehicles', require('./vehicle'))
+// Sale
+router.use('/sales', require('./sale'))
+// Production
+router.use('/productions', require('./production'))
+// Delivery
+router.use('/deliveries', require('./delivery'))
 
 
 module.exports = router

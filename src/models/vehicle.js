@@ -3,12 +3,12 @@ const { sequelize, DataTypes } = require("../configs/dbConnection");
 const User = require("./user");
 
 const statuses = {
-  1: "Home",
-  2: "Ready for Loading",
-  3: "Package Loading",
-  4: "In transit",
-  5: "Package Unloading",
-  6: "Vehicle in return",
+  HOME: 1,
+  "READY FOR LOADING": 2,
+  "PACKAGE LOADING": 3,
+  "IN TRANSIT": 4,
+  "PACKAGE UNLOADING": 5,
+  "VEHICLE IN RETURN": 6,
 };
 
 const Vehicle = sequelize.define(
@@ -29,9 +29,7 @@ const Vehicle = sequelize.define(
       allowNull: false,
     },
     status: {
-      type: DataTypes.ENUM,
-      values: Object.values(statuses),
-      defaultValue: "Home",
+      type: DataTypes.INTEGER,
     },
     isPublic: {
       type: DataTypes.BOOLEAN,
@@ -42,10 +40,19 @@ const Vehicle = sequelize.define(
     paranoid: true,
     hooks: {
       beforeCreate: (vehicle) => {
+        if (!vehicle.status) vehicle.status = "HOME";
+
         if (statuses[vehicle.status]) {
           vehicle.status = statuses[vehicle.status];
         } else {
           throw new Error("Invalid role");
+        }
+      },
+      beforeUpdate: (vehicle) => {
+        if (vehicle.changed("status")) {
+          if (statuses[vehicle.status])
+            vehicle.status = statuses[vehicle.status];
+          else throw new Error("Invalid role");
         }
       },
     },

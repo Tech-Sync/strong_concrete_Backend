@@ -1,6 +1,6 @@
 "use strict";
 
-const Product  = require("../models/product");
+const Product = require("../models/product");
 
 module.exports = {
   list: async (req, res) => {
@@ -9,33 +9,26 @@ module.exports = {
     res.status(200).send(data);
   },
 
-  
-   create: async (req, res) => {
-  try {
+  create: async (req, res) => {
     const { materials } = req.body;
 
     // Gerekli anahtarların (STONE, SAND, CEMENT) obje içinde olup olmadığını kontrol et
-    const requiredKeys = ['STONE', 'SAND', 'CEMENT'];
-    const hasRequiredKeys = requiredKeys.every(key => materials.hasOwnProperty(key));
+    const requiredKeys = ["STONE", "SAND", "CEMENT"];
+    const hasRequiredKeys = requiredKeys.every((key) =>
+      materials.hasOwnProperty(key)
+    );
 
     if (!hasRequiredKeys) {
-      return res.status(400).send({ error: 'Missing or invalid keys in material information!' });
+      return res
+        .status(400)
+        .send({ error: "Missing or invalid keys in material information!" });
     }
 
-    // Diğer kontrolleri buraya ekleyebilirsiniz.
-
-    // Geçerli veri ise creatorId ekleyip kaydet
     req.body.creatorId = req.user.id;
     const data = await Product.create(req.body);
 
     res.status(200).send(data);
-  } catch (error) {
-    console.error('An error occurred while creating the product:', error);
-    res.status(500).send({ error: 'An error occurred, please try again!' });
-  }
-},
-
-  
+  },
 
   read: async (req, res) => {
     const data = await Product.findByPk(req.params.id);
