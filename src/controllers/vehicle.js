@@ -1,11 +1,14 @@
 "use strict";
 
-const  Vehicle  = require("../models/vehicle");
+const Production = require("../models/production");
+const Vehicle = require("../models/vehicle");
 
 module.exports = {
   list: async (req, res) => {
-    const data = await Vehicle.findAndCountAll();
-    
+    const data = await Vehicle.findAndCountAll({
+      // include: { model: Production },
+    });
+
     res.status(200).send(data);
   },
 
@@ -49,9 +52,9 @@ module.exports = {
   },
 
   restore: async (req, res) => {
-    const vehicle = await Vehicle.findByPk(req.params.id,{ paranoid: false });
+    const vehicle = await Vehicle.findByPk(req.params.id, { paranoid: false });
     if (!vehicle) throw new Error("Vehicle not Found.");
-    vehicle.updaterId = req.user.id
+    vehicle.updaterId = req.user.id;
     const isRestored = await vehicle.restore();
 
     res.status(200).send({

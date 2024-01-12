@@ -2,32 +2,19 @@
 const { sequelize, DataTypes } = require("../configs/dbConnection");
 const Production = require("./production");
 const User = require("./user");
-
-const statuses = {
-  CANCELLED: 4,
-  DELIVERIED: 3,
-  "ON THE WAY": 2,
-  PREPARING: 1,
-};
+const Vehicle = require("./vehicle");
+const { deliveryStatuses } = require("../constraints/roles&status");
 
 const Delivery = sequelize.define(
   "Delivery",
   {
-    ProductionId: {
+    id: {
       type: DataTypes.INTEGER,
-      references: {
-        model: Production,
-        key: "id",
-      },
+      primaryKey: true,
+      autoIncrement: true,
     },
-    DriverId: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      references: {
-        model: User,
-        key: "id",
-      },
-    },
+
+    
     status: {
       type: DataTypes.INTEGER,
     },
@@ -36,16 +23,19 @@ const Delivery = sequelize.define(
     paranoid: true,
     hooks: {
       beforeCreate: (delivery) => {
-        if (!delivery.status) delivery.status = "PREPARING";
+        if (!delivery.status) delivery.status = "LOADING";
+        delivery.status = delivery.status.toUpperCase();
 
-        if (statuses[delivery.status])
-          delivery.status = statuses[delivery.status];
+        if (deliveryStatuses[delivery.status])
+          delivery.status = deliveryStatuses[delivery.status];
         else throw new Error("Invalid role");
       },
       beforeUpdate: (delivery) => {
         if (delivery.changed("status")) {
-          if (statuses[delivery.status])
-            delivery.status = statuses[delivery.status];
+          delivery.status = delivery.status.toUpperCase();
+
+          if (deliveryStatuses[delivery.status])
+            delivery.status = deliveryStatuses[delivery.status];
           else throw new Error("Invalid role");
         }
       },
@@ -53,16 +43,12 @@ const Delivery = sequelize.define(
   }
 );
 
-// Production - delivery
-Production.hasOne(Delivery);
-Delivery.belongsTo(Production);
-
 // user - delivery
-User.hasMany(Delivery, { foreignKey: "DriverId", as: "driverDeliverys" });
 User.hasMany(Delivery, { foreignKey: "creatorId", as: "createdDeliverys" });
 User.hasMany(Delivery, { foreignKey: "updaterId", as: "updatedDeliverys" });
 Delivery.belongsTo(User, { foreignKey: "creatorId", as: "creator" });
 Delivery.belongsTo(User, { foreignKey: "updaterId", as: "updater" });
-Delivery.belongsTo(User, { foreignKey: "DriverId", as: "driver" });
+
+
 
 module.exports = Delivery;

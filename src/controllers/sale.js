@@ -29,17 +29,22 @@ module.exports = {
     req.body.updaterId = req.user.id;
     const user = req.user;
 
-    if (user.role !== "ADMIN" && (req.body.status || req.body.confirmDate)) {
+    if (user.role !== 5 && (req.body.status || req.body.confirmDate)) {
       throw new Error(
         "You are not athorized to change Status or Confirm-Date !"
       );
     }
 
-    if(!(req.body.status && req.body.confirmDate)) throw new Error("Confirm Date or Status is missing ")
+    if (req.body.status.toUpperCase() === "APPROVED") {
+      if (!(req.body.status && req.body.confirmDate))
+        throw new Error("Confirm Date or Status is missing ");
+    }
 
     if (req.body.status) {
       req.body.status = req.body.status.toUpperCase();
     }
+    
+    if(new Date() > new Date(req.body.confirmDate)) throw new Error('Confirm date can not be past !')
 
     const isUpdated = await Sale.update(req.body, {
       where: { id: req.params.id },
@@ -49,25 +54,22 @@ module.exports = {
     let msg;
 
     try {
-      if (isUpdated[0] && req.body?.status === "APPROVED") {
-        const vehicles = await Vehicle.findAll({
-          where: { isPublic: true, status: 1 },
-        });
-
-        const productionData = {
-          SaleId: req.params.id,
-          VehicleId: vehicles ? vehicles[0].id : null,
-          creatorId: req.user.id,
-        };
-
+      if (isUpdated[0] && (req.body?.status === "APPROVED" && req.body?.confirmDate)) {
+ 
         const isExist = await Production.findOne({
           where: { SaleId: req.params.id },
         });
+        
+        const productionData = {
+          SaleId: req.params.id,
+          creatorId: req.user.id,
+        };
 
         if (!isExist) {
           await Production.create(productionData);
           let msg = "Production has been created !";
         }
+
       }
     } catch (error) {
       msg = "Production not created, Please do it manuel.";

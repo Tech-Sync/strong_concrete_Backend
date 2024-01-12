@@ -3,13 +3,9 @@ const { sequelize, DataTypes } = require("../configs/dbConnection");
 const Sale = require("./sale");
 const User = require("./user");
 const Vehicle = require("./vehicle");
+const Delivery = require("./delivery");
 
-const statuses = {
-  CANCELLED: 4,
-  COMPLETED: 3,
-  "IN PROGRESS": 2,
-  PLANNED: 1,
-};
+const { productionStatuses } = require("../constraints/roles&status");
 
 const Production = sequelize.define(
   "Production",
@@ -21,12 +17,8 @@ const Production = sequelize.define(
         key: "id",
       },
     },
-    VehicleId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: Vehicle,
-        key: "id",
-      },
+    VehicleIds: {
+      type: DataTypes.ARRAY(DataTypes.INTEGER),
     },
     status: {
       type: DataTypes.INTEGER,
@@ -37,17 +29,18 @@ const Production = sequelize.define(
     hooks: {
       beforeCreate: (production) => {
         if (!production.status) production.status = "PLANNED";
+        production.status = production.status.toUpperCase();
 
-        if (statuses[production.status]) {
-          production.status = statuses[production.status];
-        } else {
-          throw new Error("Invalid role");
-        }
+        if (productionStatuses[production.status])
+          production.status = productionStatuses[production.status];
+        else throw new Error("Invalid role");
       },
       beforeUpdate: (production) => {
         if (production.changed("status")) {
-          if (statuses[production.status])
-            production.status = statuses[production.status];
+          production.status = production.status.toUpperCase();
+
+          if (productionStatuses[production.status])
+            production.status = productionStatuses[production.status];
           else throw new Error("Invalid role");
         }
       },
@@ -59,9 +52,9 @@ const Production = sequelize.define(
 Sale.hasOne(Production);
 Production.belongsTo(Sale);
 
-// Vehicle - production
-Vehicle.hasMany(Production);
-Production.belongsTo(Vehicle);
+
+Vehicle.belongsToMany(Production, { through: Delivery });
+Production.belongsToMany(Vehicle, { through: Delivery });
 
 // user - production
 User.hasMany(Production, { foreignKey: "creatorId", as: "createdProductions" });

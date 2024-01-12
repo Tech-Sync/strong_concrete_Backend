@@ -31,3 +31,15 @@ Product.belongsTo(User, { foreignKey: "creatorId", as: "creator" });
 Product.belongsTo(User, { foreignKey: "updaterId", as: "updater" });
 
 module.exports = Product;
+
+/* 
+{
+  "name": "c35",
+  "price": 100,
+  "materials": {
+    "STONE": 1.9,
+    "SAND": 1.9,
+    "CEMENT": 270
+  }
+}
+*/

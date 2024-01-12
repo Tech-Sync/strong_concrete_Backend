@@ -18,13 +18,14 @@ module.exports = {
       materials.hasOwnProperty(key)
     );
 
-    if (!hasRequiredKeys) {
-      return res
-        .status(400)
-        .send({ error: "Missing or invalid keys in material information!" });
-    }
+    if (!hasRequiredKeys) throw new Error("Missing or invalid keys in material information!")
 
     req.body.creatorId = req.user.id;
+    req.body.name = req.body.name.toUpperCase()
+
+    const isExist = await Product.findOne({where:{name:req.body.name}})
+    if(isExist) throw new Error('The product is available with this name already !')
+
     const data = await Product.create(req.body);
 
     res.status(200).send(data);

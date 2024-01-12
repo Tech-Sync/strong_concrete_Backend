@@ -1,11 +1,7 @@
 "use strict";
 const { sequelize, DataTypes } = require("../configs/dbConnection");
 const User = require("./user");
-
-const statusOption = {
-  2: "SUPPLIER",
-  1: "CONSUMER",
-};
+const { firmStatuses } = require("../constraints/roles&status");
 
 const Firm = sequelize.define(
   "Firm",
@@ -48,21 +44,49 @@ const Firm = sequelize.define(
       },
     },
     status: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        isIn: {
-          args: [Object.values(statusOption)],
-          msg: "Invalid role",
-        },
-      },
-      set(value) {
-        this.setDataValue("status", statusOption[value]);
-      },
+      type: DataTypes.INTEGER,
     },
   },
-  { paranoid: true }
+  {
+    paranoid: true,
+    hooks: {
+      beforeCreate: (firm) => {
+        if (!firm.status) firm.status = "CONSUMER";
+        firm.status = firm.status.toUpperCase();
+
+        if (firmStatuses[firm.status]) firm.status = firmStatuses[firm.status];
+        else throw new Error("Invalid status");
+      },
+      beforeUpdate: (firm) => {
+        if (firm.changed("status")) {
+          firm.status = firm.status.toUpperCase();
+          
+          if (firmStatuses[firm.status])
+            firm.status = firmStatuses[firm.status];
+          else throw new Error("Invalid status");
+        }
+        sale.totalPrice =
+          sale.quantity * sale.unitPrice + sale.otherCharges - sale.discount;
+      },
+    },
+  }
 );
 
+// user - firm
+User.hasMany(Firm, { foreignKey: "creatorId", as: "createdFirms" });
+User.hasMany(Firm, { foreignKey: "updaterId", as: "updatedFirms" });
+Firm.belongsTo(User, { foreignKey: "creatorId", as: "creator" });
+Firm.belongsTo(User, { foreignKey: "updaterId", as: "updater" });
 
 module.exports = Firm;
+
+/* 
+{
+  "name": "B",
+  "address": "Ibex",
+  "phoneNo": "+2602222",
+  "tpinNo": "22222",
+  "email": "B@gmail.com",
+  "status": "SUPPLIER"
+}
+*/

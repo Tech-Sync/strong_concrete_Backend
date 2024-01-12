@@ -2,7 +2,7 @@
 const { sequelize, DataTypes } = require("../configs/dbConnection");
 const Firm = require("./firm");
 const Material = require("./material");
-const Account = require('./account');
+const User = require("./user");
 
 const Purchase = sequelize.define(
   "Purchase",
@@ -57,6 +57,11 @@ const Purchase = sequelize.define(
   }
 );
 
+// user - Purchase
+User.hasMany(Purchase, { foreignKey: "creatorId", as: "createdPurchases" });
+User.hasMany(Purchase, { foreignKey: "updaterId", as: "updatedPurchases" });
+Purchase.belongsTo(User, { foreignKey: "creatorId", as: "creator" });
+Purchase.belongsTo(User, { foreignKey: "updaterId", as: "updater" });
 
 // material - purchase
 Material.hasMany(Purchase);

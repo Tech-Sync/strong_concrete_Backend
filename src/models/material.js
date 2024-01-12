@@ -1,5 +1,6 @@
 "use strict";
 const { sequelize, DataTypes } = require("../configs/dbConnection");
+const User = require("./user");
 
 const Material = sequelize.define(
   "Material",
@@ -30,6 +31,11 @@ const Material = sequelize.define(
   { paranoid: true }
 );
 
+// user - material
+User.hasMany(Material, { foreignKey: "creatorId", as: "createdMaterials" });
+User.hasMany(Material, { foreignKey: "updaterId", as: "updatedMaterials" });
+Material.belongsTo(User, { foreignKey: "creatorId", as: "creator" });
+Material.belongsTo(User, { foreignKey: "updaterId", as: "updater" });
 
 
 module.exports = Material;

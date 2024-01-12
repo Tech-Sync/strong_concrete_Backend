@@ -3,12 +3,7 @@ const { sequelize, DataTypes } = require("../configs/dbConnection");
 const Firm = require("./firm");
 const Product = require("./product");
 const User = require("./user");
-
-const statuses = {
-  REJECTED: 3,
-  APPROVED: 2,
-  PENDING: 1,
-};
+const { saleStatuses } = require("../constraints/roles&status");
 
 const Sale = sequelize.define(
   "Sale",
@@ -67,25 +62,39 @@ const Sale = sequelize.define(
   {
     paranoid: true,
     hooks: {
-      beforeCreate: (sale) => {
-        // console.log(sale.status);
+      beforeCreate: async (sale) => {
+        const firm = await Firm.findByPk(sale.FirmId);
+        if (firm.status !== 2)
+          throw new Error("The firm you have picked is not a supplier !");
 
-        sale.totalPrice = sale.quantity * sale.unitPrice + sale.otherCharges - sale.discount;
+        if (!sale.unitPrice) {
+          const product = await Product.findByPk(sale.ProductId);
+          sale.unitPrice = product.price;
+        }
+
+        sale.totalPrice =
+          sale.quantity * sale.unitPrice + sale.otherCharges - sale.discount;
 
         if (!sale.status) sale.status = "PENDING";
+        sale.status = sale.status.toUpperCase();
 
-        if (statuses[sale.status]) {
-          sale.status = statuses[sale.status];
+        if (saleStatuses[sale.status]) {
+          sale.status = saleStatuses[sale.status];
         } else {
           throw new Error("Invalid role");
         }
       },
       beforeUpdate: (sale) => {
         if (sale.changed("status")) {
-          if (statuses[sale.status]) sale.status = statuses[sale.status];
+          sale.status = sale.status.toUpperCase();
+
+          if (saleStatuses[sale.status])
+            sale.status = saleStatuses[sale.status];
           else throw new Error("Invalid role");
         }
-        sale.totalPrice = sale.quantity * sale.unitPrice + sale.otherCharges - sale.discount;
+
+        sale.totalPrice =
+          sale.quantity * sale.unitPrice + sale.otherCharges - sale.discount;
       },
     },
   }
@@ -106,3 +115,14 @@ Sale.belongsTo(User, { foreignKey: "creatorId", as: "creator" });
 Sale.belongsTo(User, { foreignKey: "updaterId", as: "updater" });
 
 module.exports = Sale;
+
+/* 
+{
+  "FirmId": 2,
+  "ProductId": 1,
+  "quantity": 5,
+  "location": "Kabulonga",
+  "requestedDate": "2024-01-15T08:15:11.218Z",
+  "sideContact": "+26011111"
+}
+*/

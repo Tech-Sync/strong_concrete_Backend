@@ -1,6 +1,7 @@
 "use strict";
 
 const Delivery = require("../models/delivery");
+const Vehicle = require("../models/vehicle");
 
 module.exports = {
   list: async (req, res) => {
@@ -18,6 +19,7 @@ module.exports = {
 
   read: async (req, res) => {
     const data = await Delivery.findByPk(req.params.id);
+
     if (!data) throw new Error("Delivery not found !");
 
     res.status(200).send(data);
