@@ -26,9 +26,19 @@ const Material = sequelize.define(
       type: DataTypes.FLOAT,
       allowNull: false,
       defaultValue: 0,
+      set(value) {
+        this.setDataValue("quantity", value.toFixed(2));
+      },
     },
   },
-  { paranoid: true }
+  {
+    paranoid: true,
+    hooks: {
+      beforeUpdate: (material) => {
+        material.quantity = material.quantity.toFixed(2)
+      },
+    },
+  }
 );
 
 // user - material
@@ -36,6 +46,5 @@ User.hasMany(Material, { foreignKey: "creatorId", as: "createdMaterials" });
 User.hasMany(Material, { foreignKey: "updaterId", as: "updatedMaterials" });
 Material.belongsTo(User, { foreignKey: "creatorId", as: "creator" });
 Material.belongsTo(User, { foreignKey: "updaterId", as: "updater" });
-
 
 module.exports = Material;

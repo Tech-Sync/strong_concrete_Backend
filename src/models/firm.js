@@ -45,26 +45,20 @@ const Firm = sequelize.define(
     },
     status: {
       type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: Object.values(firmStatuses)[0],
+      validate: {
+        isIn: {
+          args: [Object.values(firmStatuses)],
+          msg: "Invalid status value",
+        },
+      },
     },
   },
   {
     paranoid: true,
     hooks: {
-      beforeCreate: (firm) => {
-        if (!firm.status) firm.status = "CONSUMER";
-        firm.status = firm.status.toUpperCase();
-
-        if (firmStatuses[firm.status]) firm.status = firmStatuses[firm.status];
-        else throw new Error("Invalid status");
-      },
       beforeUpdate: (firm) => {
-        if (firm.changed("status")) {
-          firm.status = firm.status.toUpperCase();
-          
-          if (firmStatuses[firm.status])
-            firm.status = firmStatuses[firm.status];
-          else throw new Error("Invalid status");
-        }
         sale.totalPrice =
           sale.quantity * sale.unitPrice + sale.otherCharges - sale.discount;
       },

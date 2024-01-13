@@ -35,13 +35,9 @@ module.exports = {
       );
     }
 
-    if (req.body.status.toUpperCase() === "APPROVED") {
+    if (req.body.status === 2) {
       if (!(req.body.status && req.body.confirmDate))
         throw new Error("Confirm Date or Status is missing ");
-    }
-
-    if (req.body.status) {
-      req.body.status = req.body.status.toUpperCase();
     }
     
     if(new Date() > new Date(req.body.confirmDate)) throw new Error('Confirm date can not be past !')
@@ -54,7 +50,7 @@ module.exports = {
     let msg;
 
     try {
-      if (isUpdated[0] && (req.body?.status === "APPROVED" && req.body?.confirmDate)) {
+      if (isUpdated[0] && (req.body?.status === 2 && req.body?.confirmDate)) {
  
         const isExist = await Production.findOne({
           where: { SaleId: req.params.id },

@@ -57,6 +57,14 @@ const Sale = sequelize.define(
     },
     status: {
       type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: Object.values(saleStatuses)[0],
+      validate: {
+        isIn: {
+          args: [Object.values(saleStatuses)],
+          msg: "Invalid status value",
+        },
+      },
     },
   },
   {
@@ -74,25 +82,8 @@ const Sale = sequelize.define(
 
         sale.totalPrice =
           sale.quantity * sale.unitPrice + sale.otherCharges - sale.discount;
-
-        if (!sale.status) sale.status = "PENDING";
-        sale.status = sale.status.toUpperCase();
-
-        if (saleStatuses[sale.status]) {
-          sale.status = saleStatuses[sale.status];
-        } else {
-          throw new Error("Invalid role");
-        }
       },
       beforeUpdate: (sale) => {
-        if (sale.changed("status")) {
-          sale.status = sale.status.toUpperCase();
-
-          if (saleStatuses[sale.status])
-            sale.status = saleStatuses[sale.status];
-          else throw new Error("Invalid role");
-        }
-
         sale.totalPrice =
           sale.quantity * sale.unitPrice + sale.otherCharges - sale.discount;
       },
@@ -124,5 +115,9 @@ module.exports = Sale;
   "location": "Kabulonga",
   "requestedDate": "2024-01-15T08:15:11.218Z",
   "sideContact": "+26011111"
+}
+{
+  "status": "approved",
+  "confirmDate": "2024-01-15T08:15:11.218Z"
 }
 */

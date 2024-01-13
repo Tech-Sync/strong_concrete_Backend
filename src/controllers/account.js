@@ -1,8 +1,6 @@
 "use strict";
 
-const { sequelize } = require("../configs/dbConnection");
 const Account = require("../models/account");
-const Purchase = require("../models/purchase");
 
 module.exports = {
   list: async (req, res) => {

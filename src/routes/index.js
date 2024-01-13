@@ -12,8 +12,10 @@ router.use('/products', require('./product'))
 router.use('/materials', require('./material'))
 // Purchase
 router.use('/purchases', require('./purchase'))
-// Account
-router.use('/accounts', require('./account'))
+// PurchaseAccount
+router.use('/purchase_accounts', require('./account'))
+// SaleAccount
+router.use('/sale_accounts', require('./saleAccount'))
 // Vehicle
 router.use('/vehicles', require('./vehicle'))
 // Sale
