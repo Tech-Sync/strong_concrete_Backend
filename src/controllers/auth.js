@@ -1,5 +1,5 @@
 const User = require("../models/user");
-const cyrpto = require('node:crypto');
+const cyrpto = require("node:crypto");
 const sendEmail = require("../helpers/sendEmail");
 const passwordEncrypt = require("../helpers/passEncrypt");
 const setToken = require("../helpers/setToken");
@@ -116,8 +116,8 @@ module.exports = {
     await user.save();
 
     res.status(202).send({
-      message:'Email verified !',
-      user
+      message: "Email verified !",
+      user,
     });
   },
 };

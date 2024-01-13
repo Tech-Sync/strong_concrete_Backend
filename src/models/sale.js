@@ -3,12 +3,7 @@ const { sequelize, DataTypes } = require("../configs/dbConnection");
 const Firm = require("./firm");
 const Product = require("./product");
 const User = require("./user");
-
-const statuses = {
-  3: "Rejected",
-  2: "Approved",
-  1: "Pending",
-};
+const { saleStatuses } = require("../constraints/roles&status");
 
 const Sale = sequelize.define(
   "Sale",
@@ -61,34 +56,57 @@ const Sale = sequelize.define(
       type: DataTypes.DATE,
     },
     status: {
-      type: DataTypes.ENUM,
-      values: Object.values(statuses),
-      allowNull: false,
+      type: DataTypes.INTEGER,
     },
   },
   {
     paranoid: true,
     hooks: {
-      beforeCreate: (sale) => {
-        if (statuses[sale.status]) {
-          sale.status = statuses[sale.status];
-          console.log(sale.status);
+      beforeCreate: async (sale) => {
+        const firm = await Firm.findByPk(sale.FirmId);
+        if (firm.status !== 2)
+          throw new Error("The firm you have picked is not a supplier !");
+
+        if (!sale.unitPrice) {
+          const product = await Product.findByPk(sale.ProductId);
+          sale.unitPrice = product.price;
+        }
+
+        sale.totalPrice =
+          sale.quantity * sale.unitPrice + sale.otherCharges - sale.discount;
+
+        if (!sale.status) sale.status = "PENDING";
+        sale.status = sale.status.toUpperCase();
+
+        if (saleStatuses[sale.status]) {
+          sale.status = saleStatuses[sale.status];
         } else {
           throw new Error("Invalid role");
         }
+      },
+      beforeUpdate: (sale) => {
+        if (sale.changed("status")) {
+          sale.status = sale.status.toUpperCase();
+
+          if (saleStatuses[sale.status])
+            sale.status = saleStatuses[sale.status];
+          else throw new Error("Invalid role");
+        }
+
+        sale.totalPrice =
+          sale.quantity * sale.unitPrice + sale.otherCharges - sale.discount;
       },
     },
   }
 );
 
 // Firm - sale
-Firm.hasMany(Sale)
-Sale.belongsTo(Firm)
+Firm.hasMany(Sale);
+Sale.belongsTo(Firm);
 
 // Product - sale
-Product.hasMany(Sale)
-Sale.belongsTo(Product)
-
+Product.hasMany(Sale);
+Sale.belongsTo(Product);
 
 // user - sale
 User.hasMany(Sale, { foreignKey: "creatorId", as: "createdSales" });
@@ -97,3 +115,14 @@ Sale.belongsTo(User, { foreignKey: "creatorId", as: "creator" });
 Sale.belongsTo(User, { foreignKey: "updaterId", as: "updater" });
 
 module.exports = Sale;
+
+/* 
+{
+  "FirmId": 2,
+  "ProductId": 1,
+  "quantity": 5,
+  "location": "Kabulonga",
+  "requestedDate": "2024-01-15T08:15:11.218Z",
+  "sideContact": "+26011111"
+}
+*/

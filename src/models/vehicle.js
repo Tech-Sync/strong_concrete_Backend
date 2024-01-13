@@ -1,22 +1,33 @@
 "use strict";
 const { sequelize, DataTypes } = require("../configs/dbConnection");
 const User = require("./user");
+const { vehicleStatuses } = require("../constraints/roles&status");
+const Production = require("./production");
+const Delivery = require("./delivery");
 
-const statuses = {
-  1: "Home",
-  2: "Ready for Loading",
-  3: "Package Loading",
-  4: "In transit",
-  5: "Package Unloading",
-  6: "Vehicle in return",
-};
 
 const Vehicle = sequelize.define(
   "Vehicle",
   {
+    DriverId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: User,
+        key: "id",
+      },
+      unique: {
+        name: "unique_driver_constraint",
+        msg: "The selected user is already assigned to another whicle.",
+      },
+    },
     plateNumber: {
       type: DataTypes.STRING(32),
       allowNull: false,
+      unique: {
+        name: "unique_plateNumber_constraint",
+        msg: "Plate number must be unique!",
+      },
       set(value) {
         this.setDataValue("plateNumber", value.toUpperCase());
       },
@@ -29,9 +40,7 @@ const Vehicle = sequelize.define(
       allowNull: false,
     },
     status: {
-      type: DataTypes.ENUM,
-      values: Object.values(statuses),
-      defaultValue: "Home",
+      type: DataTypes.INTEGER,
     },
     isPublic: {
       type: DataTypes.BOOLEAN,
@@ -41,21 +50,53 @@ const Vehicle = sequelize.define(
   {
     paranoid: true,
     hooks: {
-      beforeCreate: (vehicle) => {
-        if (statuses[vehicle.status]) {
-          vehicle.status = statuses[vehicle.status];
+      beforeCreate: async(vehicle) => {
+        if (!vehicle.status) vehicle.status = "HOME";
+        vehicle.status = vehicle.status.toUpperCase();
+
+        const user = await User.findByPk(vehicle.DriverId)
+
+        if(user.role !== 1 ) throw new Error('The selected user is not a driver !')
+
+
+        if (vehicleStatuses[vehicle.status]) {
+          vehicle.status = vehicleStatuses[vehicle.status];
         } else {
           throw new Error("Invalid role");
+        }
+      },
+      beforeUpdate: (vehicle) => {
+        if (vehicle.changed("status")) {
+        vehicle.status = vehicle.status.toUpperCase();
+
+          if (vehicleStatuses[vehicle.status])
+            vehicle.status = vehicleStatuses[vehicle.status];
+          else throw new Error("Invalid role");
         }
       },
     },
   }
 );
 
+
+
 // user - account
+User.hasMany(Vehicle, { foreignKey: "DriverId", as: "driverVehicles" });
 User.hasMany(Vehicle, { foreignKey: "creatorId", as: "createdVehicles" });
 User.hasMany(Vehicle, { foreignKey: "updaterId", as: "updatedVehicles" });
 Vehicle.belongsTo(User, { foreignKey: "creatorId", as: "creator" });
 Vehicle.belongsTo(User, { foreignKey: "updaterId", as: "updater" });
+Vehicle.belongsTo(User, { foreignKey: "DriverId", as: "driver" });
+
 
 module.exports = Vehicle;
+
+
+/* 
+{
+  "DriverId": 1,
+  "plateNumber": "dada7049",
+  "model": 2000,
+  "capacity": 7
+}
+*/

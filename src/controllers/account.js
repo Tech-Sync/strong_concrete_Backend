@@ -6,15 +6,15 @@ const Purchase = require("../models/purchase");
 
 module.exports = {
   list: async (req, res) => {
-    const FirmId = req.query.firmId;
+    // const FirmId = req.query.firmId;
 
     const data = await Account.findAndCountAll({
       // include: ["Firm", "Material"],
-      where: { FirmId },
+      // where: { FirmId },
     });
-    const balance = await Account.sum("balance", { where: { FirmId : FirmId} });
+    // const balance = await Account.sum("balance", { where: { FirmId : FirmId} });
 
-    data.totalBalance = balance
+    // data.totalBalance = balance
 
     res.status(200).send(data);
   },
