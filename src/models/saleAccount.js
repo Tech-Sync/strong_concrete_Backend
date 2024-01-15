@@ -16,7 +16,6 @@ const SaleAccount = sequelize.define(
     },
     FirmId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
       references: {
         model: Firm,
         key: "id",
@@ -32,7 +31,6 @@ const SaleAccount = sequelize.define(
     },
     balance: {
       type: DataTypes.FLOAT,
-      allowNull: false,
     },
   },
   {
@@ -41,6 +39,7 @@ const SaleAccount = sequelize.define(
       beforeCreate: async (saleAccount) => {
         if (saleAccount.SaleId) {
           const sale = await Sale.findByPk(saleAccount.SaleId);
+          console.log(sale.FirmId);
           saleAccount.FirmId = sale?.FirmId;
           saleAccount.totalPrice = sale?.totalPrice;
           saleAccount.balance = (saleAccount.totalPrice - saleAccount.paid).toFixed(2);

@@ -27,10 +27,32 @@ module.exports = {
   update: async (req, res) => {
     req.body.updaterId = req.user.id;
 
+    const delivery = await Delivery.findByPk(req.params.id, {
+      include: "Vehicle",
+    });
+    const { Vehicle } = delivery;
     let isUpdated;
-    if (!req.body.DriverId && req.body.status)
-      throw new Error("No Driver yet, you can not update status !");
-    else {
+
+    if (req.user.role === 1 && delivery.Vehicle.DriverId === req.user.id) {
+      const status = req.body.status;
+
+      if ([2, 3, 4].includes(status)) {
+        Vehicle.status = status + 1;
+        await Vehicle.save();
+      } else if ([5].includes(status)) {
+        throw new Error(
+          "Delivery can not be cancelled from here, talk to saler or admin."
+        );
+      }
+
+      isUpdated = await Delivery.update(
+        { status },
+        {
+          where: { id: req.params.id },
+          individualHooks: true,
+        }
+      );
+    } else {
       isUpdated = await Delivery.update(req.body, {
         where: { id: req.params.id },
         individualHooks: true,
@@ -38,7 +60,7 @@ module.exports = {
     }
 
     res.status(202).send({
-      isUpdated: Boolean(isUpdated[0]),
+      isUpdated: isUpdated && Boolean(isUpdated[0]),
       data: await Delivery.findByPk(req.params.id),
     });
   },

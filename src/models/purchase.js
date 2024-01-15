@@ -42,7 +42,7 @@ const Purchase = sequelize.define(
       beforeUpdate: async (purchase) => {
         const originalPurchase = await Purchase.findByPk(purchase.id, { raw: true });
 
-        const quantityDiff = purchase.quantity - originalPurchase.quantity;
+        const quantityDiff = (purchase.quantity - originalPurchase.quantity).toFixed(2);
         const material = await Material.findByPk(originalPurchase.MaterialId);
 
         material.increment("quantity", { by: quantityDiff });

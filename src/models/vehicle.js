@@ -41,10 +41,10 @@ const Vehicle = sequelize.define(
     status: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: Object.values(vehicleStatuses)[0],
+      defaultValue: Object.keys(vehicleStatuses)[0],
       validate: {
         isIn: {
-          args: [Object.values(vehicleStatuses)],
+          args: [Object.keys(vehicleStatuses)],
           msg: "Invalid status value",
         },
       },

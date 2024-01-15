@@ -22,10 +22,10 @@ const Production = sequelize.define(
     status: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: Object.values(productionStatuses)[0],
+      defaultValue: Object.keys(productionStatuses)[0],
       validate: {
         isIn: {
-          args: [Object.values(productionStatuses)],
+          args: [Object.keys(productionStatuses)],
           msg: "Invalid status value",
         },
       },

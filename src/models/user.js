@@ -34,7 +34,7 @@ const User = sequelize.define(
       allowNull: false,
       validate: {
         isIn: {
-          args: [Object.values(userRoles)],
+          args: [Object.keys(userRoles)],
           msg: "Invalid role value",
         },
       },

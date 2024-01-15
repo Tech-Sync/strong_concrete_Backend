@@ -56,7 +56,6 @@ module.exports = {
   update: async (req, res) => {
     req.body.updaterId = req.user.id;
 
-    req.body.status = req.body?.status?.toUpperCase();
     let isUpdated;
 
     if (req.body?.status) {
@@ -117,9 +116,7 @@ module.exports = {
 
         //------vehicle controls ends----------
 
-        const statusesArr = [4, 5];
-
-        if (statusesArr.includes(production.status))
+        if ([4, 5].includes(production.status))
           throw new Error("You can not chnage status backward!");
 
         const quantity = production?.Sale?.quantity;
@@ -132,7 +129,9 @@ module.exports = {
           // checking material quantity
           for (const key of materialKey) {
             let material = await Material.findOne({ where: { name: key } });
-            if (material.quantity < (productMaterial[key] * quantity).toFixed(2)) {
+            if (
+              material.quantity < (productMaterial[key] * quantity).toFixed(2)
+            ) {
               production.status = 6;
               await production.save();
 
@@ -167,25 +166,22 @@ module.exports = {
             }
           }
         }
-
-        isUpdated = await Production.update(req.body, {
-          where: { id: req.params.id },
-          individualHooks: true,
-        });
       } else if (req.body?.status === 4) {
         const productionData = await Production.findByPk(req.params.id);
 
-        if (productionData.status !== 2 || productionData.status !== 3) {
+        if (![2, 3].includes(productionData.status)) {
           throw new Error("You can not update status 2 steps at once!");
         }
-
+      } else if ([5, 7].includes(req.body?.status)) {
+        throw new Error(
+          "Production can not be cancelled from here, talk to saler or admin."
+        );
       }
 
       isUpdated = await Production.update(req.body, {
         where: { id: req.params.id },
         individualHooks: true,
       });
-
     } else {
       isUpdated = await Production.update(req.body, {
         where: { id: req.params.id },

@@ -46,10 +46,10 @@ const Firm = sequelize.define(
     status: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: Object.values(firmStatuses)[0],
+      defaultValue: Object.keys(firmStatuses)[0],
       validate: {
         isIn: {
-          args: [Object.values(firmStatuses)],
+          args: [Object.keys(firmStatuses)],
           msg: "Invalid status value",
         },
       },

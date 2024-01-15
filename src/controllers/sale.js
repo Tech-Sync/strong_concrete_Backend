@@ -2,7 +2,8 @@
 
 const Sale = require("../models/sale");
 const Production = require("../models/production");
-const Vehicle = require("../models/vehicle");
+const SaleAccount = require("../models/saleAccount");
+const Delivery = require("../models/delivery");
 
 module.exports = {
   list: async (req, res) => {
@@ -28,48 +29,105 @@ module.exports = {
   update: async (req, res) => {
     req.body.updaterId = req.user.id;
     const user = req.user;
-
-    if (user.role !== 5 && (req.body.status || req.body.confirmDate)) {
-      throw new Error(
-        "You are not athorized to change Status or Confirm-Date !"
-      );
-    }
-
-    if (req.body.status === 2) {
-      if (!(req.body.status && req.body.confirmDate))
-        throw new Error("Confirm Date or Status is missing ");
-    }
-    
-    if(new Date() > new Date(req.body.confirmDate)) throw new Error('Confirm date can not be past !')
-
-    const isUpdated = await Sale.update(req.body, {
-      where: { id: req.params.id },
-      individualHooks: true,
-    });
-
     let msg;
 
-    try {
-      if (isUpdated[0] && (req.body?.status === 2 && req.body?.confirmDate)) {
- 
-        const isExist = await Production.findOne({
-          where: { SaleId: req.params.id },
-        });
-        
-        const productionData = {
-          SaleId: req.params.id,
-          creatorId: req.user.id,
-        };
+    const sale = await Sale.findByPk(req.params.id);
 
-        if (!isExist) {
-          await Production.create(productionData);
-          let msg = "Production has been created !";
-        }
-
+    if (req.body.status || req.body.confirmDate) {
+      // Checking for auth
+      if (user.role !== 5) {
+        throw new Error(
+          "You are not athorized to change Status or Confirm-Date !"
+        );
       }
-    } catch (error) {
-      msg = "Production not created, Please do it manuel.";
-    } finally {
+
+      // check confirm date when status changing
+      if (req.body.status === 2) {
+        if (!(req.body.confirmDate || sale.confirmDate)) {
+          throw new Error("Confirm Date is missing ");
+        }
+      }
+
+      // check if confirm date is past
+      if (new Date() > new Date(req.body.confirmDate)) {
+        throw new Error("Confirm date can not be past !");
+      }
+
+      const isUpdated = await Sale.update(req.body, {
+        where: { id: req.params.id },
+        individualHooks: true,
+      });
+
+      // check conditions for creating production
+      try {
+        if (isUpdated[0] && req.body?.status === 2) {
+          const isExist = await Production.findOne({
+            where: { SaleId: req.params.id },
+          });
+
+          if (!isExist) {
+            const productionData = {
+              SaleId: req.params.id,
+              creatorId: req.user.id,
+            };
+
+            await Production.create(productionData);
+            let msg = "Production has been created !";
+          }
+          const isExistAccount = await SaleAccount.findOne({
+            where: { SaleId: req.params.id },
+          });
+
+          if (!isExistAccount) {
+            const saleAccData = {
+              SaleId: req.params.id,
+              creatorId: req.user.id,
+            };
+
+            const saleAcc = await SaleAccount.create(saleAccData);
+            if (!saleAcc) msg = "Sale Account not created, Please do it manuel.";
+          }
+        }else if(isUpdated[0] && req.body?.status === 4){
+
+          const production = await Production.findOne({where:{SaleId: req.params.id}})
+          if(production){
+            if(production.status === 2 || production.status === 4){
+              production.status = 7
+              await production.save()
+            }else{
+              production.status = 6
+              await production.save()
+            }
+          }
+
+          const delivery = await Delivery.findOne({where:{ProductionId: production.id}})
+          if(delivery){
+            delivery.status = 5
+            await delivery.save()
+          }
+
+          const SaleAccount = await SaleAccount.findOne({where:{SaleId: req.params.id}})
+          if(SaleAccount){
+            await SaleAccount.destroy();
+          }
+
+
+        }
+      } catch (error) {
+        msg = "Production not created, Please do it manuel.";
+      } finally {
+        res.status(202).send({
+          isUpdated: Boolean(isUpdated[0]),
+          data: await Sale.findByPk(req.params.id),
+          msg,
+        });
+      }
+    } else {
+      const isUpdated = await Sale.update(req.body, {
+        where: { id: req.params.id },
+        individualHooks: true,
+      });
+
       res.status(202).send({
         isUpdated: Boolean(isUpdated[0]),
         data: await Sale.findByPk(req.params.id),

@@ -11,10 +11,10 @@ const Delivery = sequelize.define(
     status: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: Object.values(deliveryStatuses)[0],
+      defaultValue: Object.keys(deliveryStatuses)[0],
       validate: {
         isIn: {
-          args: [Object.values(deliveryStatuses)],
+          args: [Object.keys(deliveryStatuses)],
           msg: "Invalid status value",
         },
       },

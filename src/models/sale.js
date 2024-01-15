@@ -58,10 +58,10 @@ const Sale = sequelize.define(
     status: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: Object.values(saleStatuses)[0],
+      defaultValue: Object.keys(saleStatuses)[0],
       validate: {
         isIn: {
-          args: [Object.values(saleStatuses)],
+          args: [Object.keys(saleStatuses)],
           msg: "Invalid status value",
         },
       },
@@ -117,7 +117,7 @@ module.exports = Sale;
   "sideContact": "+26011111"
 }
 {
-  "status": "approved",
+  "status": 2,
   "confirmDate": "2024-01-15T08:15:11.218Z"
 }
 */
