@@ -13,6 +13,6 @@ router
   .put(vehicle.update)
   .delete( vehicle.delete);
 
-router.route("/restore/:id").all( vehicle.restore);
+router.route("/restore/:id").get( vehicle.restore);
 
 module.exports = router;

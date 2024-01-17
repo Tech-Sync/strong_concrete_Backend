@@ -31,9 +31,13 @@ const User = sequelize.define(
     },
     role: {
       type: DataTypes.INTEGER,
-      // set(value) {
-      //   this.setDataValue("role", value.toUpperCase());
-      // },
+      allowNull: false,
+      validate: {
+        isIn: {
+          args: [Object.keys(userRoles)],
+          msg: "Invalid role value",
+        },
+      },
     },
     email: {
       type: DataTypes.STRING,
@@ -81,9 +85,6 @@ User.beforeCreate(async (user) => {
       throw new Error("Password not validated.");
     }
   }
-  user.role = user.role.toUpperCase();
-  if (userRoles[user.role]) user.role = userRoles[user.role.toUpperCase()];
-  else throw new Error("Invalid role");
 });
 
 User.beforeUpdate(async (user) => {
@@ -98,11 +99,6 @@ User.beforeUpdate(async (user) => {
     else throw new Error("Password not validated.");
   }
 
-  if (user.changed("role")) {
-    user.role = user.role.toUpperCase();
-    if (userRoles[user.role]) user.role = userRoles[user.role];
-    else throw new Error("Invalid role");
-  }
 });
 
 module.exports = User;

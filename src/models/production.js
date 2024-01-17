@@ -2,7 +2,6 @@
 const { sequelize, DataTypes } = require("../configs/dbConnection");
 const Sale = require("./sale");
 const User = require("./user");
-const Vehicle = require("./vehicle");
 const Delivery = require("./delivery");
 
 const { productionStatuses } = require("../constraints/roles&status");
@@ -22,29 +21,18 @@ const Production = sequelize.define(
     },
     status: {
       type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: Object.keys(productionStatuses)[0],
+      validate: {
+        isIn: {
+          args: [Object.keys(productionStatuses)],
+          msg: "Invalid status value",
+        },
+      },
     },
   },
   {
     paranoid: true,
-    hooks: {
-      beforeCreate: (production) => {
-        if (!production.status) production.status = "PLANNED";
-        production.status = production.status.toUpperCase();
-
-        if (productionStatuses[production.status])
-          production.status = productionStatuses[production.status];
-        else throw new Error("Invalid role");
-      },
-      beforeUpdate: (production) => {
-        if (production.changed("status")) {
-          production.status = production.status.toUpperCase();
-
-          if (productionStatuses[production.status])
-            production.status = productionStatuses[production.status];
-          else throw new Error("Invalid role");
-        }
-      },
-    },
   }
 );
 
@@ -52,9 +40,8 @@ const Production = sequelize.define(
 Sale.hasOne(Production);
 Production.belongsTo(Sale);
 
-
-Vehicle.belongsToMany(Production, { through: Delivery });
-Production.belongsToMany(Vehicle, { through: Delivery });
+Production.hasMany(Delivery);
+Delivery.belongsTo(Production);
 
 // user - production
 User.hasMany(Production, { foreignKey: "creatorId", as: "createdProductions" });
@@ -63,3 +50,13 @@ Production.belongsTo(User, { foreignKey: "creatorId", as: "creator" });
 Production.belongsTo(User, { foreignKey: "updaterId", as: "updater" });
 
 module.exports = Production;
+
+/* 
+{
+  "status": "BEING PRODUCED",
+  "VehicleIds": [
+    1,
+    2
+  ]
+}
+*/

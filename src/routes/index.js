@@ -1,9 +1,9 @@
 const router = require("express").Router();
 
-// User
-router.use('/users', require('./user'))
 // Auth
 router.use('/auth', require('./auth'))
+// User
+router.use('/users', require('./user'))
 // Firm
 router.use('/firms', require('./firm'))
 // Product
@@ -12,12 +12,14 @@ router.use('/products', require('./product'))
 router.use('/materials', require('./material'))
 // Purchase
 router.use('/purchases', require('./purchase'))
-// Account
-router.use('/accounts', require('./account'))
+// PurchaseAccount
+router.use('/purchase_accounts', require('./account'))
 // Vehicle
 router.use('/vehicles', require('./vehicle'))
 // Sale
 router.use('/sales', require('./sale'))
+// SaleAccount
+router.use('/sale_accounts', require('./saleAccount'))
 // Production
 router.use('/productions', require('./production'))
 // Delivery

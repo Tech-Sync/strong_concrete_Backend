@@ -3,11 +3,14 @@
 const { decode } = require("../helpers/encode&decode");
 const sendEmail = require("../helpers/sendEmail");
 const passwordEncrypt = require("../helpers/passEncrypt");
-
 const  User  = require("../models/user");
 
 module.exports = {
   list: async (req, res) => {
+    /* 
+        #swagger.tags = ['User']
+     */
+
     // const data = await User.findAndCountAll({ paranoid: false }); // to see deleted users as well -> findAndCountAll({paranoid:false})
     const data = await req.getModelList(User)
     res.status(200).send({
@@ -18,12 +21,18 @@ module.exports = {
   },
 
   read: async (req, res) => {
+     /* 
+        #swagger.tags = ['User']
+     */
     const data = await User.findByPk(req.params.id);
     if (!data) throw new Error("User not found !");
 
     res.status(200).send(data);
   },
   update: async (req, res) => {
+     /* 
+        #swagger.tags = ['User']
+     */
     const isUpdated = await User.update(req.body, {
       where: { id: req.params.id },
       individualHooks: true,
@@ -36,6 +45,9 @@ module.exports = {
   },
 
   delete: async (req, res) => {
+     /* 
+        #swagger.tags = ['User']
+     */
     const isDeleted = await User.destroy({ where: { id: req.params.id } }); // add this att. for hard delete ->   force: true
 
     res.status(isDeleted ? 204 : 404).send({
@@ -47,6 +59,9 @@ module.exports = {
   },
 
   restore: async (req, res) => {
+     /* 
+        #swagger.tags = ['User']
+     */
     const isRestored = await User.restore({ where: { id: req.params.id } });
 
     res.status(200).send({
@@ -58,6 +73,9 @@ module.exports = {
   },
 
   uptadePassword: async (req, res) => {
+     /* 
+        #swagger.tags = ['User']
+     */
     const { password, newPassword, reNewPassword } = req.body;
     const { id } = req.user;
     const user = await User.findOne({
@@ -85,6 +103,9 @@ module.exports = {
   },
 
   forgetPassword: async (req, res) => {
+     /* 
+        #swagger.tags = ['User']
+     */
     const email = req.body.email;
     const user = await User.findOne({ where: { email } });
     if (!user) throw new Error("Email verification failed, invalid Email !");
@@ -101,6 +122,9 @@ module.exports = {
   },
 
   resetPassword: async (req, res) => {
+     /* 
+        #swagger.tags = ['User']
+     */
     const { uid, emailToken } = req.params;
     const { password, password2 } = req.body;
     const id = decode(uid);

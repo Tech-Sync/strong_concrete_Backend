@@ -10,6 +10,6 @@ router
   .put(material.update)
   .delete(material.delete);
 
-router.route("/restore/:id").all(material.restore);
+router.route("/restore/:id").get(material.restore);
 
 module.exports = router;

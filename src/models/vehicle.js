@@ -5,7 +5,6 @@ const { vehicleStatuses } = require("../constraints/roles&status");
 const Production = require("./production");
 const Delivery = require("./delivery");
 
-
 const Vehicle = sequelize.define(
   "Vehicle",
   {
@@ -41,6 +40,14 @@ const Vehicle = sequelize.define(
     },
     status: {
       type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: Object.keys(vehicleStatuses)[0],
+      validate: {
+        isIn: {
+          args: [Object.keys(vehicleStatuses)],
+          msg: "Invalid status value",
+        },
+      },
     },
     isPublic: {
       type: DataTypes.BOOLEAN,
@@ -50,29 +57,10 @@ const Vehicle = sequelize.define(
   {
     paranoid: true,
     hooks: {
-      beforeCreate: async(vehicle) => {
-        if (!vehicle.status) vehicle.status = "HOME";
-        vehicle.status = vehicle.status.toUpperCase();
-
-        const user = await User.findByPk(vehicle.DriverId)
-
-        if(user.role !== 1 ) throw new Error('The selected user is not a driver !')
-
-
-        if (vehicleStatuses[vehicle.status]) {
-          vehicle.status = vehicleStatuses[vehicle.status];
-        } else {
-          throw new Error("Invalid role");
-        }
-      },
-      beforeUpdate: (vehicle) => {
-        if (vehicle.changed("status")) {
-        vehicle.status = vehicle.status.toUpperCase();
-
-          if (vehicleStatuses[vehicle.status])
-            vehicle.status = vehicleStatuses[vehicle.status];
-          else throw new Error("Invalid role");
-        }
+      beforeCreate: async (vehicle) => {
+        const user = await User.findByPk(vehicle.DriverId);
+        if (user.role !== 1)
+          throw new Error("The selected user is not a driver !");
       },
     },
   }
@@ -88,9 +76,7 @@ Vehicle.belongsTo(User, { foreignKey: "creatorId", as: "creator" });
 Vehicle.belongsTo(User, { foreignKey: "updaterId", as: "updater" });
 Vehicle.belongsTo(User, { foreignKey: "DriverId", as: "driver" });
 
-
 module.exports = Vehicle;
-
 
 /* 
 {

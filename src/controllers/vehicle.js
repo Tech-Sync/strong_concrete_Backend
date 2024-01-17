@@ -5,6 +5,9 @@ const Vehicle = require("../models/vehicle");
 
 module.exports = {
   list: async (req, res) => {
+    /* 
+        #swagger.tags = ['Vehicle']
+     */
     const data = await Vehicle.findAndCountAll({
       // include: { model: Production },
     });
@@ -13,6 +16,9 @@ module.exports = {
   },
 
   create: async (req, res) => {
+    /* 
+        #swagger.tags = ['Vehicle']
+     */
     req.body.creatorId = req.user.id;
     const data = await Vehicle.create(req.body);
 
@@ -20,12 +26,18 @@ module.exports = {
   },
 
   read: async (req, res) => {
+    /* 
+        #swagger.tags = ['Vehicle']
+     */
     const data = await Vehicle.findByPk(req.params.id);
     if (!data) throw new Error("Vehicle not found !");
 
     res.status(200).send(data);
   },
   update: async (req, res) => {
+    /* 
+        #swagger.tags = ['Vehicle']
+     */
     req.body.updaterId = req.user.id;
     const isUpdated = await Vehicle.update(req.body, {
       where: { id: req.params.id },
@@ -39,6 +51,9 @@ module.exports = {
   },
 
   delete: async (req, res) => {
+    /* 
+        #swagger.tags = ['Vehicle']
+     */
     const vehicle = await Vehicle.findByPk(req.params.id);
     vehicle.updaterId = req.user.id;
     const isDeleted = await vehicle.destroy();
@@ -52,6 +67,9 @@ module.exports = {
   },
 
   restore: async (req, res) => {
+    /* 
+        #swagger.tags = ['Vehicle']
+     */
     const vehicle = await Vehicle.findByPk(req.params.id, { paranoid: false });
     if (!vehicle) throw new Error("Vehicle not Found.");
     vehicle.updaterId = req.user.id;

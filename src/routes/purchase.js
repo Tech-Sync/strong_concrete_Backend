@@ -13,6 +13,6 @@ router
   .put(purchase.update)
   .delete( purchase.delete);
 
-router.route("/restore/:id").all( purchase.restore);
+router.route("/restore/:id").get( purchase.restore);
 
 module.exports = router;

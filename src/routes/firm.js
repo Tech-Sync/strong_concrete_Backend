@@ -13,6 +13,6 @@ router
   .put(firm.update)
   .delete( firm.delete);
 
-router.route("/restore/:id").all( firm.restore);
+router.route("/restore/:id").get( firm.restore);
 
 module.exports = router;

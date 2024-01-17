@@ -1,5 +1,4 @@
 "use strict";
-
 const Production = require("../models/production");
 const Delivery = require("../models/delivery");
 const Sale = require("../models/sale");
@@ -9,6 +8,9 @@ const Vehicle = require("../models/vehicle");
 
 module.exports = {
   list: async (req, res) => {
+    /* 
+        #swagger.tags = ['Production']
+    */
     const data = await Production.findAndCountAll({
       include: [
         {
@@ -28,6 +30,9 @@ module.exports = {
   },
 
   create: async (req, res) => {
+    /* 
+        #swagger.tags = ['Production']
+    */
     req.body.creatorId = req.user.id;
     const data = await Production.create(req.body);
 
@@ -35,20 +40,39 @@ module.exports = {
   },
 
   read: async (req, res) => {
-    const data = await Production.findByPk(req.params.id);
+    /* 
+        #swagger.tags = ['Production']
+    */
+    const data = await Production.findOne({
+      where: { id: req.params.id },
+      include: [
+        {
+          model: Sale,
+          attributes: ["quantity"],
+          include: [
+            {
+              model: Product,
+              attributes: ["materials", "name"],
+            },
+          ],
+        },
+      ],
+    });
     if (!data) throw new Error("Production not found !");
 
     res.status(200).send(data);
   },
   update: async (req, res) => {
+    /* 
+        #swagger.tags = ['Production']
+    */
     req.body.updaterId = req.user.id;
 
-    req.body.status = req.body?.status?.toUpperCase();
     let isUpdated;
 
     if (req.body?.status) {
       // status update and controller for decrement quantity of material
-      if (req.body?.status === "BEING PRODUCED") {
+      if (req.body?.status === 2) {
         const production = await Production.findOne({
           where: { id: req.params.id },
           include: [
@@ -65,60 +89,22 @@ module.exports = {
           ],
         });
 
-        if (!production)
-          throw new Error("Production is not found! Check the materials.");
+        if (!production) throw new Error("Production is not found!");
 
-        const statusesArr = [4, 5, 6];
-
-        if (statusesArr.includes(production.status))
-          throw new Error("You can not chnage status backward!");
-
-        const productMaterial = production?.Sale?.Product?.materials;
-        const productName = production?.Sale?.Product?.name;
-        const materialKey = Object.keys(productMaterial);
-
-        if (production.status !== 2) {
-          for (const key of materialKey) {
-            let material = await Material.findOne({ where: { name: key } });
-
-            if (material.quantity < productMaterial[key]) {
-              throw new Error(
-                `Insufficient ${key} for ${productName} concrete.`
-              );
-            }
-
-            await material.decrement("quantity", { by: productMaterial[key] });
-          }
-        }
-
-        isUpdated = await Production.update(req.body, {
-          where: { id: req.params.id },
-          individualHooks: true,
-        });
-      } else if (req.body?.status === "PRODUCED") {
-
-        const productionData = await Production.findByPk(req.params.id, {
-          include: { model: Sale, attributes: ["quantity"] },
-        });
-
-        if(productionData.status !== 2 || productionData.status !== 3 ){
+        //--------vehicle controls start---------
+        if (!production.VehicleIds && !req.body.VehicleIds) {
           throw new Error(
-            "You can not update status 2 steps at once!"
-          );
-        }
-
-        if (!productionData.VehicleIds && !req.body.VehicleIds) {
-          throw new Error(
-            "Please select the whicles before updating status to produced."
+            "Please select the whicles before updating status to being produced."
           );
         }
 
         let totalCapacity = 0;
 
-        const VehicleIds = productionData.VehicleIds
-          ? productionData.VehicleIds
+        const VehicleIds = production.VehicleIds
+          ? production.VehicleIds
           : req.body.VehicleIds;
 
+        // check is vehicle available and get total capacity of vehicles.
         for (const vehicleId of VehicleIds) {
           const vehicleData = await Vehicle.findByPk(vehicleId);
 
@@ -130,36 +116,84 @@ module.exports = {
           totalCapacity += vehicleData?.capacity;
         }
 
-        if (productionData?.Sale?.quantity > totalCapacity) {
-          productionData.status = "VEHICLE WAITING";
-          await productionData.save();
+        // update production status 'WAITING VEHICLE'
+        if (production?.Sale?.quantity > totalCapacity) {
+          production.status = 3;
+          await production.save();
 
           throw new Error(
-            "Capacity of vehicle is not enough! Update your vehicles."
+            "Capacity of vehicles is not enough! Update your vehicles."
           );
         }
 
-        isUpdated = await Production.update(req.body, {
-          where: { id: req.params.id },
-          individualHooks: true,
-        });
+        //------vehicle controls ends----------
 
-        for (const vehicle of VehicleIds) {
-          await Vehicle.update(
-            { status: "LOADING" },
-            {
-              where: { id: vehicle },
-              individualHooks: true,
+        if ([4, 5].includes(production.status))
+          throw new Error("You can not chnage status backward!");
+
+        const quantity = production?.Sale?.quantity;
+        const productMaterial = production?.Sale?.Product?.materials;
+        const productName = production?.Sale?.Product?.name;
+        const materialKey = Object.keys(productMaterial);
+
+        if (production.status !== 2) {
+          let count = 0;
+          // checking material quantity
+          for (const key of materialKey) {
+            let material = await Material.findOne({ where: { name: key } });
+            if (
+              material.quantity < (productMaterial[key] * quantity).toFixed(2)
+            ) {
+              production.status = 6;
+              await production.save();
+
+              throw new Error(
+                `Insufficient ${key} for ${productName} concrete.`
+              );
             }
-          );
+            count += 1;
+          }
+          // decrement material quantity
+          if (count === materialKey.length) {
+            for (const key of materialKey) {
+              let material = await Material.findOne({ where: { name: key } });
+              const by = (productMaterial[key] * quantity).toFixed(2);
+              await material.decrement("quantity", { by });
+            }
+            // create delivery and update vehicles status
+            for (const vehicle of VehicleIds) {
+              await Vehicle.update(
+                { status: 2 },
+                {
+                  where: { id: vehicle },
+                  individualHooks: true,
+                }
+              );
 
-          await Delivery.create({
-            ProductionId: req.params.id,
-            VehicleId: vehicle,
-            creatorId: req.user.id,
-          });
+              await Delivery.create({
+                ProductionId: req.params.id,
+                VehicleId: vehicle,
+                creatorId: req.user.id,
+              });
+            }
+          }
         }
+      } else if (req.body?.status === 4) {
+        const productionData = await Production.findByPk(req.params.id);
+
+        if (![2, 3].includes(productionData.status)) {
+          throw new Error("You can not update status 2 steps at once!");
+        }
+      } else if ([5, 7].includes(req.body?.status)) {
+        throw new Error(
+          "Production can not be cancelled from here, talk to saler or admin."
+        );
       }
+
+      isUpdated = await Production.update(req.body, {
+        where: { id: req.params.id },
+        individualHooks: true,
+      });
     } else {
       isUpdated = await Production.update(req.body, {
         where: { id: req.params.id },
@@ -173,6 +207,9 @@ module.exports = {
   },
 
   delete: async (req, res) => {
+    /* 
+        #swagger.tags = ['Production']
+    */
     const production = await Production.findByPk(req.params.id);
     production.updaterId = req.user.id;
     const isDeleted = await production.destroy();
@@ -186,6 +223,9 @@ module.exports = {
   },
 
   restore: async (req, res) => {
+    /* 
+        #swagger.tags = ['Production']
+    */
     const production = await Production.findByPk(req.params.id, {
       paranoid: false,
     });

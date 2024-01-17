@@ -5,12 +5,18 @@ const Purchase = require("../models/purchase");
 
 module.exports = {
   list: async (req, res) => {
+    /* 
+        #swagger.tags = ['Purchase']
+    */
     const data = await Purchase.findAndCountAll();
 
     res.status(200).send(data);
   },
 
   create: async (req, res) => {
+    /* 
+        #swagger.tags = ['Purchase']
+    */
     req.body.creatorId = req.user.id;
     const data = await Purchase.create(req.body);
 
@@ -30,12 +36,18 @@ module.exports = {
   },
 
   read: async (req, res) => {
+    /* 
+        #swagger.tags = ['Purchase']
+    */
     const data = await Purchase.findByPk(req.params.id);
     if (!data) throw new Error("Purchase not found !");
 
     res.status(200).send(data);
   },
   update: async (req, res) => {
+    /* 
+        #swagger.tags = ['Purchase']
+    */
     req.body.updaterId = req.user.id;
 
     const isUpdated = await Purchase.update(req.body, {
@@ -64,6 +76,9 @@ module.exports = {
   },
 
   delete: async (req, res) => {
+    /* 
+        #swagger.tags = ['Purchase']
+    */
     const purchase = await Purchase.findByPk(req.params.id);
     purchase.updaterId = req.user.id;
     const isDeleted = await purchase.destroy();
@@ -77,6 +92,9 @@ module.exports = {
   },
 
   restore: async (req, res) => {
+    /* 
+        #swagger.tags = ['Purchase']
+    */
     const purchase = await Purchase.findByPk(req.params.id, {
       paranoid: false,
     });

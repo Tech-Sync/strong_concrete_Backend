@@ -1,11 +1,13 @@
 "use strict";
 
-const { sequelize } = require("../configs/dbConnection");
 const Account = require("../models/account");
-const Purchase = require("../models/purchase");
 
 module.exports = {
   list: async (req, res) => {
+    /* 
+        #swagger.tags = ['Purchase Account']
+     */
+
     // const FirmId = req.query.firmId;
 
     const data = await Account.findAndCountAll({
@@ -20,6 +22,9 @@ module.exports = {
   },
 
   create: async (req, res) => {
+    /* 
+        #swagger.tags = ['Purchase Account']
+     */
     req.body.creatorId = req.user.id;
 
     if (!req.body.debit) req.body.balance = (0 - req.body.credit).toFixed(2);
@@ -30,6 +35,9 @@ module.exports = {
   },
 
   read: async (req, res) => {
+    /* 
+        #swagger.tags = ['Purchase Account']
+     */
     const data = await Account.findByPk(req.params.id);
     console.log(data.get("formatCreateAt"));
     if (!data) throw new Error("Account not found !");
@@ -37,6 +45,9 @@ module.exports = {
     res.status(200).send(data);
   },
   update: async (req, res) => {
+    /* 
+        #swagger.tags = ['Purchase Account']
+     */
     req.body.updaterId = req.user.id;
     const isUpdated = await Account.update(req.body, {
       where: { id: req.params.id },
@@ -50,6 +61,9 @@ module.exports = {
   },
 
   delete: async (req, res) => {
+    /* 
+        #swagger.tags = ['Purchase Account']
+     */
     const account = await Account.findByPk(req.params.id);
     account.updaterId = req.user.id;
     const isDeleted = await account.destroy();
@@ -63,6 +77,9 @@ module.exports = {
   },
 
   restore: async (req, res) => {
+    /* 
+        #swagger.tags = ['Purchase Account']
+     */
     const account = await Account.findByPk(req.params.id, { paranoid: false });
     if (!account) throw new Error("Account not Found.");
     account.updaterId = req.user.id;

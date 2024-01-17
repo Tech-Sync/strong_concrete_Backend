@@ -39,7 +39,6 @@ const Account = sequelize.define(
     paranoid: true,
     hooks: {
       beforeCreate: async (account) => {
-        console.log('before calisti');
         if(account.PurchaseId){
           const purchase = await Purchase.findByPk(account.PurchaseId);
           account.FirmId = purchase?.FirmId;
