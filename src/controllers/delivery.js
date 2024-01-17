@@ -5,12 +5,18 @@ const Vehicle = require("../models/vehicle");
 
 module.exports = {
   list: async (req, res) => {
+    /* 
+        #swagger.tags = ['Delivery']
+    */
     const data = await Delivery.findAndCountAll();
 
     res.status(200).send(data);
   },
 
   create: async (req, res) => {
+    /* 
+        #swagger.tags = ['Delivery']
+    */
     req.body.creatorId = req.user.id;
     const data = await Delivery.create(req.body);
 
@@ -18,6 +24,9 @@ module.exports = {
   },
 
   read: async (req, res) => {
+    /* 
+        #swagger.tags = ['Delivery']
+    */
     const data = await Delivery.findByPk(req.params.id);
 
     if (!data) throw new Error("Delivery not found !");
@@ -25,6 +34,9 @@ module.exports = {
     res.status(200).send(data);
   },
   update: async (req, res) => {
+    /* 
+        #swagger.tags = ['Delivery']
+    */
     req.body.updaterId = req.user.id;
 
     const delivery = await Delivery.findByPk(req.params.id, {
@@ -66,6 +78,9 @@ module.exports = {
   },
 
   delete: async (req, res) => {
+    /* 
+        #swagger.tags = ['Delivery']
+    */
     const delivery = await Delivery.findByPk(req.params.id);
     delivery.updaterId = req.user.id;
     const isDeleted = await delivery.destroy();
@@ -79,6 +94,9 @@ module.exports = {
   },
 
   restore: async (req, res) => {
+    /* 
+        #swagger.tags = ['Delivery']
+    */
     const delivery = await Delivery.findByPk(req.params.id, {
       paranoid: false,
     });

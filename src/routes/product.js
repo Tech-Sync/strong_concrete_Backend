@@ -13,6 +13,6 @@ router
   .put(product.update)
   .delete( product.delete);
 
-router.route("/restore/:id").all( product.restore);
+router.route("/restore/:id").get( product.restore);
 
 module.exports = router;

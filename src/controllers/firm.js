@@ -1,15 +1,22 @@
 "use strict";
 
-const  Firm  = require("../models/firm");
+const Firm = require("../models/firm");
 
 module.exports = {
   list: async (req, res) => {
+    /* 
+        #swagger.tags = ['Firm']
+    */
     const data = await Firm.findAndCountAll();
-    
+
     res.status(200).send(data);
   },
 
   create: async (req, res) => {
+    /* 
+      #swagger.tags = ['Firm']
+      */
+
     req.body.creatorId = req.user.id;
     const data = await Firm.create(req.body);
 
@@ -17,12 +24,18 @@ module.exports = {
   },
 
   read: async (req, res) => {
+    /* 
+        #swagger.tags = ['Firm']
+    */
     const data = await Firm.findByPk(req.params.id);
     if (!data) throw new Error("Firm not found !");
 
     res.status(200).send(data);
   },
   update: async (req, res) => {
+    /* 
+        #swagger.tags = ['Firm']
+    */
     req.body.updaterId = req.user.id;
     const isUpdated = await Firm.update(req.body, {
       where: { id: req.params.id },
@@ -36,6 +49,9 @@ module.exports = {
   },
 
   delete: async (req, res) => {
+    /* 
+        #swagger.tags = ['Firm']
+    */
     const firm = await Firm.findByPk(req.params.id);
     firm.updaterId = req.user.id;
     const isDeleted = await firm.destroy();
@@ -49,9 +65,12 @@ module.exports = {
   },
 
   restore: async (req, res) => {
-    const firm = await Firm.findByPk(req.params.id,{ paranoid: false });
+    /* 
+        #swagger.tags = ['Firm']
+    */
+    const firm = await Firm.findByPk(req.params.id, { paranoid: false });
     if (!firm) throw new Error("Firm not Found.");
-    firm.updaterId = req.user.id
+    firm.updaterId = req.user.id;
     const isRestored = await firm.restore();
 
     res.status(200).send({

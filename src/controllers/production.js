@@ -8,6 +8,9 @@ const Vehicle = require("../models/vehicle");
 
 module.exports = {
   list: async (req, res) => {
+    /* 
+        #swagger.tags = ['Production']
+    */
     const data = await Production.findAndCountAll({
       include: [
         {
@@ -27,6 +30,9 @@ module.exports = {
   },
 
   create: async (req, res) => {
+    /* 
+        #swagger.tags = ['Production']
+    */
     req.body.creatorId = req.user.id;
     const data = await Production.create(req.body);
 
@@ -34,6 +40,9 @@ module.exports = {
   },
 
   read: async (req, res) => {
+    /* 
+        #swagger.tags = ['Production']
+    */
     const data = await Production.findOne({
       where: { id: req.params.id },
       include: [
@@ -54,6 +63,9 @@ module.exports = {
     res.status(200).send(data);
   },
   update: async (req, res) => {
+    /* 
+        #swagger.tags = ['Production']
+    */
     req.body.updaterId = req.user.id;
 
     let isUpdated;
@@ -195,6 +207,9 @@ module.exports = {
   },
 
   delete: async (req, res) => {
+    /* 
+        #swagger.tags = ['Production']
+    */
     const production = await Production.findByPk(req.params.id);
     production.updaterId = req.user.id;
     const isDeleted = await production.destroy();
@@ -208,6 +223,9 @@ module.exports = {
   },
 
   restore: async (req, res) => {
+    /* 
+        #swagger.tags = ['Production']
+    */
     const production = await Production.findByPk(req.params.id, {
       paranoid: false,
     });

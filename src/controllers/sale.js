@@ -7,12 +7,18 @@ const Delivery = require("../models/delivery");
 
 module.exports = {
   list: async (req, res) => {
+    /* 
+        #swagger.tags = ['Sale']
+    */
     const data = await Sale.findAndCountAll();
 
     res.status(200).send(data);
   },
 
   create: async (req, res) => {
+    /* 
+        #swagger.tags = ['Sale']
+    */
     req.body.creatorId = req.user.id;
 
     const data = await Sale.create(req.body);
@@ -21,12 +27,18 @@ module.exports = {
   },
 
   read: async (req, res) => {
+    /* 
+        #swagger.tags = ['Sale']
+    */
     const data = await Sale.findByPk(req.params.id);
     if (!data) throw new Error("Sale not found !");
 
     res.status(200).send(data);
   },
   update: async (req, res) => {
+    /* 
+        #swagger.tags = ['Sale']
+    */
     req.body.updaterId = req.user.id;
     const user = req.user;
     let msg;
@@ -85,33 +97,37 @@ module.exports = {
             };
 
             const saleAcc = await SaleAccount.create(saleAccData);
-            if (!saleAcc) msg = "Sale Account not created, Please do it manuel.";
+            if (!saleAcc)
+              msg = "Sale Account not created, Please do it manuel.";
           }
-        }else if(isUpdated[0] && req.body?.status === 4){
-
-          const production = await Production.findOne({where:{SaleId: req.params.id}})
-          if(production){
-            if(production.status === 2 || production.status === 4){
-              production.status = 7
-              await production.save()
-            }else{
-              production.status = 6
-              await production.save()
+        } else if (isUpdated[0] && req.body?.status === 4) {
+          const production = await Production.findOne({
+            where: { SaleId: req.params.id },
+          });
+          if (production) {
+            if (production.status === 2 || production.status === 4) {
+              production.status = 7;
+              await production.save();
+            } else {
+              production.status = 6;
+              await production.save();
             }
           }
 
-          const delivery = await Delivery.findOne({where:{ProductionId: production.id}})
-          if(delivery){
-            delivery.status = 5
-            await delivery.save()
+          const delivery = await Delivery.findOne({
+            where: { ProductionId: production.id },
+          });
+          if (delivery) {
+            delivery.status = 5;
+            await delivery.save();
           }
 
-          const SaleAccount = await SaleAccount.findOne({where:{SaleId: req.params.id}})
-          if(SaleAccount){
+          const SaleAccount = await SaleAccount.findOne({
+            where: { SaleId: req.params.id },
+          });
+          if (SaleAccount) {
             await SaleAccount.destroy();
           }
-
-
         }
       } catch (error) {
         msg = "Production not created, Please do it manuel.";
@@ -137,6 +153,9 @@ module.exports = {
   },
 
   delete: async (req, res) => {
+    /* 
+        #swagger.tags = ['Sale']
+    */
     const sale = await Sale.findByPk(req.params.id);
     sale.updaterId = req.user.id;
     const isDeleted = await sale.destroy();
@@ -150,6 +169,9 @@ module.exports = {
   },
 
   restore: async (req, res) => {
+    /* 
+        #swagger.tags = ['Sale']
+    */
     const sale = await Sale.findByPk(req.params.id, { paranoid: false });
     if (!sale) throw new Error("Sale not Found.");
     sale.updaterId = req.user.id;

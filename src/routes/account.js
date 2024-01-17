@@ -10,6 +10,6 @@ router
   .put(account.update)
   .delete(account.delete);
 
-router.route("/restore/:id").all(account.restore);
+router.route("/restore/:id").get(account.restore);
 
 module.exports = router;

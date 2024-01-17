@@ -7,6 +7,26 @@ const jwt = require("jsonwebtoken");
 
 module.exports = {
   register: async (req, res) => {
+    /* 
+        #swagger.tags = ['Authentication']
+        #swagger.summary = 'JWT register'
+        #swagger.description = 'Register with email, password, lastName, nrcNo, phoneNo, address, role'
+        #swagger.parameters['body'] = {
+        in: 'body',
+        required: true,
+        schema: {
+          firstName:'test',
+          lastName:'test',
+          nrcNo:'11111111',
+          phoneNO:'+26011111',
+          address:'ibex',
+          role:'4',
+          email:'test@gmail.com',
+          password:'aA123456.?',
+        }
+      }
+    
+    */
     const { email } = req.body;
 
     const user = await User.findOne({ where: { email } });
@@ -23,6 +43,17 @@ module.exports = {
     res.status(201).send(data);
   },
   login: async (req, res) => {
+    /* 
+        #swagger.tags = ['Authentication']
+         #swagger.parameters['body'] = {
+        in: 'body',
+        required: true                     
+        schema: {
+          email:'test@gmail.com',
+          password:'aA123456.?',
+        }
+    */
+
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -54,6 +85,9 @@ module.exports = {
     });
   },
   refresh: async (req, res) => {
+    /* 
+        #swagger.tags = ['Authentication']
+    */
     const refreshToken = req.body?.refresh;
 
     if (!refreshToken) {
@@ -97,12 +131,18 @@ module.exports = {
     );
   },
   logout: (req, res) => {
+    /* 
+        #swagger.tags = ['Authentication']
+    */
     res.send({
       message:
         "No need any doing for logout. You must deleted Bearer Token from your browser.",
     });
   },
   verifyEmail: async (req, res) => {
+    /* 
+        #swagger.tags = ['Authentication']
+    */
     const emailToken = req.query.emailToken;
 
     if (!emailToken) throw new Error("Email token not found !");

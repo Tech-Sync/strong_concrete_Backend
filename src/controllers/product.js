@@ -4,12 +4,18 @@ const Product = require("../models/product");
 
 module.exports = {
   list: async (req, res) => {
+    /* 
+        #swagger.tags = ['Product']
+    */
     const data = await Product.findAndCountAll();
 
     res.status(200).send(data);
   },
 
   create: async (req, res) => {
+    /* 
+        #swagger.tags = ['Product']
+    */
     const { materials } = req.body;
 
     // Gerekli anahtarların (STONE, SAND, CEMENT) obje içinde olup olmadığını kontrol et
@@ -18,13 +24,15 @@ module.exports = {
       materials.hasOwnProperty(key)
     );
 
-    if (!hasRequiredKeys) throw new Error("Missing or invalid keys in material information!")
+    if (!hasRequiredKeys)
+      throw new Error("Missing or invalid keys in material information!");
 
     req.body.creatorId = req.user.id;
-    req.body.name = req.body.name.toUpperCase()
+    req.body.name = req.body.name.toUpperCase();
 
-    const isExist = await Product.findOne({where:{name:req.body.name}})
-    if(isExist) throw new Error('The product is available with this name already !')
+    const isExist = await Product.findOne({ where: { name: req.body.name } });
+    if (isExist)
+      throw new Error("The product is available with this name already !");
 
     const data = await Product.create(req.body);
 
@@ -32,6 +40,9 @@ module.exports = {
   },
 
   read: async (req, res) => {
+    /* 
+        #swagger.tags = ['Product']
+    */
     const data = await Product.findByPk(req.params.id);
     if (!data) throw new Error("Product not found!");
 
@@ -39,6 +50,9 @@ module.exports = {
   },
 
   update: async (req, res) => {
+    /* 
+        #swagger.tags = ['Product']
+    */
     req.body.updaterId = req.user.id;
     const isUpdated = await Product.update(req.body, {
       where: { id: req.params.id },
@@ -52,6 +66,9 @@ module.exports = {
   },
 
   delete: async (req, res) => {
+    /* 
+        #swagger.tags = ['Product']
+    */
     const isDeleted = await Product.destroy({ where: { id: req.params.id } });
 
     res.status(isDeleted ? 204 : 404).send({
@@ -63,6 +80,9 @@ module.exports = {
   },
 
   restore: async (req, res) => {
+    /* 
+        #swagger.tags = ['Product']
+    */
     const product = await Product.findByPk(req.params.id, { paranoid: false });
     if (!product) throw new Error("Product not Found.");
     product.updaterId = req.user.id;
