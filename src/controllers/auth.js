@@ -87,6 +87,14 @@ module.exports = {
   refresh: async (req, res) => {
     /* 
         #swagger.tags = ['Authentication']
+        #swagger.parameters['body'] = {
+        in: 'body',
+        required: true                     
+        schema: {
+          token: {
+            refresh:'------ refresh token----'
+          }
+        }
     */
     const refreshToken = req.body?.refresh;
 
