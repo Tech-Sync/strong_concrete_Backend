@@ -39,7 +39,6 @@ module.exports = {
         #swagger.tags = ['Purchase Account']
      */
     const data = await Account.findByPk(req.params.id);
-    console.log(data.get("formatCreateAt"));
     if (!data) throw new Error("Account not found !");
 
     res.status(200).send(data);

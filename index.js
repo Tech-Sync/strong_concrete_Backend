@@ -18,40 +18,19 @@ require("./src/configs/dbConnection").dbConnection();
 app.use(express.json());
 app.use(require("./src/middlewares/authentication"));
 app.use(require("./src/middlewares/findSearchSortPage"));
-app.use(require("./src/middlewares/logging"));
-// Swagger-UI
-const swaggerUi = require("swagger-ui-express");
-const swaggerJson = require("./swagger.json");
-app.use(
-  "/docs/swagger",
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerJson, {
-    swaggerOptions: { persistAuthorization: true },
-  })
-);
-const redoc = require("redoc-express");
-app.use("/docs/json", (req, res) => {
-  res.sendFile("swagger.json", { root: "." })});
-app.use(
-  "/docs/redoc",
-  redoc({
-    specUrl: "/docs/json",
-    title: "API Docs",
-  })
-);
+app.use(require("./src/middlewares/logger"));
 
 // HOME
 app.all("/", (req, res) => {
-  console.log(req.query),
-    res.send({
-      error: false,
-      message: "Tech-Sync",
-      docs: {
-        json: "/docs/json",
-        swagger: "/docs/swagger",
-        redoc: "/docs/redoc",
-      },
-    });
+  res.send({
+    error: false,
+    message: "Tech-Sync",
+    documents: {
+      swagger: "/documents/swagger",
+      redoc: "/documents/redoc",
+      json: "/documents/json",
+    },
+  });
 });
 
 // ROUTES

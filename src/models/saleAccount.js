@@ -39,7 +39,6 @@ const SaleAccount = sequelize.define(
       beforeCreate: async (saleAccount) => {
         if (saleAccount.SaleId) {
           const sale = await Sale.findByPk(saleAccount.SaleId);
-          console.log(sale.FirmId);
           saleAccount.FirmId = sale?.FirmId;
           saleAccount.totalPrice = sale?.totalPrice;
           saleAccount.balance = (saleAccount.totalPrice - saleAccount.paid).toFixed(2);
