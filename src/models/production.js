@@ -53,7 +53,7 @@ module.exports = Production;
 
 /* 
 {
-  "status": "BEING PRODUCED",
+  "status": 2,
   "VehicleIds": [
     1,
     2

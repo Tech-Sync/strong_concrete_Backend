@@ -6,7 +6,13 @@ const Vehicle = require("../models/vehicle");
 module.exports = {
   list: async (req, res) => {
     /* 
-        #swagger.tags = ['Delivery']
+      #swagger.tags = ['Delivery']
+      #swagger.summary = 'List All Deliveries'
+      #swagger.parameters['showDeleted'] = {
+        in: 'query',
+        type: 'boolean',
+        description:'Includes deleted delivery as well, Default value is false'
+      }
     */
     const data = await Delivery.findAndCountAll();
 
@@ -15,7 +21,25 @@ module.exports = {
 
   create: async (req, res) => {
     /* 
-        #swagger.tags = ['Delivery']
+      #swagger.tags = ['Delivery']
+      #swagger.deprecated  = true
+      #swagger.description = `
+        <b>-</b> Delivery is created automatically after production status change to BEING PRODUCED. <br>
+        <b>-</b> No need to create delivery manuel.
+        <b>-</b> Send access token in header.`
+      #swagger.parameters['body'] = {
+          in: 'body',
+          description: '
+            <ul> 
+              <li>ProductionId is an integer and should be gotten from production table</li>
+              <li>VehicleId is an integer and should be gotten from vehicle table</li>
+            </ul> ',
+          required: true,
+          schema: {
+            ProductionId: 54245232,
+            VehicleId: 9,
+          }
+        } 
     */
     req.body.creatorId = req.user.id;
     const data = await Delivery.create(req.body);
@@ -25,7 +49,9 @@ module.exports = {
 
   read: async (req, res) => {
     /* 
-        #swagger.tags = ['Delivery']
+      #swagger.tags = ['Delivery']
+      #swagger.summary = 'Read Delivery with id'
+      #swagger.description = `<b>-</b> Send access token in header.`
     */
     const data = await Delivery.findByPk(req.params.id);
 
@@ -35,7 +61,22 @@ module.exports = {
   },
   update: async (req, res) => {
     /* 
-        #swagger.tags = ['Delivery']
+      #swagger.tags = ['Delivery']
+      #swagger.summary = 'Update delivery with id'
+      #swagger.description = `<b>-</b> Send access token in header.`
+      #swagger.parameters['body'] = {
+        in: 'body',
+        description: '
+          <ul> 
+            <li>Send the object includes attributes that should be updated.</li>
+            <li>Status is integer value.</li>
+            <li>VehicleId is not able to be updated by driver from this stage.</li>
+          </ul> ',
+        required: true,
+        schema: {
+          status: 2
+        }
+      } 
     */
     req.body.updaterId = req.user.id;
 
@@ -79,7 +120,9 @@ module.exports = {
 
   delete: async (req, res) => {
     /* 
-        #swagger.tags = ['Delivery']
+      #swagger.tags = ['Delivery']
+      #swagger.summary = 'Delete delivery with ID'
+      #swagger.description = `<b>-</b> Send access token in header.`
     */
     const delivery = await Delivery.findByPk(req.params.id);
     delivery.updaterId = req.user.id;
@@ -95,7 +138,9 @@ module.exports = {
 
   restore: async (req, res) => {
     /* 
-        #swagger.tags = ['Delivery']
+      #swagger.tags = ['Delivery']
+      #swagger.summary = 'Restore deleted delivery with ID'
+      #swagger.description = `<b>-</b> Send access token in header.`
     */
     const delivery = await Delivery.findByPk(req.params.id, {
       paranoid: false,
