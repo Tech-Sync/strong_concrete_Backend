@@ -25,5 +25,9 @@ router.use('/productions', require('./production'))
 // Delivery
 router.use('/deliveries', require('./delivery'))
 
+// document:
+router.use('/documents', require('./document'))
+
+
 
 module.exports = router

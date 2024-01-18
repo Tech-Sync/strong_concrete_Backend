@@ -20,8 +20,8 @@ function sendEmail(user, fileName, subject) {
 
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
-      console.log(error);
-      throw new Error("Email did not go trough!");
+      console.log(error.nessage);
+      // throw new Error("Email did not go trough!");
     } else {
       console.log("Email sent to " + user.email);
     }
