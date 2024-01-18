@@ -206,7 +206,16 @@
         "tags": [
           "User"
         ],
-        "description": "",
+        "summary": "List All Users",
+        "description": "<b>-</b> Only Admin can view all users.",
+        "parameters": [
+          {
+            "name": "showDel",
+            "in": "query",
+            "type": "boolean",
+            "description": "default value is false"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -219,6 +228,7 @@
         "tags": [
           "User"
         ],
+        "summary": "Read user with id",
         "description": "",
         "parameters": [
           {
@@ -238,6 +248,7 @@
         "tags": [
           "User"
         ],
+        "summary": "Update user with id",
         "description": "",
         "parameters": [
           {
@@ -245,6 +256,21 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "   <ul>    <li>Send the object includes attributes that should be  .</li>   <li>Password can not be updated with this API.</li>   </ul> ",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "firstName": {
+                  "type": "string",
+                  "example": "test1"
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -257,6 +283,7 @@
         "tags": [
           "User"
         ],
+        "summary": "Delete user with ID",
         "description": "",
         "parameters": [
           {
@@ -276,27 +303,32 @@
         }
       }
     },
-    "/users/updatePassword": {
+    "/users/update-password": {
       "post": {
         "tags": [
           "User"
         ],
-        "description": "",
+        "summary": "Update User Password",
+        "description": "\r  <b>-</b> User should be logged in already.<br>\r  <b>-</b> Send acces token in header.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "password": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "aA12345."
                 },
                 "newPassword": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "54321aA?"
                 },
                 "reNewPassword": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "54321aA?"
                 }
               }
             }
@@ -314,6 +346,7 @@
         "tags": [
           "User"
         ],
+        "summary": "Restore deleted user with ID",
         "description": "",
         "parameters": [
           {

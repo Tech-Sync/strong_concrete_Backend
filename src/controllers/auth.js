@@ -155,7 +155,6 @@ module.exports = {
         #swagger.tags = ['Authentication']
         #swagger.summary = 'User Logout'
         #swagger.description = `<b>-</b> No need any doing for logout. You must deleted Bearer Token from your state.`
-
     */
     res.send({
       message:
