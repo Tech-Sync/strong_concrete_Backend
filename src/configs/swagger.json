@@ -210,10 +210,10 @@
         "description": "<b>-</b> Only Admin can view all users.",
         "parameters": [
           {
-            "name": "showDel",
+            "name": "showDeleted",
             "in": "query",
             "type": "boolean",
-            "description": "default value is false"
+            "description": "Includes deleted users as well, default value is false"
           }
         ],
         "responses": {
@@ -229,7 +229,7 @@
           "User"
         ],
         "summary": "Read user with id",
-        "description": "",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -249,7 +249,7 @@
           "User"
         ],
         "summary": "Update user with id",
-        "description": "",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -284,7 +284,7 @@
           "User"
         ],
         "summary": "Delete user with ID",
-        "description": "",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -309,7 +309,7 @@
           "User"
         ],
         "summary": "Update User Password",
-        "description": "\r  <b>-</b> User should be logged in already.<br>\r  <b>-</b> Send acces token in header.",
+        "description": "\r  <b>-</b> User should be logged in already.<br>\r  <b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
@@ -347,7 +347,7 @@
           "User"
         ],
         "summary": "Restore deleted user with ID",
-        "description": "",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -368,16 +368,19 @@
         "tags": [
           "User"
         ],
-        "description": "",
+        "summary": "Forget Password",
+        "description": "\r  <b>-</b> Send user email in body. <br>\r  <b>-</b> Once user click reset password in the email, he/she will be redirected reset password UI page. <br>\r  <b>-</b> Catch <b>uid</b> and <b>emailToken</b> queries to use when reset password API called.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "email": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "alidrl26@gmail.com"
                 }
               }
             }
@@ -395,7 +398,8 @@
         "tags": [
           "User"
         ],
-        "description": "",
+        "summary": "Reset Password",
+        "description": "\r  <b>-</b> Send user password in body. <br>\r  <b>-</b> Send as a paramas <b>uid</b> and <b>emailToken</b> values.",
         "parameters": [
           {
             "name": "uid",
@@ -412,13 +416,16 @@
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "password": {
+                  "type": "string",
                   "example": "any"
                 },
                 "password2": {
+                  "type": "string",
                   "example": "any"
                 }
               }
@@ -1525,7 +1532,16 @@
         "tags": [
           "Production"
         ],
+        "summary": "List All Productions",
         "description": "",
+        "parameters": [
+          {
+            "name": "showDeleted",
+            "in": "query",
+            "type": "boolean",
+            "description": "Includes deleted productions as well, Default value is false"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -1536,16 +1552,30 @@
         "tags": [
           "Production"
         ],
-        "description": "",
+        "description": "\r  <b>-</b> Production is   automatically after sale status change to APPROVED. <br>\r  <b>-</b> No need to create production manuel.\r  <b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "   <ul>    <li>SaleId should be gotten from sale table</li>   <li>VehicleIds is an array contains integer, and should be gotten from vehicle table</li>   </ul> ",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "creatorId": {
-                  "example": "any"
+                "SaleId": {
+                  "type": "number",
+                  "example": 643234723
+                },
+                "VehicleIds": {
+                  "type": "array",
+                  "example": [
+                    1,
+                    2,
+                    3
+                  ],
+                  "items": {
+                    "type": "number"
+                  }
                 }
               }
             }
@@ -1555,7 +1585,8 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "deprecated": true
       }
     },
     "/productions/{id}": {
@@ -1563,7 +1594,8 @@
         "tags": [
           "Production"
         ],
-        "description": "",
+        "summary": "Read production with id",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -1582,7 +1614,8 @@
         "tags": [
           "Production"
         ],
-        "description": "",
+        "summary": "Update production with id",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -1593,14 +1626,24 @@
           {
             "name": "body",
             "in": "body",
+            "description": "   <ul>    <li>Send the object includes attributes that should be updated.</li>   <li>Status is integer value.</li>   <li>VehicleIds is an array contains integer, and should be gotten from vehicle table</li>   </ul> ",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "updaterId": {
-                  "example": "any"
+                "status": {
+                  "type": "number",
+                  "example": 2
                 },
                 "VehicleIds": {
-                  "example": "any"
+                  "type": "array",
+                  "example": [
+                    1,
+                    2
+                  ],
+                  "items": {
+                    "type": "number"
+                  }
                 }
               }
             }
@@ -1616,7 +1659,8 @@
         "tags": [
           "Production"
         ],
-        "description": "",
+        "summary": "Delete production with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -1640,7 +1684,8 @@
         "tags": [
           "Production"
         ],
-        "description": "",
+        "summary": "Restore deleted production with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -1661,7 +1706,16 @@
         "tags": [
           "Delivery"
         ],
+        "summary": "List All Deliveries",
         "description": "",
+        "parameters": [
+          {
+            "name": "showDeleted",
+            "in": "query",
+            "type": "boolean",
+            "description": "Includes deleted delivery as well, Default value is false"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -1672,16 +1726,23 @@
         "tags": [
           "Delivery"
         ],
-        "description": "",
+        "description": "\r  <b>-</b> Delivery is   automatically after production status change to BEING PRODUCED. <br>\r  <b>-</b> No need to create delivery manuel.\r  <b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "   <ul>    <li>ProductionId is an integer and should be gotten from production table</li>   <li>VehicleId is an integer and should be gotten from vehicle table</li>   </ul> ",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "creatorId": {
-                  "example": "any"
+                "ProductionId": {
+                  "type": "number",
+                  "example": 54245232
+                },
+                "VehicleId": {
+                  "type": "number",
+                  "example": 9
                 }
               }
             }
@@ -1691,7 +1752,8 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "deprecated": true
       }
     },
     "/deliveries/{id}": {
@@ -1699,7 +1761,8 @@
         "tags": [
           "Delivery"
         ],
-        "description": "",
+        "summary": "Read Delivery with id",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -1718,7 +1781,8 @@
         "tags": [
           "Delivery"
         ],
-        "description": "",
+        "summary": "Update delivery with id",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -1729,14 +1793,14 @@
           {
             "name": "body",
             "in": "body",
+            "description": "   <ul>    <li>Send the object includes attributes that should be  .</li>   <li>Status is integer value.</li>   <li>VehicleId is not able to be updated by driver from this stage.</li>   </ul> ",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "updaterId": {
-                  "example": "any"
-                },
                 "status": {
-                  "example": "any"
+                  "type": "number",
+                  "example": 2
                 }
               }
             }
@@ -1752,7 +1816,8 @@
         "tags": [
           "Delivery"
         ],
-        "description": "",
+        "summary": "Delete delivery with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -1776,7 +1841,8 @@
         "tags": [
           "Delivery"
         ],
-        "description": "",
+        "summary": "Restore deleted delivery with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",

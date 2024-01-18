@@ -11,10 +11,10 @@ module.exports = {
       #swagger.tags = ['User']
       #swagger.summary = 'List All Users'
       #swagger.description = `<b>-</b> Only Admin can view all users.`
-      #swagger.parameters['showDel'] = {
+      #swagger.parameters['showDeleted'] = {
             in: 'query',
             type: 'boolean',
-            description:'default value is false'
+            description:'Includes deleted users as well, default value is false'
           }
     */
 
@@ -146,7 +146,20 @@ module.exports = {
   forgetPassword: async (req, res) => {
     /* 
         #swagger.tags = ['User']
+        #swagger.summary = 'Forget Password'
+        #swagger.description = `
+          <b>-</b> Send user email in body. <br>
+          <b>-</b> Once user click reset password in the email, he/she will be redirected reset password UI page. <br>
+          <b>-</b> Catch <b>uid</b> and <b>emailToken</b> queries to use when reset password API called.`
+        #swagger.parameters['body'] = {
+          in: 'body',
+          required: true,
+          schema: {
+           email: "alidrl26@gmail.com"
+          }
+        } 
      */
+
     const email = req.body.email;
     const user = await User.findOne({ where: { email } });
     if (!user) throw new Error("Email verification failed, invalid Email !");
@@ -163,9 +176,22 @@ module.exports = {
   },
 
   resetPassword: async (req, res) => {
-    /* 
+      /* 
         #swagger.tags = ['User']
+        #swagger.summary = 'Reset Password'
+        #swagger.description = `
+          <b>-</b> Send user password in body. <br>
+          <b>-</b> Send as a paramas <b>uid</b> and <b>emailToken</b> values.`
+        #swagger.parameters['body'] = {
+          in: 'body',
+          required: true,
+          schema: {
+            "password": "any",
+            "password2": "any"
+          }
+        } 
      */
+
     const { uid, emailToken } = req.params;
     const { password, password2 } = req.body;
     const id = decode(uid);
