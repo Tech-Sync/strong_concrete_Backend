@@ -9,23 +9,29 @@ module.exports = {
   register: async (req, res) => {
     /* 
         #swagger.tags = ['Authentication']
-        #swagger.summary = 'JWT register'
-        #swagger.description = 'Register with email, password, lastName, nrcNo, phoneNo, address, role'
+        #swagger.summary = 'User Register'
+        #swagger.description = `
+        <b>-</b> Only admin can register a user from admin panel. <br>
+        <b>-</b> Once register successful, an email will be sent to user email address.`
         #swagger.parameters['body'] = {
-        in: 'body',
-        required: true,
-        schema: {
-          firstName:'test',
-          lastName:'test',
-          nrcNo:'11111111',
-          phoneNO:'+26011111',
-          address:'ibex',
-          role:'4',
-          email:'test@gmail.com',
-          password:'aA123456.?',
-        }
-      }
-    
+          in: 'body',
+          description: '
+            <ul> 
+              <li>The Email should be a valid email, otherwise can not do any function.</li>
+              <li>Password should includes least capital and lower case, number, special char, and min 8 lenght.</li>
+            </ul> ',
+          required: true,
+          schema: {
+            firstName:'test',
+            lastName:'test',
+            nrcNo:'11111111',
+            phoneNO:'+26011111',
+            address:'ibex',
+            role:'4',
+            email:'test@gmail.com',
+            password:'aA123456.?',
+          }
+        } 
     */
     const { email } = req.body;
 
@@ -45,13 +51,19 @@ module.exports = {
   login: async (req, res) => {
     /* 
         #swagger.tags = ['Authentication']
-         #swagger.parameters['body'] = {
-        in: 'body',
-        required: true                     
-        schema: {
-          email:'test@gmail.com',
-          password:'aA123456.?',
-        }
+        #swagger.summary = 'User Login'
+        #swagger.parameters['body'] = {
+          in: 'body',
+          description: '
+            <ul> 
+              <li>The Email should be a verified, otherwise user can not login.</li>
+            </ul> ', 
+          required: true,
+          schema: {
+            email:'test@gmail.com',
+            password:'aA123456.?',
+          }
+        } 
     */
 
     const { email, password } = req.body;
@@ -87,14 +99,14 @@ module.exports = {
   refresh: async (req, res) => {
     /* 
         #swagger.tags = ['Authentication']
+        #swagger.summary = 'JWT Refresh Token'
         #swagger.parameters['body'] = {
-        in: 'body',
-        required: true                     
-        schema: {
-          token: {
-            refresh:'------ refresh token----'
+          in: 'body',
+          required: true,
+          schema: {
+            refresh: "---refresh token----",
           }
-        }
+        } 
     */
     const refreshToken = req.body?.refresh;
 
@@ -141,6 +153,8 @@ module.exports = {
   logout: (req, res) => {
     /* 
         #swagger.tags = ['Authentication']
+        #swagger.summary = 'User Logout'
+        #swagger.description = `<b>-</b> No need any doing for logout. You must deleted Bearer Token from your state.`
     */
     res.send({
       message:
@@ -150,6 +164,17 @@ module.exports = {
   verifyEmail: async (req, res) => {
     /* 
         #swagger.tags = ['Authentication']
+        #swagger.summary = 'Verify Email'
+        #swagger.autoQuery = true 
+        #swagger.description = `
+        <b>-</b> When user verify email address, He/She will be directed email verify UI page with emailToken in query. <br>
+        <b>-</b> Catch the emailToken and send in query by call this API.`
+        #swagger.parameters['emailToken'] = {
+            in: 'query',
+            type: 'string',
+            schema: '--emailToken--'
+          }
+
     */
     const emailToken = req.query.emailToken;
 
