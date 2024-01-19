@@ -9,7 +9,13 @@ const Vehicle = require("../models/vehicle");
 module.exports = {
   list: async (req, res) => {
     /* 
-        #swagger.tags = ['Production']
+      #swagger.tags = ['Production']
+      #swagger.summary = 'List All Productions'
+      #swagger.parameters['showDeleted'] = {
+        in: 'query',
+        type: 'boolean',
+        description:'Includes deleted productions as well, Default value is false'
+      }
     */
     const data = await Production.findAndCountAll({
       include: [
@@ -31,7 +37,25 @@ module.exports = {
 
   create: async (req, res) => {
     /* 
-        #swagger.tags = ['Production']
+      #swagger.tags = ['Production']
+      #swagger.deprecated  = true
+      #swagger.description = `
+        <b>-</b> Production is created automatically after sale status change to APPROVED. <br>
+        <b>-</b> No need to create production manuel.
+        <b>-</b> Send access token in header.`
+       #swagger.parameters['body'] = {
+          in: 'body',
+          description: '
+            <ul> 
+              <li>SaleId should be gotten from sale table</li>
+              <li>VehicleIds is an array contains integer, and should be gotten from vehicle table</li>
+            </ul> ',
+          required: true,
+          schema: {
+            SaleId: 643234723,
+            VehicleIds:[ 1, 2, 3],
+          }
+        } 
     */
     req.body.creatorId = req.user.id;
     const data = await Production.create(req.body);
@@ -41,7 +65,9 @@ module.exports = {
 
   read: async (req, res) => {
     /* 
-        #swagger.tags = ['Production']
+      #swagger.tags = ['Production']
+      #swagger.summary = 'Read production with id'
+      #swagger.description = `<b>-</b> Send access token in header.`
     */
     const data = await Production.findOne({
       where: { id: req.params.id },
@@ -62,9 +88,26 @@ module.exports = {
 
     res.status(200).send(data);
   },
+  
   update: async (req, res) => {
     /* 
         #swagger.tags = ['Production']
+        #swagger.summary = 'Update production with id'
+        #swagger.description = `<b>-</b> Send access token in header.`
+        #swagger.parameters['body'] = {
+          in: 'body',
+          description: '
+            <ul> 
+              <li>Send the object includes attributes that should be updated.</li>
+              <li>Status is integer value.</li>
+              <li>VehicleIds is an array contains integer, and should be gotten from vehicle table</li>
+            </ul> ',
+          required: true,
+          schema: {
+            status:2,
+            VehicleIds: [1,2]
+          }
+        } 
     */
     req.body.updaterId = req.user.id;
 
@@ -208,7 +251,9 @@ module.exports = {
 
   delete: async (req, res) => {
     /* 
-        #swagger.tags = ['Production']
+      #swagger.tags = ['Production']
+      #swagger.summary = 'Delete production with ID'
+      #swagger.description = `<b>-</b> Send access token in header.`
     */
     const production = await Production.findByPk(req.params.id);
     production.updaterId = req.user.id;
@@ -224,7 +269,9 @@ module.exports = {
 
   restore: async (req, res) => {
     /* 
-        #swagger.tags = ['Production']
+      #swagger.tags = ['Production']
+      #swagger.summary = 'Restore deleted production with ID'
+      #swagger.description = `<b>-</b> Send access token in header.`
     */
     const production = await Production.findByPk(req.params.id, {
       paranoid: false,
