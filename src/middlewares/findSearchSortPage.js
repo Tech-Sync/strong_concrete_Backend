@@ -1,18 +1,25 @@
-
 const { Op } = require('sequelize');
 
 module.exports = (req, res, next) => {
-  let { search, sort, page ,limit,offset } = req.query;
+  let { search,startDate, endDate,sort, page ,limit,offset } = req.query;
 
   //? Başlangıç olarak bir boş filtre nesnesi oluşturun
+  //* ?search[status]=SALER
   //! SEARCHING: URL?search[key1]=value1&search[key2]=value2
   let whereClause = {};
+  let include = null
   
     for (const key in search) {
         const value = search[key];
         whereClause[key] = { [Op.like]: `%${value}%` }; 
     }
-  
+  //!tarih filtresi URL?startDate=2023-07-13&endDate=2023-10-01  tarih yıl-ay-gün formatında olmalı
+    if (startDate && endDate) {
+      whereClause['createdAt'] = {
+        [Op.between]: [new Date(startDate), new Date(endDate)],
+      };
+    }
+
 //! SORTING: URL?sort[key1]=desc&sort[key2]=asc
   //? Sıralama ölçütleri varsa
   let orderClause = [];
@@ -37,8 +44,13 @@ module.exports = (req, res, next) => {
 
    
 
-  req.getModelList = async (Model) => {
-    return await Model.findAll({where: Object.keys(whereClause).length > 0 ? { [Op.or]: [whereClause] } : {},
+  req.getModelList = async (Model,filters={},include = null) => {
+    
+    whereClause={...whereClause, ...filters}
+
+    return await Model.findAll({
+      where: Object.keys(whereClause).length > 0 ? { [Op.or]: [whereClause] } : {},
+    include,
     order: orderClause,
     offset,
     limit,
@@ -47,9 +59,13 @@ module.exports = (req, res, next) => {
 
   };
 
-  req.getModelListDetails = async (Model) => {
+  req.getModelListDetails = async (Model,filters={}) => {
+
+    whereClause={...whereClause, ...filters}
+    
     const data = await Model.findAll({
       where: Object.keys(whereClause).length > 0 ? { [Op.or]: [whereClause] } : {},
+      include,
       order: orderClause,
       paranoid: false
     });
@@ -74,5 +90,3 @@ module.exports = (req, res, next) => {
   
   next();
 };
-
-

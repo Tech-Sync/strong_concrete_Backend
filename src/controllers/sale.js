@@ -9,6 +9,16 @@ module.exports = {
   list: async (req, res) => {
     /* 
         #swagger.tags = ['Sale']
+        #swagger.summary = ' Sale List'
+        #swagger.description = '
+        <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>
+        
+                <ul> Examples:
+                    <li><b>SEARCHING: URL?search[FirmId]=3&search[quantity]=20</b></li>
+                    <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>
+                    <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>
+                    <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01  The date must be in year-month-day format</b></li>
+                </ul>'
     */
     const data = await Sale.findAndCountAll();
 
@@ -18,6 +28,22 @@ module.exports = {
   create: async (req, res) => {
     /* 
         #swagger.tags = ['Sale']
+         #swagger.summary = 'Sale Create'
+        #swagger.description = '
+          <b>-</b>To create Sales, use FirmId,ProductId,quantity,location,requestedDate, sideContact are required  <br>
+          <b>-</b> Send access token in header.'
+        #swagger.parameters['body'] = {
+        in: 'body',
+        required: true,
+        schema: {
+          FirmId:'1',
+          ProductId:'50',
+          quantity:'11111',
+          location:'Konya',
+          requestedDate:"2024-07-01",
+          sideContact:"05659898"
+        }
+      }
     */
     req.body.creatorId = req.user.id;
 
@@ -29,7 +55,10 @@ module.exports = {
   read: async (req, res) => {
     /* 
         #swagger.tags = ['Sale']
-    */
+    #swagger.summary = 'Read sale with id'
+        #swagger.description = '
+       <b>-</b> Send access token in header. '
+        */
     const data = await Sale.findByPk(req.params.id);
     if (!data) throw new Error("Sale not found !");
 
@@ -38,6 +67,20 @@ module.exports = {
   update: async (req, res) => {
     /* 
         #swagger.tags = ['Sale']
+        #swagger.summary = 'Update purchase with id'
+        #swagger.description = `<b>-</b> Send access token in header.`
+        #swagger.parameters['body'] = {
+          in: 'body',
+          description: '
+            <ul> 
+              <li>Send the object includes attributes that should be updated.</li>
+              
+            </ul> ',
+          required: true,
+          schema: {
+            FirmId:'test1'
+          }
+        } 
     */
     req.body.updaterId = req.user.id;
     const user = req.user;
@@ -155,6 +198,8 @@ module.exports = {
   delete: async (req, res) => {
     /* 
         #swagger.tags = ['Sale']
+        #swagger.summary = 'Delete sale with id'
+        #swagger.description = '<b>-</b> Send access token in header.'
     */
     const sale = await Sale.findByPk(req.params.id);
     sale.updaterId = req.user.id;
@@ -171,6 +216,8 @@ module.exports = {
   restore: async (req, res) => {
     /* 
         #swagger.tags = ['Sale']
+         #swagger.summary = 'Restore deleted sale with id'
+        #swagger.description = `<b>-</b> Send access token in header.`
     */
     const sale = await Sale.findByPk(req.params.id, { paranoid: false });
     if (!sale) throw new Error("Sale not Found.");
