@@ -15,6 +15,20 @@ module.exports = {
   create: async (req, res) => {
     /* 
       #swagger.tags = ['Firm']
+      #swagger.summary = 'Firm: Create'
+      #swagger.description = 'Create with name, address, phoneNo, tpinNo, email and status'
+      #swagger.parameters['body'] = {
+        in: 'body',
+        required: true,
+        schema: {
+            "name": "FirmName",
+            "address": "FirmAdress",
+            "phoneNo": "+2602222",
+            "tpinNo": "22222",
+            "email": "firm@gmail.com",
+            "status": "1 or 2"
+          }
+        }
       */
 
     req.body.creatorId = req.user.id;
