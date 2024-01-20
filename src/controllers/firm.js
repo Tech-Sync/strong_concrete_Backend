@@ -6,6 +6,14 @@ module.exports = {
   list: async (req, res) => {
     /* 
         #swagger.tags = ['Firm']
+        #swagger.summary = 'List All Firms'
+        #swagger.description = `
+                You can send query with endpoint for search[], sort[], page and limit.
+                <ul> Examples:
+                    <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>
+                    <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>
+                    <li>URL/?<b>page=2&limit=1</b></li>
+                </ul>
     */
     const data = await Firm.findAndCountAll();
 
@@ -40,6 +48,8 @@ module.exports = {
   read: async (req, res) => {
     /* 
         #swagger.tags = ['Firm']
+        #swagger.summary = 'Read Firm with id'
+        #swagger.description = `<b>-</b> Send access token in header.`
     */
     const data = await Firm.findByPk(req.params.id);
     if (!data) throw new Error("Firm not found !");
@@ -49,6 +59,12 @@ module.exports = {
   update: async (req, res) => {
     /* 
         #swagger.tags = ['Firm']
+        #swagger.summary = 'Update firm with id'
+        #swagger.description = `<b>-</b> Send access token in header.`
+        required: true,
+          schema: {
+            address:'updatedAdress'
+          }
     */
     req.body.updaterId = req.user.id;
     const isUpdated = await Firm.update(req.body, {
@@ -65,6 +81,8 @@ module.exports = {
   delete: async (req, res) => {
     /* 
         #swagger.tags = ['Firm']
+        #swagger.summary = 'Delete firm with ID'
+        #swagger.description = `<b>-</b> Send access token in header.`
     */
     const firm = await Firm.findByPk(req.params.id);
     firm.updaterId = req.user.id;
@@ -81,6 +99,8 @@ module.exports = {
   restore: async (req, res) => {
     /* 
         #swagger.tags = ['Firm']
+        #swagger.summary = 'Restore deleted firm with ID'
+        #swagger.description = `<b>-</b> Send access token in header.`
     */
     const firm = await Firm.findByPk(req.params.id, { paranoid: false });
     if (!firm) throw new Error("Firm not Found.");
