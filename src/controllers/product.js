@@ -6,6 +6,13 @@ module.exports = {
   list: async (req, res) => {
     /* 
         #swagger.tags = ['Product']
+        #swagger.summary = 'List All Products'
+        #swagger.description = `<b>-</b> Only Admin can view all users.`
+        #swagger.parameters['showDeleted'] = {
+            in: 'query',
+            type: 'boolean',
+            description:'Includes deleted users as well, default value is false'
+          }
     */
     const data = await Product.findAndCountAll();
 
@@ -15,6 +22,20 @@ module.exports = {
   create: async (req, res) => {
     /* 
         #swagger.tags = ['Product']
+        #swagger.summary = 'Product: Create'
+        #swagger.description = 'Create with name, price and materials'
+        #swagger.parameters['body'] = {
+        in: 'body',
+        required: true,
+        schema: {
+          "name": "c35",
+          "price": 100,
+          "materials": {
+            "STONE": 1.9,
+            "SAND": 1.9,
+            "CEMENT": 270
+          }
+        }
     */
     const { materials } = req.body;
 
@@ -42,6 +63,8 @@ module.exports = {
   read: async (req, res) => {
     /* 
         #swagger.tags = ['Product']
+        #swagger.summary = 'Read product with id'
+        #swagger.description = `<b>-</b> Send access token in header.`
     */
     const data = await Product.findByPk(req.params.id);
     if (!data) throw new Error("Product not found!");
@@ -52,6 +75,19 @@ module.exports = {
   update: async (req, res) => {
     /* 
         #swagger.tags = ['Product']
+        #swagger.summary = 'Update product with id'
+        #swagger.description = `<b>-</b> Send access token in header.`
+        #swagger.parameters['body'] = {
+          in: 'body',
+          description: '
+            <ul> 
+              <li>Send the object includes attributes that should be updated.</li>
+            </ul> ',
+          required: true,
+          schema: {
+            price:'5'
+          }
+        } 
     */
     req.body.updaterId = req.user.id;
     const isUpdated = await Product.update(req.body, {
@@ -68,6 +104,8 @@ module.exports = {
   delete: async (req, res) => {
     /* 
         #swagger.tags = ['Product']
+        #swagger.summary = 'Delete product with ID'
+        #swagger.description = `<b>-</b> Send access token in header.`
     */
     const isDeleted = await Product.destroy({ where: { id: req.params.id } });
 
@@ -82,6 +120,8 @@ module.exports = {
   restore: async (req, res) => {
     /* 
         #swagger.tags = ['Product']
+        #swagger.summary = 'Restore deleted product with ID'
+        #swagger.description = `<b>-</b> Send access token in header.`
     */
     const product = await Product.findByPk(req.params.id, { paranoid: false });
     if (!product) throw new Error("Product not Found.");
