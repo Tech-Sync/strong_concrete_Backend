@@ -1,3 +1,4 @@
+
 "use strict";
 
 const Account = require("../models/account");
@@ -5,8 +6,19 @@ const Purchase = require("../models/purchase");
 
 module.exports = {
   list: async (req, res) => {
-    /* 
+      /* 
         #swagger.tags = ['Purchase']
+        #swagger.summary = ' Purchase List'
+        #swagger.description = '
+        <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>
+        
+                <ul> Examples:
+                    <li><b>SEARCHING: URL?search[MaterialId]=3&search[FirmId]=2</b></li>
+                    <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>
+                    <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>
+                    <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01  The date must be in year-month-day format</b></li>
+                </ul>'
+        
     */
     const data = await Purchase.findAndCountAll();
 
@@ -14,8 +26,23 @@ module.exports = {
   },
 
   create: async (req, res) => {
-    /* 
+     /* 
         #swagger.tags = ['Purchase']
+        #swagger.summary = 'Purchase Create'
+        #swagger.description = '
+          <b>-</b> MaterialId,quantity,FirmId,unitPrice is required to purchase materials <br>
+          <b>-</b> Send access token in header.'
+        #swagger.parameters['body'] = {
+        in: 'body',
+        required: true,
+        schema: {
+          MaterialId:'1',
+          quantity:'50',
+          unitPrice:'11111',
+          FirmId:'2'
+        }
+      }
+    
     */
     req.body.creatorId = req.user.id;
     const data = await Purchase.create(req.body);
@@ -36,8 +63,11 @@ module.exports = {
   },
 
   read: async (req, res) => {
-    /* 
+     /* 
         #swagger.tags = ['Purchase']
+        #swagger.summary = 'Read purchase with id'
+        #swagger.description = '
+       <b>-</b> Send access token in header. '
     */
     const data = await Purchase.findByPk(req.params.id);
     if (!data) throw new Error("Purchase not found !");
@@ -47,7 +77,21 @@ module.exports = {
   update: async (req, res) => {
     /* 
         #swagger.tags = ['Purchase']
-    */
+        #swagger.summary = 'Update purchase with id'
+        #swagger.description = `<b>-</b> Send access token in header.`
+        #swagger.parameters['body'] = {
+          in: 'body',
+          description: '
+            <ul> 
+              <li>Send the object includes attributes that should be updated.</li>
+              
+            </ul> ',
+          required: true,
+          schema: {
+            FirmId:'test1'
+          }
+        } 
+     */
     req.body.updaterId = req.user.id;
 
     const isUpdated = await Purchase.update(req.body, {
@@ -76,8 +120,10 @@ module.exports = {
   },
 
   delete: async (req, res) => {
-    /* 
+     /* 
         #swagger.tags = ['Purchase']
+        #swagger.summary = 'Delete purchase with id'
+        #swagger.description = '<b>-</b> Send access token in header.'
     */
     const purchase = await Purchase.findByPk(req.params.id);
     purchase.updaterId = req.user.id;
@@ -92,9 +138,11 @@ module.exports = {
   },
 
   restore: async (req, res) => {
-    /* 
+     /* 
         #swagger.tags = ['Purchase']
-    */
+        #swagger.summary = 'Restore deleted purchase with id'
+        #swagger.description = `<b>-</b> Send access token in header.`
+     */
     const purchase = await Purchase.findByPk(req.params.id, {
       paranoid: false,
     });
