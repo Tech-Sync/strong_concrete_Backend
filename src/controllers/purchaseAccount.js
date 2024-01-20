@@ -5,8 +5,8 @@ const PurchaseAccount = require("../models/purchaseAccount");
 module.exports = {
   list: async (req, res) => {
     /* 
-        #swagger.tags = ['Purchase PurchaseAccount']
-        #swagger.summary = ' Purchase PurchaseAccount List'
+        #swagger.tags = ['PurchaseAccount']
+        #swagger.summary = ' PurchaseAccount List'
         #swagger.description = '
         <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>
         
@@ -51,11 +51,11 @@ module.exports = {
 
   create: async (req, res) => {
     /* 
-        #swagger.tags = ['Purchase PurchaseAccount']
-        #swagger.summary = 'Purchase PurchaseAccount Create'
+        #swagger.tags = ['PurchaseAccount']
+        #swagger.summary = 'PurchaseAccount Create'
         #swagger.description = '
-          <b>-</b> Purchase PurchaseAccount will be created automatically when the purchase is made. <br>
-          <b>-</b> There is no need to create a Purchase PurchaseAccount manually. <br>
+          <b>-</b> PurchaseAccount will be created automatically when the purchase is made. <br>
+          <b>-</b> There is no need to create a PurchaseAccount manually. <br>
           <b>-</b> Send access token in header.'
        
       
@@ -72,8 +72,8 @@ module.exports = {
 
   read: async (req, res) => {
     /* 
-        #swagger.tags = ['Purchase PurchaseAccount']
-        #swagger.summary = 'Read Purchase PurchaseAccount  with id'
+        #swagger.tags = ['PurchaseAccount']
+        #swagger.summary = 'Read PurchaseAccount  with id'
         #swagger.description = '
        <b>-</b> Send access token in header. '
      */
@@ -87,8 +87,8 @@ module.exports = {
   },
   update: async (req, res) => {
     /* 
-        #swagger.tags = ['Purchase PurchaseAccount']
-        #swagger.summary = 'Update Purchase PurchaseAccount with id'
+        #swagger.tags = ['PurchaseAccount']
+        #swagger.summary = 'Update PurchaseAccount with id'
         #swagger.description = `<b>-</b> Send access token in header.`
         #swagger.parameters['body'] = {
           in: 'body',
@@ -117,8 +117,8 @@ module.exports = {
 
   delete: async (req, res) => {
     /* 
-        #swagger.tags = ['Purchase PurchaseAccount']
-         #swagger.summary = 'Delete Purchase PurchaseAccount with id'
+        #swagger.tags = ['PurchaseAccount']
+         #swagger.summary = 'Delete PurchaseAccount with id'
         #swagger.description = '<b>-</b> Send access token in header.'
      */
     const purchaseAccount = await PurchaseAccount.findByPk(req.params.id);
@@ -135,8 +135,8 @@ module.exports = {
 
   restore: async (req, res) => {
     /* 
-        #swagger.tags = ['Purchase PurchaseAccount']
-         #swagger.summary = 'Restore Purchase PurchaseAccount with id'
+        #swagger.tags = ['PurchaseAccount']
+         #swagger.summary = 'Restore PurchaseAccount with id'
         #swagger.description = '<b>-</b> Send access token in header.'
      */
     const purchaseAccount = await PurchaseAccount.findByPk(req.params.id, { paranoid: false });
