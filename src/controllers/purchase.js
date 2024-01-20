@@ -1,6 +1,6 @@
 "use strict";
 
-const Account = require("../models/account");
+const PurchaseAccount = require("../models/purchaseAccount");
 const Material = require("../models/material");
 const Purchase = require("../models/purchase");
 
@@ -55,12 +55,12 @@ module.exports = {
       creatorId: data.creatorId,
       updaterId: null,
     };
-    const account = await Account.create(accountData);
+    const purchaseAccount = await PurchaseAccount.create(accountData);
 
     let msg;
     try {
-      if (!account)
-        throw new Error("Account table not created for some reason.");
+      if (!purchaseAccount)
+        throw new Error("PurchaseAccount table not created for some reason.");
     } catch (error) {
       msg = error.message;
     } finally {
@@ -109,11 +109,11 @@ module.exports = {
     });
 
     const updatedPurchase = await Purchase.findByPk(req.params.id);
-    const oldAccount = await Account.findOne({
+    const oldAccount = await PurchaseAccount.findOne({
       where: { PurchaseId: req.params.id },
     });
 
-    const account = await Account.update(
+    const purchaseAccount = await PurchaseAccount.update(
       {
         debit: updatedPurchase.totalPrice,
         FirmId: updatedPurchase.FirmId,
@@ -138,7 +138,7 @@ module.exports = {
     purchase.updaterId = req.user.id;
     const isDeleted = await purchase.destroy();
 
-    await Account.destroy({ where: { PurchaseId: req.params.id } });
+    await PurchaseAccount.destroy({ where: { PurchaseId: req.params.id } });
 
     res.status(isDeleted ? 204 : 404).send({
       error: !Boolean(isDeleted),
@@ -164,7 +164,7 @@ module.exports = {
     const material = await Material.findByPk(purchase.MaterialId);
     material.increment("quantity", { by: purchase.quantity });
 
-    await Account.restore({ where: { PurchaseId: req.params.id } });
+    await PurchaseAccount.restore({ where: { PurchaseId: req.params.id } });
 
     res.status(200).send({
       error: !Boolean(isRestored),

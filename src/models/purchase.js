@@ -1,6 +1,6 @@
 "use strict";
 const { sequelize, DataTypes } = require("../configs/dbConnection");
-const Account = require("./account");
+const PurchaseAccount = require("./purchaseAccount");
 const Firm = require("./firm");
 const Material = require("./material");
 const User = require("./user");

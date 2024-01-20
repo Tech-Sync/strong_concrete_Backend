@@ -1,12 +1,12 @@
 "use strict";
 
-const Account = require("../models/account");
+const PurchaseAccount = require("../models/purchaseAccount");
 
 module.exports = {
   list: async (req, res) => {
     /* 
-        #swagger.tags = ['Purchase Account']
-        #swagger.summary = ' Purchase Account List'
+        #swagger.tags = ['Purchase PurchaseAccount']
+        #swagger.summary = ' Purchase PurchaseAccount List'
         #swagger.description = '
         <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>
         
@@ -21,16 +21,16 @@ module.exports = {
 
     // const FirmId = req.query.firmId;
 
-    const data = await Account.findAndCountAll({
+    const data = await PurchaseAccount.findAndCountAll({
       // include: ["Firm", "Material"],
       // where: { FirmId },
     });
-    // const balance = await Account.sum("balance", { where: { FirmId : FirmId} });
+    // const balance = await PurchaseAccount.sum("balance", { where: { FirmId : FirmId} });
 
     // data.totalBalance = balance
 
     //! filtreleme ve include(iç içe denememiz lazım)
-    // const data = await req.getModelList(Account, {}
+    // const data = await req.getModelList(PurchaseAccount, {}
     //   // İçteki include için filters
     // , [
     //   {
@@ -51,11 +51,11 @@ module.exports = {
 
   create: async (req, res) => {
     /* 
-        #swagger.tags = ['Purchase Account']
-        #swagger.summary = 'Purchase Account Create'
+        #swagger.tags = ['Purchase PurchaseAccount']
+        #swagger.summary = 'Purchase PurchaseAccount Create'
         #swagger.description = '
-          <b>-</b> Purchase Account will be created automatically when the purchase is made. <br>
-          <b>-</b> There is no need to create a Purchase Account manually. <br>
+          <b>-</b> Purchase PurchaseAccount will be created automatically when the purchase is made. <br>
+          <b>-</b> There is no need to create a Purchase PurchaseAccount manually. <br>
           <b>-</b> Send access token in header.'
        
       
@@ -64,7 +64,7 @@ module.exports = {
 
     if (!req.body.debit) req.body.balance = (0 - req.body.credit).toFixed(2);
 
-    const data = await Account.create(req.body);
+    const data = await PurchaseAccount.create(req.body);
 
 
     res.status(200).send(data);
@@ -72,12 +72,12 @@ module.exports = {
 
   read: async (req, res) => {
     /* 
-        #swagger.tags = ['Purchase Account']
-        #swagger.summary = 'Read Purchase Account  with id'
+        #swagger.tags = ['Purchase PurchaseAccount']
+        #swagger.summary = 'Read Purchase PurchaseAccount  with id'
         #swagger.description = '
        <b>-</b> Send access token in header. '
      */
-    const data = await Account.findByPk(req.params.id);
+    const data = await PurchaseAccount.findByPk(req.params.id);
     if (!data) {
       res.errorStatusCode = 404;
       throw new Error("Not found !");
@@ -87,8 +87,8 @@ module.exports = {
   },
   update: async (req, res) => {
     /* 
-        #swagger.tags = ['Purchase Account']
-        #swagger.summary = 'Update Purchase Account with id'
+        #swagger.tags = ['Purchase PurchaseAccount']
+        #swagger.summary = 'Update Purchase PurchaseAccount with id'
         #swagger.description = `<b>-</b> Send access token in header.`
         #swagger.parameters['body'] = {
           in: 'body',
@@ -104,51 +104,51 @@ module.exports = {
         } 
      */
     req.body.updaterId = req.user.id;
-    const isUpdated = await Account.update(req.body, {
+    const isUpdated = await PurchaseAccount.update(req.body, {
       where: { id: req.params.id },
       individualHooks: true,
     });
 
     res.status(202).send({
       isUpdated: Boolean(isUpdated[0]),
-      data: await Account.findByPk(req.params.id),
+      data: await PurchaseAccount.findByPk(req.params.id),
     });
   },
 
   delete: async (req, res) => {
     /* 
-        #swagger.tags = ['Purchase Account']
-         #swagger.summary = 'Delete Purchase Account with id'
+        #swagger.tags = ['Purchase PurchaseAccount']
+         #swagger.summary = 'Delete Purchase PurchaseAccount with id'
         #swagger.description = '<b>-</b> Send access token in header.'
      */
-    const account = await Account.findByPk(req.params.id);
-    account.updaterId = req.user.id;
-    const isDeleted = await account.destroy();
+    const purchaseAccount = await PurchaseAccount.findByPk(req.params.id);
+    purchaseAccount.updaterId = req.user.id;
+    const isDeleted = await purchaseAccount.destroy();
 
     res.status(isDeleted ? 204 : 404).send({
       error: !Boolean(isDeleted),
       message: isDeleted
-        ? "Account deleted successfuly."
-        : "Account not found or something went wrong.",
+        ? "PurchaseAccount deleted successfuly."
+        : "PurchaseAccount not found or something went wrong.",
     });
   },
 
   restore: async (req, res) => {
     /* 
-        #swagger.tags = ['Purchase Account']
-         #swagger.summary = 'Restore Purchase Account with id'
+        #swagger.tags = ['Purchase PurchaseAccount']
+         #swagger.summary = 'Restore Purchase PurchaseAccount with id'
         #swagger.description = '<b>-</b> Send access token in header.'
      */
-    const account = await Account.findByPk(req.params.id, { paranoid: false });
-    if (!account) throw new Error("Account not Found.");
-    account.updaterId = req.user.id;
-    const isRestored = await account.restore();
+    const purchaseAccount = await PurchaseAccount.findByPk(req.params.id, { paranoid: false });
+    if (!purchaseAccount) throw new Error("PurchaseAccount not Found.");
+    purchaseAccount.updaterId = req.user.id;
+    const isRestored = await purchaseAccount.restore();
 
     res.status(200).send({
       error: !Boolean(isRestored),
       message: isRestored
-        ? "Account restored successfuly."
-        : "Account not found or something went wrong.",
+        ? "PurchaseAccount restored successfuly."
+        : "PurchaseAccount not found or something went wrong.",
     });
   },
 };
