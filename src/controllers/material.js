@@ -6,6 +6,13 @@ module.exports = {
   list: async (req, res) => {
     /* 
         #swagger.tags = ['Material']
+        #swagger.summary = 'List All Materials'
+        #swagger.description = `<b>-</b> Only Admin can view all materials.`
+        #swagger.parameters['showDeleted'] = {
+            in: 'query',
+            type: 'boolean',
+            description:'Includes deleted materials as well, default value is false'
+          }
     */
     const data = await Material.findAndCountAll();
 
@@ -15,6 +22,16 @@ module.exports = {
   create: async (req, res) => {
     /* 
         #swagger.tags = ['Material']
+        #swagger.summary = 'Material: Create'
+        #swagger.description = 'Create with name and unitType'
+        #swagger.parameters['body'] = {
+        in: 'body',
+        required: true,
+        schema: {
+            "name": "MaterialName",
+            "unitType": "testType"
+          }
+        }
     */
     const material = await Material.findOne({
       where: { name: req.body.name.toUpperCase() },
@@ -31,6 +48,8 @@ module.exports = {
   read: async (req, res) => {
     /* 
         #swagger.tags = ['Material']
+        #swagger.summary = 'Read Material with id'
+        #swagger.description = `<b>-</b> Send access token in header.`
     */
     const data = await Material.findByPk(req.params.id);
     if (!data) throw new Error("Material not found !");
@@ -40,6 +59,12 @@ module.exports = {
   update: async (req, res) => {
     /* 
         #swagger.tags = ['Material']
+        #swagger.summary = 'Update material with id'
+        #swagger.description = `<b>-</b> Send access token in header.`
+        required: true,
+          schema: {
+            unitType :'updatedType'
+          }
     */
     req.body.updaterId = req.user.id;
     const isUpdated = await Material.update(req.body, {
@@ -56,6 +81,8 @@ module.exports = {
   delete: async (req, res) => {
     /* 
         #swagger.tags = ['Material']
+        #swagger.summary = 'Delete material with ID'
+        #swagger.description = `<b>-</b> Send access token in header.`
     */
     const material = await Material.findByPk(req.params.id);
     material.updaterId = req.user.id;
@@ -72,6 +99,8 @@ module.exports = {
   restore: async (req, res) => {
     /* 
         #swagger.tags = ['Material']
+        #swagger.summary = 'Restore deleted material with ID'
+        #swagger.description = `<b>-</b> Send access token in header.`
     */
     const material = await Material.findByPk(req.params.id, {
       paranoid: false,
