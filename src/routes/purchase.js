@@ -2,17 +2,19 @@
 const router = require("express").Router();
 
 const purchase = require("../controllers/purchase");
+const permissions = require("../middlewares/permissions");
+router.use(permissions.isLogin);
 
 router
   .route("/")
-  .get(purchase.list)
-  .post(purchase.create);
+  .get(permissions.R_ASA, purchase.list)
+  .post(permissions.CU_AA, purchase.create);
 router
   .route("/:id")
-  .get(purchase.read)
-  .put(purchase.update)
-  .delete( purchase.delete);
+  .get(permissions.R_ASA, purchase.read)
+  .put(permissions.CU_AA,purchase.update)
+  .delete(permissions.isAdmin, purchase.delete);
 
-router.route("/restore/:id").get( purchase.restore);
+router.route("/restore/:id").get(permissions.isAdmin, purchase.restore);
 
 module.exports = router;
