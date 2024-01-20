@@ -7,6 +7,13 @@ module.exports = {
   list: async (req, res) => {
     /* 
         #swagger.tags = ['Vehicle']
+        #swagger.summary = 'List All Vehicles'
+        #swagger.description = `<b>-</b> Only Admin can view all vehicles.`
+        #swagger.parameters['showDeleted'] = {
+            in: 'query',
+            type: 'boolean',
+            description:'Includes deleted vehicles as well, default value is false'
+          }
      */
     const data = await Vehicle.findAndCountAll({
       // include: { model: Production },
@@ -18,6 +25,18 @@ module.exports = {
   create: async (req, res) => {
     /* 
         #swagger.tags = ['Vehicle']
+        #swagger.summary = 'Vehicle: Create'
+        #swagger.description = 'Create with plateNumber, model and capacity'
+        #swagger.parameters['body'] = {
+          in: 'body',
+          required: true,
+          schema: {
+            "DriverId": 1,
+            "plateNumber": "dada7049",
+            "model": 2000,
+            "capacity": 7
+          }
+        }
      */
     req.body.creatorId = req.user.id;
     const data = await Vehicle.create(req.body);
@@ -28,6 +47,8 @@ module.exports = {
   read: async (req, res) => {
     /* 
         #swagger.tags = ['Vehicle']
+        #swagger.summary = 'Read Vehicle with id'
+        #swagger.description = `<b>-</b> Send access token in header.`
      */
     const data = await Vehicle.findByPk(req.params.id);
     if (!data) throw new Error("Vehicle not found !");
@@ -37,6 +58,12 @@ module.exports = {
   update: async (req, res) => {
     /* 
         #swagger.tags = ['Vehicle']
+        #swagger.summary = 'Update vehicle with id'
+        #swagger.description = `<b>-</b> Send access token in header.`
+        required: true,
+          schema: {
+            plateNumber:'18vtn48'
+          }
      */
     req.body.updaterId = req.user.id;
     const isUpdated = await Vehicle.update(req.body, {
@@ -53,6 +80,8 @@ module.exports = {
   delete: async (req, res) => {
     /* 
         #swagger.tags = ['Vehicle']
+        #swagger.summary = 'Delete vehicle with ID'
+        #swagger.description = `<b>-</b> Send access token in header.`
      */
     const vehicle = await Vehicle.findByPk(req.params.id);
     vehicle.updaterId = req.user.id;
@@ -69,6 +98,8 @@ module.exports = {
   restore: async (req, res) => {
     /* 
         #swagger.tags = ['Vehicle']
+        #swagger.summary = 'Restore deleted vehicle with ID'
+        #swagger.description = `<b>-</b> Send access token in header.`
      */
     const vehicle = await Vehicle.findByPk(req.params.id, { paranoid: false });
     if (!vehicle) throw new Error("Vehicle not Found.");
