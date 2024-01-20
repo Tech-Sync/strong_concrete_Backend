@@ -29,7 +29,6 @@ module.exports = {
 
     // data.totalBalance = balance
 
-
     //! filtreleme ve include(iç içe denememiz lazım)
     // const data = await req.getModelList(Account, {}
     //   // İçteki include için filters
@@ -67,6 +66,7 @@ module.exports = {
 
     const data = await Account.create(req.body);
 
+
     res.status(200).send(data);
   },
 
@@ -78,7 +78,10 @@ module.exports = {
        <b>-</b> Send access token in header. '
      */
     const data = await Account.findByPk(req.params.id);
-    if (!data) throw new Error("Account not found !");
+    if (!data) {
+      res.errorStatusCode = 404;
+      throw new Error("Not found !");
+    }
 
     res.status(200).send(data);
   },

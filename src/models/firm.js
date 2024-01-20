@@ -9,6 +9,9 @@ const Firm = sequelize.define(
     name: {
       type: DataTypes.STRING(64),
       allowNull: false,
+      set(value) {
+        this.setDataValue("name", value.toUpperCase());
+      },
     },
     address: {
       type: DataTypes.STRING(64),

@@ -16,7 +16,9 @@ module.exports = {
     /* 
       #swagger.tags = ['Firm']
       */
-
+    const name = req.body?.name.toUpperCase()
+    const firm = await Firm.findOne({where:{name}})
+    if (firm) throw new Error("With this name, Firm is already exist in DataBase !");
     req.body.creatorId = req.user.id;
     const data = await Firm.create(req.body);
 
@@ -28,7 +30,10 @@ module.exports = {
         #swagger.tags = ['Firm']
     */
     const data = await Firm.findByPk(req.params.id);
-    if (!data) throw new Error("Firm not found !");
+    if (!data) {
+      res.errorStatusCode = 404;
+      throw new Error("Not found !");
+    }
 
     res.status(200).send(data);
   },

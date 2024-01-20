@@ -48,3 +48,11 @@ Material.belongsTo(User, { foreignKey: "creatorId", as: "creator" });
 Material.belongsTo(User, { foreignKey: "updaterId", as: "updater" });
 
 module.exports = Material;
+
+
+/* 
+{
+  "name": "cement",
+  "unitType": "kg"
+}
+*/

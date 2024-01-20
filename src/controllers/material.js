@@ -33,7 +33,10 @@ module.exports = {
         #swagger.tags = ['Material']
     */
     const data = await Material.findByPk(req.params.id);
-    if (!data) throw new Error("Material not found !");
+    if (!data) {
+      res.errorStatusCode = 404;
+      throw new Error("Not found !");
+    }
 
     res.status(200).send(data);
   },

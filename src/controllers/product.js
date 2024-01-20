@@ -44,7 +44,10 @@ module.exports = {
         #swagger.tags = ['Product']
     */
     const data = await Product.findByPk(req.params.id);
-    if (!data) throw new Error("Product not found!");
+    if (!data) {
+      res.errorStatusCode = 404;
+      throw new Error("Not found !");
+    }
 
     res.status(200).send(data);
   },

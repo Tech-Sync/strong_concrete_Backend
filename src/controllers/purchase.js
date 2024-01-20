@@ -1,12 +1,12 @@
-
 "use strict";
 
 const Account = require("../models/account");
+const Material = require("../models/material");
 const Purchase = require("../models/purchase");
 
 module.exports = {
   list: async (req, res) => {
-      /* 
+    /* 
         #swagger.tags = ['Purchase']
         #swagger.summary = ' Purchase List'
         #swagger.description = '
@@ -26,7 +26,7 @@ module.exports = {
   },
 
   create: async (req, res) => {
-     /* 
+    /* 
         #swagger.tags = ['Purchase']
         #swagger.summary = 'Purchase Create'
         #swagger.description = '
@@ -57,20 +57,29 @@ module.exports = {
     };
     const account = await Account.create(accountData);
 
-    if (!account) throw new Error("Account table not created for some reason.");
-
-    res.status(200).send(data);
+    let msg;
+    try {
+      if (!account)
+        throw new Error("Account table not created for some reason.");
+    } catch (error) {
+      msg = error.message;
+    } finally {
+      res.status(200).send({ data, msg });
+    }
   },
 
   read: async (req, res) => {
-     /* 
+    /* 
         #swagger.tags = ['Purchase']
         #swagger.summary = 'Read purchase with id'
         #swagger.description = '
        <b>-</b> Send access token in header. '
     */
     const data = await Purchase.findByPk(req.params.id);
-    if (!data) throw new Error("Purchase not found !");
+    if (!data) {
+      res.errorStatusCode = 404;
+      throw new Error("Not found !");
+    }
 
     res.status(200).send(data);
   },
@@ -120,7 +129,7 @@ module.exports = {
   },
 
   delete: async (req, res) => {
-     /* 
+    /* 
         #swagger.tags = ['Purchase']
         #swagger.summary = 'Delete purchase with id'
         #swagger.description = '<b>-</b> Send access token in header.'
@@ -128,6 +137,8 @@ module.exports = {
     const purchase = await Purchase.findByPk(req.params.id);
     purchase.updaterId = req.user.id;
     const isDeleted = await purchase.destroy();
+
+    await Account.destroy({ where: { PurchaseId: req.params.id } });
 
     res.status(isDeleted ? 204 : 404).send({
       error: !Boolean(isDeleted),
@@ -138,7 +149,7 @@ module.exports = {
   },
 
   restore: async (req, res) => {
-     /* 
+    /* 
         #swagger.tags = ['Purchase']
         #swagger.summary = 'Restore deleted purchase with id'
         #swagger.description = `<b>-</b> Send access token in header.`
@@ -149,6 +160,11 @@ module.exports = {
     if (!purchase) throw new Error("Purchase not Found.");
     purchase.updaterId = req.user.id;
     const isRestored = await purchase.restore();
+
+    const material = await Material.findByPk(purchase.MaterialId);
+    material.increment("quantity", { by: purchase.quantity });
+
+    await Account.restore({ where: { PurchaseId: req.params.id } });
 
     res.status(200).send({
       error: !Boolean(isRestored),
