@@ -1,5 +1,6 @@
 "use strict";
 const { sequelize, DataTypes } = require("../configs/dbConnection");
+const PurchaseAccount = require("./purchaseAccount");
 const Firm = require("./firm");
 const Material = require("./material");
 const User = require("./user");
@@ -36,22 +37,27 @@ const Purchase = sequelize.define(
   {
     paranoid: true,
     hooks: {
-      beforeCreate: (purchase) => {
+      beforeCreate: async(purchase) => {
+        const firm = await Firm.findByPk(purchase.FirmId);
+        if(!firm) throw new Error('The firm is not found.')
+        if (firm.status !== 2)throw new Error("The firm type shoul be supplier.");
         purchase.totalPrice = (purchase.unitPrice * purchase.quantity).toFixed(2);
       },
       beforeUpdate: async (purchase) => {
-        const originalPurchase = await Purchase.findByPk(purchase.id, { raw: true });
-
+        const originalPurchase = await Purchase.findByPk(purchase.id);
         const quantityDiff = (purchase.quantity - originalPurchase.quantity).toFixed(2);
         const material = await Material.findByPk(originalPurchase.MaterialId);
-
         material.increment("quantity", { by: quantityDiff });
-
         purchase.totalPrice = (purchase.unitPrice * purchase.quantity).toFixed(2);
       },
       afterCreate: async (purchase) => {
         const material = await Material.findByPk(purchase.MaterialId);
         material.increment("quantity", { by: purchase.quantity });
+      },
+      beforeDestroy: async (purchase) => {
+        const deletedPurchase = await Purchase.findByPk(purchase.id);
+        const material = await Material.findByPk(deletedPurchase.MaterialId);
+        material.decrement("quantity", { by: deletedPurchase.quantity });
       },
     },
   }
@@ -72,3 +78,13 @@ Firm.hasMany(Purchase);
 Purchase.belongsTo(Firm);
 
 module.exports = Purchase;
+
+
+/* 
+{
+  "FirmId": 1,
+  "MaterialId": 1,
+  "quantity": 200,
+  "unitPrice": 105
+}
+*/

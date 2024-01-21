@@ -2,14 +2,18 @@
 const router = require("express").Router();
 
 const material = require("../controllers/material");
+const permissions = require("../middlewares/permissions");
+router.use(permissions.isLogin);
 
-router.route("/").get(material.list).post(material.create);
+router.route("/")
+  .get(permissions.R_ASA, material.list)
+  .post(permissions.CU_AA, material.create);
 router
   .route("/:id")
-  .get(material.read)
-  .put(material.update)
-  .delete(material.delete);
+  .get(permissions.R_ASA, material.read)
+  .put(permissions.CU_AA, material.update)
+  .delete(permissions.isAdmin, material.delete);
 
-router.route("/restore/:id").get(material.restore);
+router.route("/restore/:id").get(permissions.isAdmin, material.restore);
 
 module.exports = router;

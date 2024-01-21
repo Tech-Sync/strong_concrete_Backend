@@ -161,6 +161,7 @@ module.exports = {
      */
 
     const email = req.body.email;
+    if (!email) throw new Error("Please provide email address.");
     const user = await User.findOne({ where: { email } });
     if (!user) throw new Error("Email verification failed, invalid Email !");
     if (!user.isActive)
@@ -176,7 +177,7 @@ module.exports = {
   },
 
   resetPassword: async (req, res) => {
-      /* 
+    /* 
         #swagger.tags = ['User']
         #swagger.summary = 'Reset Password'
         #swagger.description = `
