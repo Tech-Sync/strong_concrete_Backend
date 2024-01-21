@@ -3,7 +3,9 @@ const router = require("express").Router();
 
 const purchaseAccount = require("../controllers/purchaseAccount");
 const permissions = require("../middlewares/permissions");
-router.use(permissions.isLogin);
+if (process.env.NODE_ENV !== 'development') {
+  router.use(permissions.isLogin);
+}
 
 router.route("/")
   .get(permissions.R_ASA, purchaseAccount.list)

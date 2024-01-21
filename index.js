@@ -40,3 +40,5 @@ app.use(require("./src/routes"));
 app.use(require("./src/middlewares/errorHandler"));
 
 app.listen(PORT, () => console.log(`Running on http://${HOST}:${PORT}`));
+
+module.exports = app
