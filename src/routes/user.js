@@ -5,15 +5,13 @@ const router = require("express").Router();
 const user = require("../controllers/user");
 const permissions = require("../middlewares/permissions");
 
-
 router.use((req, res, next) => {
-    const excludedPath = ['/forget-password', '/reset-password']
-    const isExcluded = excludedPath.some(prefix=>req.path.startsWith(prefix))
+  const excludedPath = ["/forget-password", "/reset-password"];
+  const isExcluded = excludedPath.some((prefix) => req.path.startsWith(prefix));
 
-    if(isExcluded) next()
-    else permissions.isLogin
+  if (isExcluded) next();
+  else permissions.isLogin(req, res, next);
 });
-
 
 router.route("/").get(permissions.isAdmin, user.list);
 router
