@@ -132,8 +132,8 @@
                   "example": "ibex"
                 },
                 "role": {
-                  "type": "string",
-                  "example": "4"
+                  "type": "number",
+                  "example": 4
                 },
                 "email": {
                   "type": "string",
@@ -444,10 +444,53 @@
         "tags": [
           "Firm"
         ],
-        "description": "",
+        "summary": "List All Firms",
+        "description": "   You can send query with endpoint for search[], sort[], page and limit.   <ul> Examples:    <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>    <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>    <li>URL/?<b>page=2&limit=1</b></li>   </ul>",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "FirmName"
+                },
+                "address": {
+                  "type": "string",
+                  "example": "FirmAdress"
+                },
+                "phoneNo": {
+                  "type": "string",
+                  "example": "+2602222"
+                },
+                "tpinNo": {
+                  "type": "string",
+                  "example": "22222"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "firm@gmail.com"
+                },
+                "status": {
+                  "type": "string",
+                  "example": "1 or 2"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       },
@@ -455,16 +498,39 @@
         "tags": [
           "Firm"
         ],
-        "description": "",
+        "summary": "Firm: Create",
+        "description": "Create with name, address, phoneNo, tpinNo, email and status",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "creatorId": {
-                  "example": "any"
+                "name": {
+                  "type": "string",
+                  "example": "FirmName"
+                },
+                "address": {
+                  "type": "string",
+                  "example": "FirmAdress"
+                },
+                "phoneNo": {
+                  "type": "string",
+                  "example": "+2602222"
+                },
+                "tpinNo": {
+                  "type": "string",
+                  "example": "22222"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "firm@gmail.com"
+                },
+                "status": {
+                  "type": "string",
+                  "example": "1 or 2"
                 }
               }
             }
@@ -482,7 +548,8 @@
         "tags": [
           "Firm"
         ],
-        "description": "",
+        "summary": "Read Firm with id",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -501,7 +568,8 @@
         "tags": [
           "Firm"
         ],
-        "description": "",
+        "summary": "Update firm with id",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -532,7 +600,8 @@
         "tags": [
           "Firm"
         ],
-        "description": "",
+        "summary": "Delete firm with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -556,7 +625,8 @@
         "tags": [
           "Firm"
         ],
-        "description": "",
+        "summary": "Restore deleted firm with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -577,7 +647,16 @@
         "tags": [
           "Product"
         ],
-        "description": "",
+        "summary": "List All Products",
+        "description": "<b>-</b> Only Admin can view all users.",
+        "parameters": [
+          {
+            "name": "showDeleted",
+            "in": "query",
+            "type": "boolean",
+            "description": "Includes deleted users as well, default value is false"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -588,7 +667,8 @@
         "tags": [
           "Product"
         ],
-        "description": "",
+        "summary": "Product: Create",
+        "description": "Create with name, price and materials",
         "parameters": [
           {
             "name": "body",
@@ -602,7 +682,16 @@
                 "name": {
                   "example": "any"
                 },
-                "materials": {
+                "updaterId": {
+                  "example": "any"
+                },
+                "in": {
+                  "example": "any"
+                },
+                "required": {
+                  "example": "any"
+                },
+                "schema": {
                   "example": "any"
                 }
               }
@@ -612,6 +701,15 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "202": {
+            "description": "Accepted"
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }
@@ -621,7 +719,8 @@
         "tags": [
           "Product"
         ],
-        "description": "",
+        "summary": "Read product with id",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -640,7 +739,8 @@
         "tags": [
           "Product"
         ],
-        "description": "",
+        "summary": "Update product with id",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -651,11 +751,14 @@
           {
             "name": "body",
             "in": "body",
+            "description": "   <ul>    <li>Send the object includes attributes that should be updated.</li>   </ul> ",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "updaterId": {
-                  "example": "any"
+                "price": {
+                  "type": "string",
+                  "example": "5"
                 }
               }
             }
@@ -671,7 +774,8 @@
         "tags": [
           "Product"
         ],
-        "description": "",
+        "summary": "Delete product with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -695,7 +799,8 @@
         "tags": [
           "Product"
         ],
-        "description": "",
+        "summary": "Restore deleted product with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -716,7 +821,16 @@
         "tags": [
           "Material"
         ],
-        "description": "",
+        "summary": "List All Materials",
+        "description": "<b>-</b> Only Admin can view all materials.",
+        "parameters": [
+          {
+            "name": "showDeleted",
+            "in": "query",
+            "type": "boolean",
+            "description": "Includes deleted materials as well, default value is false"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -727,19 +841,23 @@
         "tags": [
           "Material"
         ],
-        "description": "",
+        "summary": "Material: Create",
+        "description": "Create with name and unitType",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "name": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "MaterialName"
                 },
-                "creatorId": {
-                  "example": "any"
+                "unitType": {
+                  "type": "string",
+                  "example": "testType"
                 }
               }
             }
@@ -757,7 +875,8 @@
         "tags": [
           "Material"
         ],
-        "description": "",
+        "summary": "Read Material with id",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -776,7 +895,8 @@
         "tags": [
           "Material"
         ],
-        "description": "",
+        "summary": "Update material with id",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -807,7 +927,8 @@
         "tags": [
           "Material"
         ],
-        "description": "",
+        "summary": "Delete material with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -831,7 +952,8 @@
         "tags": [
           "Material"
         ],
-        "description": "",
+        "summary": "Restore deleted material with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -1159,7 +1281,16 @@
         "tags": [
           "Vehicle"
         ],
-        "description": "",
+        "summary": "List All Vehicles",
+        "description": "<b>-</b> Only Admin can view all vehicles.",
+        "parameters": [
+          {
+            "name": "showDeleted",
+            "in": "query",
+            "type": "boolean",
+            "description": "Includes deleted vehicles as well, default value is false"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -1170,16 +1301,31 @@
         "tags": [
           "Vehicle"
         ],
-        "description": "",
+        "summary": "Vehicle: Create",
+        "description": "Create with plateNumber, model and capacity",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "creatorId": {
-                  "example": "any"
+                "DriverId": {
+                  "type": "number",
+                  "example": 1
+                },
+                "plateNumber": {
+                  "type": "string",
+                  "example": "dada7049"
+                },
+                "model": {
+                  "type": "number",
+                  "example": 2000
+                },
+                "capacity": {
+                  "type": "number",
+                  "example": 7
                 }
               }
             }
@@ -1197,7 +1343,8 @@
         "tags": [
           "Vehicle"
         ],
-        "description": "",
+        "summary": "Read Vehicle with id",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -1216,7 +1363,8 @@
         "tags": [
           "Vehicle"
         ],
-        "description": "",
+        "summary": "Update vehicle with id",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -1247,7 +1395,8 @@
         "tags": [
           "Vehicle"
         ],
-        "description": "",
+        "summary": "Delete vehicle with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -1271,7 +1420,8 @@
         "tags": [
           "Vehicle"
         ],
-        "description": "",
+        "summary": "Restore deleted vehicle with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -1931,6 +2081,7 @@
     "Material": {},
     "Firm": {},
     "Purchase": {},
+    "PurchaseAccount": {},
     "Sale": {},
     "Production": {},
     "Product": {},
