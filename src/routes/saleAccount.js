@@ -3,7 +3,9 @@ const router = require("express").Router();
 
 const saleAccount = require("../controllers/saleAccount");
 const permissions = require("../middlewares/permissions");
-router.use(permissions.isLogin);
+if (process.env.NODE_ENV !== 'development') {
+  router.use(permissions.isLogin);
+}
 
 router
   .route("/")

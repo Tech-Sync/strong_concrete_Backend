@@ -11,12 +11,18 @@ function getUserInfo(req) {
 
 module.exports = {
   isLogin: (req, res, next) => {
+    if (process.env.NODE_ENV === "development") {
+      return next();
+    }
     res.errorStatusCode = 401;
     const { user, isActive } = getUserInfo(req);
     if (user && isActive) next();
     else throw new Error("NoPermission: You must login.");
   },
   isAdmin: (req, res, next) => {
+    if (process.env.NODE_ENV === "development") {
+      return next();
+    }
     res.errorStatusCode = 403;
     const { userRole } = getUserInfo(req);
 
@@ -24,6 +30,9 @@ module.exports = {
     else throw new Error("NoPermission: You must be Admin.");
   },
   isItself: (req, res, next) => {
+    if (process.env.NODE_ENV === "development") {
+      return next();
+    }
     res.errorStatusCode = 403;
     const { userRole, userId } = getUserInfo(req);
 
@@ -36,6 +45,9 @@ module.exports = {
   },
   // READ -> Admin, Saler, Accountant
   R_ASA: (req, res, next) => {
+    if (process.env.NODE_ENV === "development") {
+      return next();
+    }
     res.errorStatusCode = 403;
     const { userRole } = getUserInfo(req);
 
@@ -47,6 +59,9 @@ module.exports = {
   },
   // CREATE & UPDATE -> Admin, Saler
   CU_AS: (req, res, next) => {
+    if (process.env.NODE_ENV === "development") {
+      return next();
+    }
     res.errorStatusCode = 403;
     const { userRole } = getUserInfo(req);
 
@@ -58,6 +73,9 @@ module.exports = {
   },
   // CREATE & UPDATE -> Admin, Saler, Accountant
   CU_ASA: (req, res, next) => {
+    if (process.env.NODE_ENV === "development") {
+      return next();
+    }
     res.errorStatusCode = 403;
     const { userRole } = getUserInfo(req);
 
@@ -69,6 +87,9 @@ module.exports = {
   },
   // CREATE & READ & UPDATE -> Admin, Saler
   CRU_AS: (req, res, next) => {
+    if (process.env.NODE_ENV === "development") {
+      return next();
+    }
     res.errorStatusCode = 403;
     const { userRole } = getUserInfo(req);
 
@@ -80,6 +101,9 @@ module.exports = {
   },
   // CREATE & UPDATE -> Admin, Accountant
   CU_AA: (req, res, next) => {
+    if (process.env.NODE_ENV === "development") {
+      return next();
+    }
     res.errorStatusCode = 403;
     const { userRole } = getUserInfo(req);
 
@@ -91,6 +115,9 @@ module.exports = {
   },
   // CREATE & READ & UPDATE -> Admin, Saler, Producer
   CRU_ASP: (req, res, next) => {
+    if (process.env.NODE_ENV === "development") {
+      return next();
+    }
     res.errorStatusCode = 403;
     const { userRole } = getUserInfo(req);
 
@@ -102,6 +129,9 @@ module.exports = {
   },
   // READ & UPDATE-> Admin, Saler, Producer, Driver
   RU_ASPD: (req, res, next) => {
+    if (process.env.NODE_ENV === "development") {
+      return next();
+    }
     res.errorStatusCode = 403;
     const { userRole } = getUserInfo(req);
 

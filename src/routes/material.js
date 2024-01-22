@@ -3,7 +3,9 @@ const router = require("express").Router();
 
 const material = require("../controllers/material");
 const permissions = require("../middlewares/permissions");
-router.use(permissions.isLogin);
+if (process.env.NODE_ENV !== 'development') {
+  router.use(permissions.isLogin);
+}
 
 router.route("/")
   .get(permissions.R_ASA, material.list)
