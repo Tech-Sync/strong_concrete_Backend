@@ -13,7 +13,7 @@ router.use('/materials', require('./material'))
 // Purchase
 router.use('/purchases', require('./purchase'))
 // PurchaseAccount
-router.use('/purchase_accounts', require('./account'))
+router.use('/purchase_accounts', require('./purchaseAccount'))
 // Vehicle
 router.use('/vehicles', require('./vehicle'))
 // Sale

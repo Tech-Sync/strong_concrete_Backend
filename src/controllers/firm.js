@@ -13,7 +13,7 @@ module.exports = {
                     <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>
                     <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>
                     <li>URL/?<b>page=2&limit=1</b></li>
-                </ul>
+                </ul>`
     */
     const data = await Firm.findAndCountAll();
 
@@ -38,7 +38,9 @@ module.exports = {
           }
         }
       */
-
+    const name = req.body?.name.toUpperCase()
+    const firm = await Firm.findOne({where:{name}})
+    if (firm) throw new Error("With this name, Firm is already exist in DataBase !");
     req.body.creatorId = req.user.id;
     const data = await Firm.create(req.body);
 
@@ -52,7 +54,10 @@ module.exports = {
         #swagger.description = `<b>-</b> Send access token in header.`
     */
     const data = await Firm.findByPk(req.params.id);
-    if (!data) throw new Error("Firm not found !");
+    if (!data) {
+      res.errorStatusCode = 404;
+      throw new Error("Not found !");
+    }
 
     res.status(200).send(data);
   },

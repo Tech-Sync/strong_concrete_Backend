@@ -6,12 +6,14 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
-    "debug": "DEBUG=* nodemon"
+    "debug": "DEBUG=* nodemon",
+    "test": "jest --watchAll"
   },
   "keywords": [],
   "author": "Tech-Sync",
   "license": "BSD Licence",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-async-errors": "^3.1.1",
@@ -25,5 +27,9 @@
     "sequelize": "^6.35.2",
     "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4"
   }
 }

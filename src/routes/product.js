@@ -2,17 +2,21 @@
 const router = require("express").Router();
 
 const product = require("../controllers/product");
+const permissions = require("../middlewares/permissions");
+if (process.env.NODE_ENV !== 'development') {
+  router.use(permissions.isLogin);
+}
 
 router
   .route("/")
-  .get(product.list)
-  .post(product.create);
+  .get(permissions.CRU_AS,product.list)
+  .post(permissions.CRU_AS,product.create);
 router
   .route("/:id")
-  .get(product.read)
-  .put(product.update)
-  .delete( product.delete);
+  .get(permissions.CRU_AS,product.read)
+  .put(permissions.CRU_AS,product.update)
+  .delete( permissions.isAdmin,product.delete);
 
-router.route("/restore/:id").get( product.restore);
+router.route("/restore/:id").get( permissions.isAdmin, product.restore);
 
 module.exports = router;
