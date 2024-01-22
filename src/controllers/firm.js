@@ -38,9 +38,10 @@ module.exports = {
           }
         }
       */
-    const name = req.body?.name.toUpperCase()
-    const firm = await Firm.findOne({where:{name}})
-    if (firm) throw new Error("With this name, Firm is already exist in DataBase !");
+    const name = req.body?.name.toUpperCase();
+    const firm = await Firm.findOne({ where: { name } });
+    if (firm)
+      throw new Error("With this name, Firm is already exist in DataBase !");
     req.body.creatorId = req.user.id;
     const data = await Firm.create(req.body);
 
@@ -116,6 +117,27 @@ module.exports = {
       error: !Boolean(isRestored),
       message: isRestored
         ? "Firm restored successfuly."
+        : "Firm not found or something went wrong.",
+    });
+  },
+
+  multipleDelete: async (req, res) => {
+    const { ids } = req.body;
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      throw new Error("Invalid or empty IDs array in the request body.");
+    }
+
+    const multipleİsDeleted = await Firm.destroy({
+      where: {
+        id: ids,
+      },
+    });
+
+    res.status(multipleİsDeleted ? 204 : 404).send({
+      error: !Boolean(multipleİsDeleted),
+      message: !multipleİsDeleted
+        ? `${ids} Firms deleted successfully.`
         : "Firm not found or something went wrong.",
     });
   },

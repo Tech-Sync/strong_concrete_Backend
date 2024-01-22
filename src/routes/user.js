@@ -26,6 +26,6 @@ router.route("/update-password").post(user.uptadePassword);
 router.route("/restore/:id").get(permissions.isAdmin, user.restore);
 router.route("/forget-password").post(user.forgetPassword);
 router.route("/reset-password/:uid/:emailToken").post(user.resetPassword);
-router.route("/multipleDelete").post(permissions.isAdmin, user.multipleDelete)
+//router.route("/multipleDelete").post(permissions.isAdmin, user.multipleDelete)
 
 module.exports = router;
