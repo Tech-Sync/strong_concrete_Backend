@@ -19,6 +19,8 @@ app.use(express.json());
 app.use(require("./src/middlewares/authentication"));
 app.use(require("./src/middlewares/findSearchSortPage"));
 app.use(require("./src/middlewares/logger"));
+app.use(require('cors')()) // Run with defaults.
+
 
 // HOME
 app.all("/", (req, res) => {
