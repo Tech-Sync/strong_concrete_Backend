@@ -43,7 +43,7 @@ const document = {
     Material: require("./src/models/material").schema.obj,
     Firm: require("./src/models/firm").schema.obj,
     Purchase: require("./src/models/purchase").schema.obj,
-    PurchaseAccount: require("./src/models/account").schema.obj,
+    PurchaseAccount: require("./src/models/purchaseAccount").schema.obj,
     Sale: require("./src/models/sale").schema.obj,
     Production: require("./src/models/production").schema.obj,
     Product: require("./src/models/product").schema.obj,

@@ -72,8 +72,8 @@ const Sale = sequelize.define(
     hooks: {
       beforeCreate: async (sale) => {
         const firm = await Firm.findByPk(sale.FirmId);
-        if (firm.status !== 2)
-          throw new Error("The firm you have picked is not a supplier !");
+        if (firm.status !== 1)
+          throw new Error("The firm you have picked is not a Consumer !");
 
         if (!sale.unitPrice) {
           const product = await Product.findByPk(sale.ProductId);

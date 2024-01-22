@@ -50,7 +50,10 @@ module.exports = {
        <b>-</b> Send access token in header. '
     */
     const data = await SaleAccount.findByPk(req.params.id);
-    if (!data) throw new Error("SaleAccount not found !");
+    if (!data) {
+      res.errorStatusCode = 404;
+      throw new Error("Not found !");
+    }
 
     res.status(200).send(data);
   },

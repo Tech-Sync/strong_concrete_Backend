@@ -2,14 +2,21 @@
 const router = require("express").Router();
 
 const saleAccount = require("../controllers/saleAccount");
+const permissions = require("../middlewares/permissions");
+if (process.env.NODE_ENV !== 'development') {
+  router.use(permissions.isLogin);
+}
 
-router.route("/").get(saleAccount.list).post(saleAccount.create);
+router
+  .route("/")
+  .get(permissions.CRU_AS, saleAccount.list)
+  .post(permissions.CRU_AS, saleAccount.create);
 router
   .route("/:id")
-  .get(saleAccount.read)
-  .put(saleAccount.update)
-  .delete(saleAccount.delete);
+  .get(permissions.CRU_AS, saleAccount.read)
+  .put(permissions.CRU_AS, saleAccount.update)
+  .delete(permissions.isAdmin, saleAccount.delete);
 
-router.route("/restore/:id").get(saleAccount.restore);
+router.route("/restore/:id").get(permissions.isAdmin, saleAccount.restore);
 
 module.exports = router;

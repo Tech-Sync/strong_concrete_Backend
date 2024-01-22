@@ -46,7 +46,7 @@
           {
             "name": "body",
             "in": "body",
-            "description": "  <ul>   <li>The Email should be a verified, otherwise user can not login.</li>  </ul> ",
+            "description": "   <ul>    <li>The Email should be a verified, otherwise user can not login.</li>   </ul> ",
             "required": true,
             "schema": {
               "type": "object",
@@ -76,7 +76,7 @@
           "Authentication"
         ],
         "summary": "Verify Email",
-        "description": "  <b>-</b> When user verify email address, He/She will be directed email verify UI page with emailToken in query. <br>  <b>-</b> Catch the emailToken and send in query by call this API.",
+        "description": "\r  <b>-</b> When user verify email address, He/She will be directed email verify UI page with emailToken in query. <br>\r  <b>-</b> Catch the emailToken and send in query by call this API.",
         "parameters": [
           {
             "name": "emailToken",
@@ -101,12 +101,12 @@
           "Authentication"
         ],
         "summary": "User Register",
-        "description": "  <b>-</b> Only admin can register a user from admin panel. <br>  <b>-</b> Once register successful, an email will be sent to user email address.",
+        "description": "\r  <b>-</b> Only admin can register a user from admin panel. <br>\r  <b>-</b> Once register successful, an email will be sent to user email address.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
-            "description": "  <ul>   <li>The Email should be a valid email, otherwise can not do any function.</li>  <li>Password should includes least capital and lower case, number, special char, and min 8 lenght.</li>  </ul> ",
+            "description": "   <ul>    <li>The Email should be a valid email, otherwise can not do any function.</li>   <li>Password should includes least capital and lower case, number, special char, and min 8 lenght.</li>   </ul> ",
             "required": true,
             "schema": {
               "type": "object",
@@ -132,8 +132,8 @@
                   "example": "ibex"
                 },
                 "role": {
-                  "type": "string",
-                  "example": "4"
+                  "type": "number",
+                  "example": 4
                 },
                 "email": {
                   "type": "string",
@@ -260,7 +260,7 @@
           {
             "name": "body",
             "in": "body",
-            "description": "  <ul>   <li>Send the object includes attributes that should be  .</li>  <li>Password can not be updated with this API.</li>  </ul> ",
+            "description": "   <ul>    <li>Send the object includes attributes that should be  .</li>   <li>Password can not be updated with this API.</li>   </ul> ",
             "required": true,
             "schema": {
               "type": "object",
@@ -444,10 +444,53 @@
         "tags": [
           "Firm"
         ],
-        "description": "",
+        "summary": "List All Firms",
+        "description": "   You can send query with endpoint for search[], sort[], page and limit.   <ul> Examples:    <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>    <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>    <li>URL/?<b>page=2&limit=1</b></li>   </ul>",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "FirmName"
+                },
+                "address": {
+                  "type": "string",
+                  "example": "FirmAdress"
+                },
+                "phoneNo": {
+                  "type": "string",
+                  "example": "+2602222"
+                },
+                "tpinNo": {
+                  "type": "string",
+                  "example": "22222"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "firm@gmail.com"
+                },
+                "status": {
+                  "type": "string",
+                  "example": "1 or 2"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       },
@@ -455,16 +498,39 @@
         "tags": [
           "Firm"
         ],
-        "description": "",
+        "summary": "Firm: Create",
+        "description": "Create with name, address, phoneNo, tpinNo, email and status",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "creatorId": {
-                  "example": "any"
+                "name": {
+                  "type": "string",
+                  "example": "FirmName"
+                },
+                "address": {
+                  "type": "string",
+                  "example": "FirmAdress"
+                },
+                "phoneNo": {
+                  "type": "string",
+                  "example": "+2602222"
+                },
+                "tpinNo": {
+                  "type": "string",
+                  "example": "22222"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "firm@gmail.com"
+                },
+                "status": {
+                  "type": "string",
+                  "example": "1 or 2"
                 }
               }
             }
@@ -482,7 +548,8 @@
         "tags": [
           "Firm"
         ],
-        "description": "",
+        "summary": "Read Firm with id",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -501,7 +568,8 @@
         "tags": [
           "Firm"
         ],
-        "description": "",
+        "summary": "Update firm with id",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -532,7 +600,8 @@
         "tags": [
           "Firm"
         ],
-        "description": "",
+        "summary": "Delete firm with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -556,7 +625,8 @@
         "tags": [
           "Firm"
         ],
-        "description": "",
+        "summary": "Restore deleted firm with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -577,7 +647,16 @@
         "tags": [
           "Product"
         ],
-        "description": "",
+        "summary": "List All Products",
+        "description": "<b>-</b> Only Admin can view all users.",
+        "parameters": [
+          {
+            "name": "showDeleted",
+            "in": "query",
+            "type": "boolean",
+            "description": "Includes deleted users as well, default value is false"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -588,7 +667,8 @@
         "tags": [
           "Product"
         ],
-        "description": "",
+        "summary": "Product: Create",
+        "description": "Create with name, price and materials",
         "parameters": [
           {
             "name": "body",
@@ -602,7 +682,16 @@
                 "name": {
                   "example": "any"
                 },
-                "materials": {
+                "updaterId": {
+                  "example": "any"
+                },
+                "in": {
+                  "example": "any"
+                },
+                "required": {
+                  "example": "any"
+                },
+                "schema": {
                   "example": "any"
                 }
               }
@@ -612,6 +701,15 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "202": {
+            "description": "Accepted"
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }
@@ -621,7 +719,8 @@
         "tags": [
           "Product"
         ],
-        "description": "",
+        "summary": "Read product with id",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -640,7 +739,8 @@
         "tags": [
           "Product"
         ],
-        "description": "",
+        "summary": "Update product with id",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -651,11 +751,14 @@
           {
             "name": "body",
             "in": "body",
+            "description": "   <ul>    <li>Send the object includes attributes that should be updated.</li>   </ul> ",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "updaterId": {
-                  "example": "any"
+                "price": {
+                  "type": "string",
+                  "example": "5"
                 }
               }
             }
@@ -671,7 +774,8 @@
         "tags": [
           "Product"
         ],
-        "description": "",
+        "summary": "Delete product with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -695,7 +799,8 @@
         "tags": [
           "Product"
         ],
-        "description": "",
+        "summary": "Restore deleted product with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -716,7 +821,16 @@
         "tags": [
           "Material"
         ],
-        "description": "",
+        "summary": "List All Materials",
+        "description": "<b>-</b> Only Admin can view all materials.",
+        "parameters": [
+          {
+            "name": "showDeleted",
+            "in": "query",
+            "type": "boolean",
+            "description": "Includes deleted materials as well, default value is false"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -727,19 +841,23 @@
         "tags": [
           "Material"
         ],
-        "description": "",
+        "summary": "Material: Create",
+        "description": "Create with name and unitType",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "name": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "MaterialName"
                 },
-                "creatorId": {
-                  "example": "any"
+                "unitType": {
+                  "type": "string",
+                  "example": "testType"
                 }
               }
             }
@@ -757,7 +875,8 @@
         "tags": [
           "Material"
         ],
-        "description": "",
+        "summary": "Read Material with id",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -776,7 +895,8 @@
         "tags": [
           "Material"
         ],
-        "description": "",
+        "summary": "Update material with id",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -807,7 +927,8 @@
         "tags": [
           "Material"
         ],
-        "description": "",
+        "summary": "Delete material with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -831,7 +952,8 @@
         "tags": [
           "Material"
         ],
-        "description": "",
+        "summary": "Restore deleted material with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -853,7 +975,7 @@
           "Purchase"
         ],
         "summary": " Purchase List",
-        "description": "  <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>    <ul> Examples:   <li><b>SEARCHING: URL?search[MaterialId]=3&search[FirmId]=2</b></li>   <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>   <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>   <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01 The date must be in year-month-day format</b></li>  </ul>",
+        "description": "\r  <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>\r  \r  <ul> Examples:\r   <li><b>SEARCHING: URL?search[MaterialId]=3&search[FirmId]=2</b></li>\r   <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>\r   <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>\r   <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01 The date must be in year-month-day format</b></li>\r  </ul>",
         "responses": {
           "200": {
             "description": "OK"
@@ -865,7 +987,7 @@
           "Purchase"
         ],
         "summary": "Purchase Create",
-        "description": "  <b>-</b> MaterialId,quantity,FirmId,unitPrice is required to purchase materials <br>  <b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> MaterialId,quantity,FirmId,unitPrice is required to purchase materials <br>\r  <b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
@@ -907,7 +1029,7 @@
           "Purchase"
         ],
         "summary": "Read purchase with id",
-        "description": "  <b>-</b> Send access token in header. ",
+        "description": "\r  <b>-</b> Send access token in header. ",
         "parameters": [
           {
             "name": "id",
@@ -938,7 +1060,7 @@
           {
             "name": "body",
             "in": "body",
-            "description": "  <ul>   <li>Send the object includes attributes that should be updated.</li>    </ul> ",
+            "description": "   <ul>    <li>Send the object includes attributes that should be updated.</li>      </ul> ",
             "required": true,
             "schema": {
               "type": "object",
@@ -1006,10 +1128,10 @@
     "/purchase_accounts/": {
       "get": {
         "tags": [
-          "Purchase Account"
+          "PurchaseAccount"
         ],
-        "summary": " Purchase Account List",
-        "description": "  <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>    <ul> Examples:   <li><b>SEARCHING: URL?search[PurchaseId]=3&search[FirmId]=2</b></li>   <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>   <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>   <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01 The date must be in year-month-day format</b></li>  </ul>",
+        "summary": " PurchaseAccount List",
+        "description": "\r  <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>\r  \r  <ul> Examples:\r   <li><b>SEARCHING: URL?search[PurchaseId]=3&search[FirmId]=2</b></li>\r   <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>\r   <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>\r   <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01 The date must be in year-month-day format</b></li>\r  </ul>",
         "responses": {
           "200": {
             "description": "OK"
@@ -1018,10 +1140,10 @@
       },
       "post": {
         "tags": [
-          "Purchase Account"
+          "PurchaseAccount"
         ],
-        "summary": "Purchase Account Create",
-        "description": "  <b>-</b> Purchase Account will be   automatically when the purchase is made. <br>  <b>-</b> There is no need to create a Purchase Account manually. <br>  <b>-</b> Send access token in header.",
+        "summary": "PurchaseAccount Create",
+        "description": "\r  <b>-</b> PurchaseAccount will be   automatically when the purchase is made. <br>\r  <b>-</b> There is no need to create a PurchaseAccount manually. <br>\r  <b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
@@ -1055,10 +1177,10 @@
     "/purchase_accounts/{id}": {
       "get": {
         "tags": [
-          "Purchase Account"
+          "PurchaseAccount"
         ],
-        "summary": "Read Purchase Account with id",
-        "description": "  <b>-</b> Send access token in header. ",
+        "summary": "Read PurchaseAccount with id",
+        "description": "\r  <b>-</b> Send access token in header. ",
         "parameters": [
           {
             "name": "id",
@@ -1075,9 +1197,9 @@
       },
       "put": {
         "tags": [
-          "Purchase Account"
+          "PurchaseAccount"
         ],
-        "summary": "Update Purchase Account with id",
+        "summary": "Update PurchaseAccount with id",
         "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -1089,7 +1211,7 @@
           {
             "name": "body",
             "in": "body",
-            "description": "  <ul>   <li>Send the object includes attributes that should be updated.</li>    </ul> ",
+            "description": "   <ul>    <li>Send the object includes attributes that should be updated.</li>      </ul> ",
             "required": true,
             "schema": {
               "type": "object",
@@ -1110,9 +1232,9 @@
       },
       "delete": {
         "tags": [
-          "Purchase Account"
+          "PurchaseAccount"
         ],
-        "summary": "Delete Purchase Account with id",
+        "summary": "Delete PurchaseAccount with id",
         "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -1135,9 +1257,9 @@
     "/purchase_accounts/restore/{id}": {
       "get": {
         "tags": [
-          "Purchase Account"
+          "PurchaseAccount"
         ],
-        "summary": "Restore Purchase Account with id",
+        "summary": "Restore PurchaseAccount with id",
         "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -1159,7 +1281,16 @@
         "tags": [
           "Vehicle"
         ],
-        "description": "",
+        "summary": "List All Vehicles",
+        "description": "<b>-</b> Only Admin can view all vehicles.",
+        "parameters": [
+          {
+            "name": "showDeleted",
+            "in": "query",
+            "type": "boolean",
+            "description": "Includes deleted vehicles as well, default value is false"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -1170,16 +1301,31 @@
         "tags": [
           "Vehicle"
         ],
-        "description": "",
+        "summary": "Vehicle: Create",
+        "description": "Create with plateNumber, model and capacity",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "creatorId": {
-                  "example": "any"
+                "DriverId": {
+                  "type": "number",
+                  "example": 1
+                },
+                "plateNumber": {
+                  "type": "string",
+                  "example": "dada7049"
+                },
+                "model": {
+                  "type": "number",
+                  "example": 2000
+                },
+                "capacity": {
+                  "type": "number",
+                  "example": 7
                 }
               }
             }
@@ -1197,7 +1343,8 @@
         "tags": [
           "Vehicle"
         ],
-        "description": "",
+        "summary": "Read Vehicle with id",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -1216,7 +1363,8 @@
         "tags": [
           "Vehicle"
         ],
-        "description": "",
+        "summary": "Update vehicle with id",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -1247,7 +1395,8 @@
         "tags": [
           "Vehicle"
         ],
-        "description": "",
+        "summary": "Delete vehicle with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -1271,7 +1420,8 @@
         "tags": [
           "Vehicle"
         ],
-        "description": "",
+        "summary": "Restore deleted vehicle with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "id",
@@ -1293,7 +1443,7 @@
           "Sale"
         ],
         "summary": " Sale List",
-        "description": "  <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>    <ul> Examples:   <li><b>SEARCHING: URL?search[FirmId]=3&search[quantity]=20</b></li>   <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>   <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>   <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01 The date must be in year-month-day format</b></li>  </ul>",
+        "description": "\r  <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>\r  \r  <ul> Examples:\r   <li><b>SEARCHING: URL?search[FirmId]=3&search[quantity]=20</b></li>\r   <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>\r   <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>\r   <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01 The date must be in year-month-day format</b></li>\r  </ul>",
         "responses": {
           "200": {
             "description": "OK"
@@ -1305,7 +1455,7 @@
           "Sale"
         ],
         "summary": "Sale Create",
-        "description": "  <b>-</b>To create Sales, use FirmId,ProductId,quantity,location,requestedDate, sideContact are required <br>  <b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b>To create Sales, use FirmId,ProductId,quantity,location,requestedDate, sideContact are required <br>\r  <b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
@@ -1355,7 +1505,7 @@
           "Sale"
         ],
         "summary": "Read sale with id",
-        "description": "  <b>-</b> Send access token in header. ",
+        "description": "\r  <b>-</b> Send access token in header. ",
         "parameters": [
           {
             "name": "id",
@@ -1386,7 +1536,7 @@
           {
             "name": "body",
             "in": "body",
-            "description": "  <ul>   <li>Send the object includes attributes that should be updated.</li>    </ul> ",
+            "description": "   <ul>    <li>Send the object includes attributes that should be updated.</li>      </ul> ",
             "required": true,
             "schema": {
               "type": "object",
@@ -1457,7 +1607,7 @@
           "Sale Account"
         ],
         "summary": " Sale Account List",
-        "description": "  <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>    <ul> Examples:   <li><b>SEARCHING: URL?search[FirmId]=3&search[quantity]=20</b></li>   <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>   <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>   <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01 The date must be in year-month-day format</b></li>  </ul>",
+        "description": "\r  <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>\r  \r  <ul> Examples:\r   <li><b>SEARCHING: URL?search[FirmId]=3&search[quantity]=20</b></li>\r   <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>\r   <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>\r   <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01 The date must be in year-month-day format</b></li>\r  </ul>",
         "responses": {
           "200": {
             "description": "OK"
@@ -1469,7 +1619,7 @@
           "Sale Account"
         ],
         "summary": "Sale Account Create",
-        "description": "  <b>-</b> SaleAccount will be created automatically after the sale is made. <br>  <b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> SaleAccount will be created automatically after the sale is made. <br>\r  <b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
@@ -1498,7 +1648,7 @@
           "Sale Account"
         ],
         "summary": "Read Sale Account with id",
-        "description": "  <b>-</b> Send access token in header. ",
+        "description": "\r  <b>-</b> Send access token in header. ",
         "parameters": [
           {
             "name": "id",
@@ -1529,7 +1679,7 @@
           {
             "name": "body",
             "in": "body",
-            "description": "  <ul>   <li>Send the object includes attributes that should be updated.</li>    </ul> ",
+            "description": "   <ul>    <li>Send the object includes attributes that should be updated.</li>      </ul> ",
             "required": true,
             "schema": {
               "type": "object",
