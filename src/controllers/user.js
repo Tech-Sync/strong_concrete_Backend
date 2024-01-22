@@ -75,7 +75,7 @@ module.exports = {
 
      */
     const isDeleted = await User.destroy({ where: { id: req.params.id } }); // add this att. for hard delete ->   force: true
-
+console.log(isDeleted);
     res.status(isDeleted ? 204 : 404).send({
       error: !Boolean(isDeleted),
       message: isDeleted
@@ -97,6 +97,31 @@ module.exports = {
       message: isRestored
         ? "User restored successfuly."
         : "User not found or something went wrong.",
+    });
+  },
+  multipleDelete: async (req,res) => {
+
+    const {ids} =req.body
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      throw new Error('Invalid or empty IDs array in the request body.');
+    }
+
+    const multipleİsDeleted = await User.destroy({
+      where: {
+        id: ids,
+      },
+    });
+
+    console.log(multipleİsDeleted)
+
+    res.status(multipleİsDeleted ? 204 : 404).send({
+      error: !Boolean(multipleİsDeleted),
+      
+      message: (multipleİsDeleted
+        ? `${ids.length} User deleted successfully.`
+        : "User not found or something went wrong."),
+        
     });
   },
 

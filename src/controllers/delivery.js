@@ -177,7 +177,7 @@ module.exports = {
     res.status(multipleİsDeleted ? 204 : 404).send({
       error: !Boolean(multipleİsDeleted),
       message: multipleİsDeleted
-        ? `${deletedDeliveries} deliveries deleted successfully.`
+        ? `${multipleİsDeleted} deliveries deleted successfully.`
         : "Delivery not found or something went wrong.",
     });
   }

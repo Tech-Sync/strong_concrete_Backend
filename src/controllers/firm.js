@@ -121,11 +121,12 @@ module.exports = {
     });
   },
 
-  multipleDelete: async (req, res) => {
-    const { ids } = req.body;
+  multipleDelete: async (req,res) => {
+
+    const {ids} =req.body
 
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
-      throw new Error("Invalid or empty IDs array in the request body.");
+      throw new Error('Invalid or empty IDs array in the request body.');
     }
 
     const multipleİsDeleted = await Firm.destroy({
@@ -136,9 +137,11 @@ module.exports = {
 
     res.status(multipleİsDeleted ? 204 : 404).send({
       error: !Boolean(multipleİsDeleted),
-      message: !multipleİsDeleted
-        ? `${ids} Firms deleted successfully.`
+      message: multipleİsDeleted
+        ? `${multipleİsDeleted} firmss deleted successfully.`
         : "Firm not found or something went wrong.",
     });
-  },
+  }
+
+  
 };

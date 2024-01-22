@@ -290,4 +290,25 @@ module.exports = {
         : "Production not found or something went wrong.",
     });
   },
+  multipleDelete: async (req,res) => {
+
+    const {ids} =req.body
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      throw new Error('Invalid or empty IDs array in the request body.');
+    }
+
+    const multipleİsDeleted = await Production.destroy({
+      where: {
+        id: ids,
+      },
+    });
+
+    res.status(multipleİsDeleted ? 204 : 404).send({
+      error: !Boolean(multipleİsDeleted),
+      message: multipleİsDeleted
+        ? `${multipleİsDeleted} productions deleted successfully.`
+        : "Production not found or something went wrong.",
+    });
+  }
 };
