@@ -18,5 +18,6 @@ router
   .delete(permissions.isAdmin, production.delete);
 
 router.route("/restore/:id").get(permissions.isAdmin, production.restore);
+router.route("/multipleDelete").post(permissions.isAdmin, production.multipleDelete)
 
 module.exports = router;
