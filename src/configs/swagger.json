@@ -445,52 +445,10 @@
           "Firm"
         ],
         "summary": "List All Firms",
-        "description": "   You can send query with endpoint for search[], sort[], page and limit.   <ul> Examples:    <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>    <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>    <li>URL/?<b>page=2&limit=1</b></li>   </ul>",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "example": "FirmName"
-                },
-                "address": {
-                  "type": "string",
-                  "example": "FirmAdress"
-                },
-                "phoneNo": {
-                  "type": "string",
-                  "example": "+2602222"
-                },
-                "tpinNo": {
-                  "type": "string",
-                  "example": "22222"
-                },
-                "email": {
-                  "type": "string",
-                  "example": "firm@gmail.com"
-                },
-                "status": {
-                  "type": "string",
-                  "example": "1 or 2"
-                }
-              }
-            }
-          }
-        ],
+        "description": "\r  You can send query with endpoint for search[], sort[], page and limit.\r  <ul> Examples:\r   <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>\r   <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>\r   <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>",
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "204": {
-            "description": "No Content"
-          },
-          "404": {
-            "description": "Not Found"
           }
         }
       },
