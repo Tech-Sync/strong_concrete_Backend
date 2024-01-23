@@ -210,9 +210,7 @@ module.exports = {
 
     res.status(isDeleted ? 204 : 404).send({
       error: !Boolean(isDeleted),
-      message: isDeleted
-        ? "Sale deleted successfuly."
-        : "Sale not found or something went wrong.",
+      message: "Sale not found or something went wrong.",
     });
   },
 

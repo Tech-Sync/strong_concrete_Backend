@@ -93,9 +93,7 @@ module.exports = {
 
     res.status(isDeleted ? 204 : 404).send({
       error: !Boolean(isDeleted),
-      message: isDeleted
-        ? "Material deleted successfuly."
-        : "Material not found or something went wrong.",
+      message:"Material not found or something went wrong.",
     });
   },
 
@@ -120,25 +118,29 @@ module.exports = {
     });
   },
 
-  multipleDelete: async (req,res) => {
-
-    const {ids} =req.body
+  multipleDelete: async (req, res) => {
+    const { ids } = req.body;
 
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
-      throw new Error('Invalid or empty IDs array in the request body.');
+        throw new Error('Invalid or empty IDs array in the request body.');
     }
 
-    const multipleİsDeleted = await Material.destroy({
-      where: {
-        id: ids,
-      },
-    });
+    let totalDeleted = 0;
 
-    res.status(multipleİsDeleted ? 204 : 404).send({
-      error: !Boolean(multipleİsDeleted),
-      message: multipleİsDeleted
-        ? `${multipleİsDeleted} materials deleted successfully.`
-        : "Material not found or something went wrong.",
+    for (const id of ids) {
+        const material = await Material.findByPk(id);
+
+        if (material) {
+            
+            material.updaterId = req.user.id;
+            await material.destroy();
+            totalDeleted++;
+        }
+    }
+
+    res.status(totalDeleted ? 204 : 404).send({
+        error: !Boolean(totalDeleted),
+        message: "materials not found or something went wrong."
     });
-  }
+},
 };

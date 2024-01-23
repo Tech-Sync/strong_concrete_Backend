@@ -133,9 +133,7 @@ module.exports = {
 
     res.status(isDeleted ? 204 : 404).send({
       error: !Boolean(isDeleted),
-      message: isDeleted
-        ? "Delivery deleted successfuly."
-        : "Delivery not found or something went wrong.",
+      message:"Delivery not found or something went wrong.",
     });
   },
 
@@ -160,25 +158,29 @@ module.exports = {
     });
   },
 
-  multipleDelete: async (req,res) => {
-
-    const {ids} =req.body
+  multipleDelete: async (req, res) => {
+    const { ids } = req.body;
 
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
-      throw new Error('Invalid or empty IDs array in the request body.');
+        throw new Error('Invalid or empty IDs array in the request body.');
     }
 
-    const multipleİsDeleted = await Delivery.destroy({
-      where: {
-        id: ids,
-      },
-    });
+    let totalDeleted = 0;
 
-    res.status(multipleİsDeleted ? 204 : 404).send({
-      error: !Boolean(multipleİsDeleted),
-      message: multipleİsDeleted
-        ? `${multipleİsDeleted} deliveries deleted successfully.`
-        : "Delivery not found or something went wrong.",
+    for (const id of ids) {
+        const delivery = await Delivery.findByPk(id);
+
+        if (delivery) {
+            
+            delivery.updaterId = req.user.id;
+            await delivery.destroy();
+            totalDeleted++;
+        }
+    }
+
+    res.status(totalDeleted ? 204 : 404).send({
+        error: !Boolean(totalDeleted),
+        message: "Delivery not found or something went wrong."
     });
-  }
+},
 };

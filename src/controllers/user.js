@@ -78,9 +78,7 @@ module.exports = {
 console.log(isDeleted);
     res.status(isDeleted ? 204 : 404).send({
       error: !Boolean(isDeleted),
-      message: isDeleted
-        ? "User deleted successfuly."
-        : "User not found or something went wrong.",
+      message: "User not found or something went wrong.",
     });
   },
 
@@ -99,31 +97,31 @@ console.log(isDeleted);
         : "User not found or something went wrong.",
     });
   },
-  multipleDelete: async (req,res) => {
-
-    const {ids} =req.body
+  multipleDelete: async (req, res) => {
+    const { ids } = req.body;
 
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
-      throw new Error('Invalid or empty IDs array in the request body.');
+        throw new Error('Invalid or empty IDs array in the request body.');
     }
 
-    const multipleİsDeleted = await User.destroy({
-      where: {
-        id: ids,
-      },
-    });
+    let totalDeleted = 0;
 
-    console.log(multipleİsDeleted)
+    for (const id of ids) {
+        const user = await User.findByPk(id);
 
-    res.status(multipleİsDeleted ? 204 : 404).send({
-      error: !Boolean(multipleİsDeleted),
-      
-      message: (multipleİsDeleted
-        ? `${ids.length} User deleted successfully.`
-        : "User not found or something went wrong."),
-        
+        if (user) {
+         
+            user.updaterId = req.user.id;
+            await user.destroy();
+            totalDeleted++;
+        }
+    }
+
+    res.status(totalDeleted ? 204 : 404).send({
+        error: !Boolean(totalDeleted),
+        message: "users not found or something went wrong."
     });
-  },
+},
 
   uptadePassword: async (req, res) => {
     /* 

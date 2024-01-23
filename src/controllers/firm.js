@@ -96,9 +96,7 @@ module.exports = {
 
     res.status(isDeleted ? 204 : 404).send({
       error: !Boolean(isDeleted),
-      message: isDeleted
-        ? "Firm deleted successfuly."
-        : "Firm not found or something went wrong.",
+      message:"Firm not found or something went wrong.",
     });
   },
 
@@ -121,27 +119,31 @@ module.exports = {
     });
   },
 
-  multipleDelete: async (req,res) => {
-
-    const {ids} =req.body
+  multipleDelete: async (req, res) => {
+    const { ids } = req.body;
 
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
-      throw new Error('Invalid or empty IDs array in the request body.');
+        throw new Error('Invalid or empty IDs array in the request body.');
     }
 
-    const multipleİsDeleted = await Firm.destroy({
-      where: {
-        id: ids,
-      },
-    });
+    let totalDeleted = 0;
 
-    res.status(multipleİsDeleted ? 204 : 404).send({
-      error: !Boolean(multipleİsDeleted),
-      message: multipleİsDeleted
-        ? `${multipleİsDeleted} firmss deleted successfully.`
-        : "Firm not found or something went wrong.",
+    for (const id of ids) {
+        const firm = await Firm.findByPk(id);
+
+        if (firm) {
+            // Her bir firmaya updaterId ekleyin
+            firm.updaterId = req.user.id;
+            await firm.destroy();
+            totalDeleted++;
+        }
+    }
+
+    res.status(totalDeleted ? 204 : 404).send({
+        error: !Boolean(totalDeleted),
+        message: "Firms not found or something went wrong."
     });
-  }
+},
 
   
 };
