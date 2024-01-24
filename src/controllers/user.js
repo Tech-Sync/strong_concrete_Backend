@@ -165,7 +165,57 @@ console.log(isDeleted);
     await user.save();
     res.status(200).send({ message: "Password updated successfully!", user });
   },
+  uptadeEmail: async (req, res) => {
+    /* 
+        #swagger.tags = ['User']
+        #swagger.summary = 'Update User Password'
+        #swagger.description = `
+          <b>-</b> User should be logged in already.<br>
+          <b>-</b> Send access token in header.`
+        #swagger.parameters['body'] = {
+          in: 'body',
+          required: true,
+          schema: {
+            password:'aA12345.',
+            newPassword:'54321aA?',
+            reNewPassword:'54321aA?'
+          }
+        } 
+     */
+    const { currentEmail, newEmail, reNewEmail } = req.body;
+    const { id } = req.user;
+    const user = await User.findOne({
+      where: { id },
+    });
 
+    if (!user) {
+      res.errorStatusCode = 402;
+      throw new Error("User not found! ");
+    }
+    if (user.email != currentEmail) {
+      throw new Error("Current email didn't match!");
+    }
+
+    if (!user.isActive) {
+      res.errorStatusCode = 402;
+      throw new Error("User is not active! ");
+    }
+   
+    if (currentEmail === newEmail) {
+      throw new Error("New email cannot equal current  email!");
+    }
+    if (newEmail != reNewEmail) {
+      throw new Error("newEmail, reNewEmail  must be the same!");
+    }
+
+    
+    user.isVerified = false
+    user.email = newEmail
+    await user.save();
+    // userInfo, fileName, Subject
+    sendEmail(user, "verify-email", "Email Verification")
+    res.status(200).send({ message: "Check the e-mail sent to your new e-mail address!", user });
+  },
   forgetPassword: async (req, res) => {
     /* 
         #swagger.tags = ['User']
