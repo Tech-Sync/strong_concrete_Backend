@@ -89,9 +89,7 @@ module.exports = {
 
     res.status(isDeleted ? 204 : 404).send({
       error: !Boolean(isDeleted),
-      message: isDeleted
-        ? "Vehicle deleted successfuly."
-        : "Vehicle not found or something went wrong.",
+      message: "Vehicle not found or something went wrong.",
     });
   },
 
@@ -113,4 +111,29 @@ module.exports = {
         : "Vehicle not found or something went wrong.",
     });
   },
+  multipleDelete: async (req, res) => {
+    const { ids } = req.body;
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+        throw new Error('Invalid or empty IDs array in the request body.');
+    }
+
+    let totalDeleted = 0;
+
+    for (const id of ids) {
+        const vehicle = await Vehicle.findByPk(id);
+
+        if (vehicle) {
+            
+            vehicle.updaterId = req.user.id;
+            await vehicle.destroy();
+            totalDeleted++;
+        }
+    }
+
+    res.status(totalDeleted ? 204 : 404).send({
+        error: !Boolean(totalDeleted),
+        message: "vehicles not found or something went wrong."
+    });
+},
 };

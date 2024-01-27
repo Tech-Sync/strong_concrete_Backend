@@ -127,9 +127,7 @@ module.exports = {
 
     res.status(isDeleted ? 204 : 404).send({
       error: !Boolean(isDeleted),
-      message: isDeleted
-        ? "PurchaseAccount deleted successfuly."
-        : "PurchaseAccount not found or something went wrong.",
+      message:"PurchaseAccount not found or something went wrong.",
     });
   },
 
@@ -151,4 +149,30 @@ module.exports = {
         : "PurchaseAccount not found or something went wrong.",
     });
   },
+  multipleDelete: async (req, res) => {
+    const { ids } = req.body;
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+        throw new Error('Invalid or empty IDs array in the request body.');
+    }
+
+    let totalDeleted = 0;
+
+    for (const id of ids) {
+        const purchaseAccount = await PurchaseAccount.findByPk(id);
+
+        if (purchaseAccount) {
+
+            purchaseAccount.updaterId = req.user.id;
+            await purchaseAccount.destroy();
+            totalDeleted++;
+        }
+    }
+
+    res.status(totalDeleted ? 204 : 404).send({
+        error: !Boolean(totalDeleted),
+        message: "purchaseAccounts not found or something went wrong."
+    });
+},
+  
 };

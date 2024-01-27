@@ -210,9 +210,7 @@ module.exports = {
 
     res.status(isDeleted ? 204 : 404).send({
       error: !Boolean(isDeleted),
-      message: isDeleted
-        ? "Sale deleted successfuly."
-        : "Sale not found or something went wrong.",
+      message: "Sale not found or something went wrong.",
     });
   },
 
@@ -234,4 +232,25 @@ module.exports = {
         : "Sale not found or something went wrong.",
     });
   },
+  multipleDelete: async (req,res) => {
+
+    const {ids} =req.body
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      throw new Error('Invalid or empty IDs array in the request body.');
+    }
+
+    const multipleİsDeleted = await Sale.destroy({
+      where: {
+        id: ids,
+      },
+    });
+
+    res.status(multipleİsDeleted ? 204 : 404).send({
+      error: !Boolean(multipleİsDeleted),
+      message: multipleİsDeleted
+        ? `${multipleİsDeleted} Sale deleted successfully.`
+        : "Sale not found or something went wrong.",
+    });
+  }
 };

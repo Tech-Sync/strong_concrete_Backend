@@ -114,9 +114,7 @@ module.exports = {
 
     res.status(isDeleted ? 204 : 404).send({
       error: !Boolean(isDeleted),
-      message: isDeleted
-        ? "Product deleted succesfully"
-        : "Product not found or something went wrong.",
+      message: "Product not found or something went wrong.",
     });
   },
 
@@ -138,4 +136,29 @@ module.exports = {
         : "Product not found or something went wrong.",
     });
   },
+  multipleDelete: async (req, res) => {
+    const { ids } = req.body;
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+        throw new Error('Invalid or empty IDs array in the request body.');
+    }
+
+    let totalDeleted = 0;
+
+    for (const id of ids) {
+        const product = await Product.findByPk(id);
+
+        if (product) {
+           
+            product.updaterId = req.user.id;
+            await product.destroy();
+            totalDeleted++;
+        }
+    }
+
+    res.status(totalDeleted ? 204 : 404).send({
+        error: !Boolean(totalDeleted),
+        message: "products not found or something went wrong."
+    });
+},
 };
