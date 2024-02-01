@@ -14,9 +14,12 @@ module.exports = {
         description:'Includes deleted delivery as well, Default value is false'
       }
     */
-    const data = await Delivery.findAndCountAll();
+    const data = await req.getModelList(Delivery);
 
-    res.status(200).send(data);
+    res.status(200).send({
+      details: await req.getModelListDetails(Delivery),
+      data,
+    });
   },
 
   create: async (req, res) => {
@@ -133,7 +136,7 @@ module.exports = {
 
     res.status(isDeleted ? 204 : 404).send({
       error: !Boolean(isDeleted),
-      message:"Delivery not found or something went wrong.",
+      message: "Delivery not found or something went wrong.",
     });
   },
 
@@ -162,25 +165,24 @@ module.exports = {
     const { ids } = req.body;
 
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
-        throw new Error('Invalid or empty IDs array in the request body.');
+      throw new Error("Invalid or empty IDs array in the request body.");
     }
 
     let totalDeleted = 0;
 
     for (const id of ids) {
-        const delivery = await Delivery.findByPk(id);
+      const delivery = await Delivery.findByPk(id);
 
-        if (delivery) {
-            
-            delivery.updaterId = req.user.id;
-            await delivery.destroy();
-            totalDeleted++;
-        }
+      if (delivery) {
+        delivery.updaterId = req.user.id;
+        await delivery.destroy();
+        totalDeleted++;
+      }
     }
 
     res.status(totalDeleted ? 204 : 404).send({
-        error: !Boolean(totalDeleted),
-        message: "Delivery not found or something went wrong."
+      error: !Boolean(totalDeleted),
+      message: "Delivery not found or something went wrong.",
     });
-},
+  },
 };

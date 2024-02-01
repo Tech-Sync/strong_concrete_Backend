@@ -14,9 +14,12 @@ module.exports = {
             description:'Includes deleted materials as well, default value is false'
           }
     */
-    const data = await Material.findAndCountAll();
+    const data = await req.getModelList(Material);
 
-    res.status(200).send(data);
+    res.status(200).send({
+      details: await req.getModelListDetails(Material),
+      data,
+    });
   },
 
   create: async (req, res) => {
@@ -93,7 +96,7 @@ module.exports = {
 
     res.status(isDeleted ? 204 : 404).send({
       error: !Boolean(isDeleted),
-      message:"Material not found or something went wrong.",
+      message: "Material not found or something went wrong.",
     });
   },
 
@@ -122,25 +125,24 @@ module.exports = {
     const { ids } = req.body;
 
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
-        throw new Error('Invalid or empty IDs array in the request body.');
+      throw new Error("Invalid or empty IDs array in the request body.");
     }
 
     let totalDeleted = 0;
 
     for (const id of ids) {
-        const material = await Material.findByPk(id);
+      const material = await Material.findByPk(id);
 
-        if (material) {
-            
-            material.updaterId = req.user.id;
-            await material.destroy();
-            totalDeleted++;
-        }
+      if (material) {
+        material.updaterId = req.user.id;
+        await material.destroy();
+        totalDeleted++;
+      }
     }
 
     res.status(totalDeleted ? 204 : 404).send({
-        error: !Boolean(totalDeleted),
-        message: "materials not found or something went wrong."
+      error: !Boolean(totalDeleted),
+      message: "materials not found or something went wrong.",
     });
-},
+  },
 };

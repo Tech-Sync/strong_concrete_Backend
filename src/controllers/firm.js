@@ -15,9 +15,12 @@ module.exports = {
                     <li>URL/?<b>page=2&limit=1</b></li>
                 </ul>`
     */
-    const data = await Firm.findAndCountAll();
+    const data = await req.getModelList(Firm);
 
-    res.status(200).send(data);
+    res.status(200).send({
+      details: await req.getModelListDetails(Firm),
+      data,
+    });
   },
 
   create: async (req, res) => {
@@ -96,7 +99,7 @@ module.exports = {
 
     res.status(isDeleted ? 204 : 404).send({
       error: !Boolean(isDeleted),
-      message:"Firm not found or something went wrong.",
+      message: "Firm not found or something went wrong.",
     });
   },
 
@@ -123,27 +126,25 @@ module.exports = {
     const { ids } = req.body;
 
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
-        throw new Error('Invalid or empty IDs array in the request body.');
+      throw new Error("Invalid or empty IDs array in the request body.");
     }
 
     let totalDeleted = 0;
 
     for (const id of ids) {
-        const firm = await Firm.findByPk(id);
+      const firm = await Firm.findByPk(id);
 
-        if (firm) {
-            // Her bir firmaya updaterId ekleyin
-            firm.updaterId = req.user.id;
-            await firm.destroy();
-            totalDeleted++;
-        }
+      if (firm) {
+        // Her bir firmaya updaterId ekleyin
+        firm.updaterId = req.user.id;
+        await firm.destroy();
+        totalDeleted++;
+      }
     }
 
     res.status(totalDeleted ? 204 : 404).send({
-        error: !Boolean(totalDeleted),
-        message: "Firms not found or something went wrong."
+      error: !Boolean(totalDeleted),
+      message: "Firms not found or something went wrong.",
     });
-},
-
-  
+  },
 };

@@ -21,10 +21,6 @@ module.exports = {
 
     // const FirmId = req.query.firmId;
 
-    const data = await PurchaseAccount.findAndCountAll({
-      // include: ["Firm", "Material"],
-      // where: { FirmId },
-    });
     // const balance = await PurchaseAccount.sum("balance", { where: { FirmId : FirmId} });
 
     // data.totalBalance = balance
@@ -46,7 +42,12 @@ module.exports = {
     //   "Material"
     // ]);
 
-    res.status(200).send(data);
+    const data = await req.getModelList(PurchaseAccount);
+    
+    res.status(200).send({
+      details: await req.getModelListDetails(PurchaseAccount),
+      data,
+    });
   },
 
   create: async (req, res) => {

@@ -14,9 +14,12 @@ module.exports = {
             description:'Includes deleted users as well, default value is false'
           }
     */
-    const data = await Product.findAndCountAll();
+    const data = await req.getModelList(Product);
 
-    res.status(200).send(data);
+    res.status(200).send({
+      details: await req.getModelListDetails(Product),
+      data,
+    });
   },
 
   create: async (req, res) => {
@@ -140,25 +143,24 @@ module.exports = {
     const { ids } = req.body;
 
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
-        throw new Error('Invalid or empty IDs array in the request body.');
+      throw new Error("Invalid or empty IDs array in the request body.");
     }
 
     let totalDeleted = 0;
 
     for (const id of ids) {
-        const product = await Product.findByPk(id);
+      const product = await Product.findByPk(id);
 
-        if (product) {
-           
-            product.updaterId = req.user.id;
-            await product.destroy();
-            totalDeleted++;
-        }
+      if (product) {
+        product.updaterId = req.user.id;
+        await product.destroy();
+        totalDeleted++;
+      }
     }
 
     res.status(totalDeleted ? 204 : 404).send({
-        error: !Boolean(totalDeleted),
-        message: "products not found or something went wrong."
+      error: !Boolean(totalDeleted),
+      message: "products not found or something went wrong.",
     });
-},
+  },
 };
