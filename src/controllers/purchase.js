@@ -20,9 +20,12 @@ module.exports = {
                 </ul>'
         
     */
-    const data = await Purchase.findAndCountAll();
+    const data = await req.getModelList(Purchase);
 
-    res.status(200).send(data);
+    res.status(200).send({
+      details: await req.getModelListDetails(Purchase),
+      data,
+    });
   },
 
   create: async (req, res) => {
@@ -175,24 +178,24 @@ module.exports = {
     const { ids } = req.body;
 
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
-        throw new Error('Invalid or empty IDs array in the request body.');
+      throw new Error("Invalid or empty IDs array in the request body.");
     }
 
     let totalDeleted = 0;
 
     for (const id of ids) {
-        const purchase = await Purchase.findByPk(id);
+      const purchase = await Purchase.findByPk(id);
 
-        if (purchase) {
-            purchase.updaterId = req.user.id;
-            await purchase.destroy();
-            totalDeleted++;
-        }
+      if (purchase) {
+        purchase.updaterId = req.user.id;
+        await purchase.destroy();
+        totalDeleted++;
+      }
     }
 
     res.status(totalDeleted ? 204 : 404).send({
-        error: !Boolean(totalDeleted),
-        message: "purchases not found or something went wrong."
+      error: !Boolean(totalDeleted),
+      message: "purchases not found or something went wrong.",
     });
-},
+  },
 };

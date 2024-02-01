@@ -17,9 +17,12 @@ module.exports = {
                     <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01  The date must be in year-month-day format</b></li>
                 </ul>'
     */
-    const data = await SaleAccount.findAndCountAll({});
+    const data = await req.getModelList(SaleAccount);
 
-    res.status(200).send(data);
+    res.status(200).send({
+      details: await req.getModelListDetails(SaleAccount),
+      data,
+    });
   },
 
   create: async (req, res) => {
@@ -127,24 +130,24 @@ module.exports = {
     const { ids } = req.body;
 
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
-        throw new Error('Invalid or empty IDs array in the request body.');
+      throw new Error("Invalid or empty IDs array in the request body.");
     }
 
     let totalDeleted = 0;
 
     for (const id of ids) {
-        const saleAccount = await SaleAccount.findByPk(id);
+      const saleAccount = await SaleAccount.findByPk(id);
 
-        if (saleAccount) {
-            saleAccount.updaterId = req.user.id;
-            await saleAccount.destroy();
-            totalDeleted++;
-        }
+      if (saleAccount) {
+        saleAccount.updaterId = req.user.id;
+        await saleAccount.destroy();
+        totalDeleted++;
+      }
     }
 
     res.status(totalDeleted ? 204 : 404).send({
-        error: !Boolean(totalDeleted),
-        message: "saleAccounts not found or something went wrong."
+      error: !Boolean(totalDeleted),
+      message: "saleAccounts not found or something went wrong.",
     });
-},
+  },
 };

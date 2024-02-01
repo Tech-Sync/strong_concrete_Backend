@@ -20,8 +20,8 @@ module.exports = {
 
     // const data = await User.findAndCountAll({ paranoid: false }); // to see deleted users as well -> findAndCountAll({paranoid:false})
     const data = await req.getModelList(User);
+    
     res.status(200).send({
-      error: false,
       details: await req.getModelListDetails(User),
       data,
     });
@@ -75,7 +75,6 @@ module.exports = {
 
      */
     const isDeleted = await User.destroy({ where: { id: req.params.id } }); // add this att. for hard delete ->   force: true
-console.log(isDeleted);
     res.status(isDeleted ? 204 : 404).send({
       error: !Boolean(isDeleted),
       message: "User not found or something went wrong.",
@@ -101,27 +100,26 @@ console.log(isDeleted);
     const { ids } = req.body;
 
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
-        throw new Error('Invalid or empty IDs array in the request body.');
+      throw new Error("Invalid or empty IDs array in the request body.");
     }
 
     let totalDeleted = 0;
 
     for (const id of ids) {
-        const user = await User.findByPk(id);
+      const user = await User.findByPk(id);
 
-        if (user) {
-         
-            user.updaterId = req.user.id;
-            await user.destroy();
-            totalDeleted++;
-        }
+      if (user) {
+        user.updaterId = req.user.id;
+        await user.destroy();
+        totalDeleted++;
+      }
     }
 
     res.status(totalDeleted ? 204 : 404).send({
-        error: !Boolean(totalDeleted),
-        message: "users not found or something went wrong."
+      error: !Boolean(totalDeleted),
+      message: "users not found or something went wrong.",
     });
-},
+  },
 
   uptadePassword: async (req, res) => {
     /* 
@@ -200,7 +198,7 @@ console.log(isDeleted);
       res.errorStatusCode = 402;
       throw new Error("User is not active! ");
     }
-   
+
     if (currentEmail === newEmail) {
       throw new Error("New email cannot equal current  email!");
     }
@@ -208,13 +206,17 @@ console.log(isDeleted);
       throw new Error("newEmail, reNewEmail  must be the same!");
     }
 
-    
-    user.isVerified = false
-    user.email = newEmail
+    user.isVerified = false;
+    user.email = newEmail;
     await user.save();
     // userInfo, fileName, Subject
-    sendEmail(user, "verify-email", "Email Verification")
-    res.status(200).send({ message: "Check the e-mail sent to your new e-mail address!", user });
+    sendEmail(user, "verify-email", "Email Verification");
+    res
+      .status(200)
+      .send({
+        message: "Check the e-mail sent to your new e-mail address!",
+        user,
+      });
   },
   forgetPassword: async (req, res) => {
     /* 
