@@ -92,9 +92,7 @@ module.exports = {
       throw new Error(" User is not active!");
     }
 
-    res.send({
-      Token: setToken(user),
-    });
+    res.send(setToken(user));
   },
   refresh: async (req, res) => {
     /* 
@@ -144,9 +142,7 @@ module.exports = {
           throw new Error(" User is not active!");
         }
 
-        res.send({
-          Token: setToken(user, true),
-        });
+        res.send(setToken(user, true));
       }
     );
   },
@@ -154,7 +150,7 @@ module.exports = {
     /* 
         #swagger.tags = ['Authentication']
         #swagger.summary = 'User Logout'
-        #swagger.description = `<b>-</b> No need any doing for logout. You must deleted Bearer Token from your state.`
+        #swagger.description = `<b>-</b> No need any doing for logout. You must use SignOut function from next-auth.`
     */
     res.send({
       message:

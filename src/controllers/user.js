@@ -20,8 +20,8 @@ module.exports = {
 
     // const data = await User.findAndCountAll({ paranoid: false }); // to see deleted users as well -> findAndCountAll({paranoid:false})
     const data = await req.getModelList(User);
+    
     res.status(200).send({
-      error: false,
       details: await req.getModelListDetails(User),
       data,
     });
@@ -75,12 +75,9 @@ module.exports = {
 
      */
     const isDeleted = await User.destroy({ where: { id: req.params.id } }); // add this att. for hard delete ->   force: true
-
     res.status(isDeleted ? 204 : 404).send({
       error: !Boolean(isDeleted),
-      message: isDeleted
-        ? "User deleted successfuly."
-        : "User not found or something went wrong.",
+      message: "User not found or something went wrong.",
     });
   },
 
@@ -97,6 +94,30 @@ module.exports = {
       message: isRestored
         ? "User restored successfuly."
         : "User not found or something went wrong.",
+    });
+  },
+  multipleDelete: async (req, res) => {
+    const { ids } = req.body;
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      throw new Error("Invalid or empty IDs array in the request body.");
+    }
+
+    let totalDeleted = 0;
+
+    for (const id of ids) {
+      const user = await User.findByPk(id);
+
+      if (user) {
+        user.updaterId = req.user.id;
+        await user.destroy();
+        totalDeleted++;
+      }
+    }
+
+    res.status(totalDeleted ? 204 : 404).send({
+      error: !Boolean(totalDeleted),
+      message: "users not found or something went wrong.",
     });
   },
 
@@ -142,7 +163,61 @@ module.exports = {
     await user.save();
     res.status(200).send({ message: "Password updated successfully!", user });
   },
+  uptadeEmail: async (req, res) => {
+    /* 
+        #swagger.tags = ['User']
+        #swagger.summary = 'Update User Password'
+        #swagger.description = `
+          <b>-</b> User should be logged in already.<br>
+          <b>-</b> Send access token in header.`
+        #swagger.parameters['body'] = {
+          in: 'body',
+          required: true,
+          schema: {
+            password:'aA12345.',
+            newPassword:'54321aA?',
+            reNewPassword:'54321aA?'
+          }
+        } 
+     */
+    const { currentEmail, newEmail, reNewEmail } = req.body;
+    const { id } = req.user;
+    const user = await User.findOne({
+      where: { id },
+    });
 
+    if (!user) {
+      res.errorStatusCode = 402;
+      throw new Error("User not found! ");
+    }
+    if (user.email != currentEmail) {
+      throw new Error("Current email didn't match!");
+    }
+
+    if (!user.isActive) {
+      res.errorStatusCode = 402;
+      throw new Error("User is not active! ");
+    }
+
+    if (currentEmail === newEmail) {
+      throw new Error("New email cannot equal current  email!");
+    }
+    if (newEmail != reNewEmail) {
+      throw new Error("newEmail, reNewEmail  must be the same!");
+    }
+
+    user.isVerified = false;
+    user.email = newEmail;
+    await user.save();
+    // userInfo, fileName, Subject
+    sendEmail(user, "verify-email", "Email Verification");
+    res
+      .status(200)
+      .send({
+        message: "Check the e-mail sent to your new e-mail address!",
+        user,
+      });
+  },
   forgetPassword: async (req, res) => {
     /* 
         #swagger.tags = ['User']

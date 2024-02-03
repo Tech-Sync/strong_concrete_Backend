@@ -23,8 +23,10 @@ router
   .put(permissions.isItself, user.update)
   .delete(permissions.isAdmin, user.delete);
 router.route("/update-password").post(user.uptadePassword);
+router.route("/update-email").post(user.uptadeEmail);
 router.route("/restore/:id").get(permissions.isAdmin, user.restore);
 router.route("/forget-password").post(user.forgetPassword);
 router.route("/reset-password/:uid/:emailToken").post(user.resetPassword);
+router.route("/multiple-delete").post(permissions.isAdmin, user.multipleDelete);
 
 module.exports = router;

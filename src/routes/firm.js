@@ -3,7 +3,7 @@ const router = require("express").Router();
 
 const firm = require("../controllers/firm");
 const permissions = require("../middlewares/permissions");
-if (process.env.NODE_ENV !== 'development') {
+if (process.env.NODE_ENV !== "development") {
   router.use(permissions.isLogin);
 }
 
@@ -18,5 +18,7 @@ router
   .delete(permissions.isAdmin, firm.delete);
 
 router.route("/restore/:id").get(permissions.isAdmin, firm.restore);
+
+router.route("/multiple-delete").post(permissions.isAdmin, firm.multipleDelete);
 
 module.exports = router;

@@ -15,11 +15,12 @@ module.exports = {
             description:'Includes deleted vehicles as well, default value is false'
           }
      */
-    const data = await Vehicle.findAndCountAll({
-      // include: { model: Production },
-    });
+    const data = await req.getModelList(Production);
 
-    res.status(200).send(data);
+    res.status(200).send({
+      details: await req.getModelListDetails(Production),
+      data,
+    });
   },
 
   create: async (req, res) => {
@@ -89,9 +90,7 @@ module.exports = {
 
     res.status(isDeleted ? 204 : 404).send({
       error: !Boolean(isDeleted),
-      message: isDeleted
-        ? "Vehicle deleted successfuly."
-        : "Vehicle not found or something went wrong.",
+      message: "Vehicle not found or something went wrong.",
     });
   },
 
@@ -111,6 +110,30 @@ module.exports = {
       message: isRestored
         ? "Vehicle restored successfuly."
         : "Vehicle not found or something went wrong.",
+    });
+  },
+  multipleDelete: async (req, res) => {
+    const { ids } = req.body;
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      throw new Error("Invalid or empty IDs array in the request body.");
+    }
+
+    let totalDeleted = 0;
+
+    for (const id of ids) {
+      const vehicle = await Vehicle.findByPk(id);
+
+      if (vehicle) {
+        vehicle.updaterId = req.user.id;
+        await vehicle.destroy();
+        totalDeleted++;
+      }
+    }
+
+    res.status(totalDeleted ? 204 : 404).send({
+      error: !Boolean(totalDeleted),
+      message: "vehicles not found or something went wrong.",
     });
   },
 };

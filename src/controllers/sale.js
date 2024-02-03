@@ -20,9 +20,12 @@ module.exports = {
                     <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01  The date must be in year-month-day format</b></li>
                 </ul>'
     */
-    const data = await Sale.findAndCountAll();
+    const data = await req.getModelList(Sale);
 
-    res.status(200).send(data);
+    res.status(200).send({
+      details: await req.getModelListDetails(Sale),
+      data,
+    });
   },
 
   create: async (req, res) => {
@@ -210,9 +213,7 @@ module.exports = {
 
     res.status(isDeleted ? 204 : 404).send({
       error: !Boolean(isDeleted),
-      message: isDeleted
-        ? "Sale deleted successfuly."
-        : "Sale not found or something went wrong.",
+      message: "Sale not found or something went wrong.",
     });
   },
 
@@ -231,6 +232,26 @@ module.exports = {
       error: !Boolean(isRestored),
       message: isRestored
         ? "Sale restored successfuly."
+        : "Sale not found or something went wrong.",
+    });
+  },
+  multipleDelete: async (req, res) => {
+    const { ids } = req.body;
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      throw new Error("Invalid or empty IDs array in the request body.");
+    }
+
+    const multipleİsDeleted = await Sale.destroy({
+      where: {
+        id: ids,
+      },
+    });
+
+    res.status(multipleİsDeleted ? 204 : 404).send({
+      error: !Boolean(multipleİsDeleted),
+      message: multipleİsDeleted
+        ? `${multipleİsDeleted} Sale deleted successfully.`
         : "Sale not found or something went wrong.",
     });
   },

@@ -15,9 +15,12 @@ module.exports = {
                     <li>URL/?<b>page=2&limit=1</b></li>
                 </ul>`
     */
-    const data = await Firm.findAndCountAll();
+    const data = await req.getModelList(Firm);
 
-    res.status(200).send(data);
+    res.status(200).send({
+      details: await req.getModelListDetails(Firm),
+      data,
+    });
   },
 
   create: async (req, res) => {
@@ -38,9 +41,10 @@ module.exports = {
           }
         }
       */
-    const name = req.body?.name.toUpperCase()
-    const firm = await Firm.findOne({where:{name}})
-    if (firm) throw new Error("With this name, Firm is already exist in DataBase !");
+    const name = req.body?.name.toUpperCase();
+    const firm = await Firm.findOne({ where: { name } });
+    if (firm)
+      throw new Error("With this name, Firm is already exist in DataBase !");
     req.body.creatorId = req.user.id;
     const data = await Firm.create(req.body);
 
@@ -95,9 +99,7 @@ module.exports = {
 
     res.status(isDeleted ? 204 : 404).send({
       error: !Boolean(isDeleted),
-      message: isDeleted
-        ? "Firm deleted successfuly."
-        : "Firm not found or something went wrong.",
+      message: "Firm not found or something went wrong.",
     });
   },
 
@@ -117,6 +119,32 @@ module.exports = {
       message: isRestored
         ? "Firm restored successfuly."
         : "Firm not found or something went wrong.",
+    });
+  },
+
+  multipleDelete: async (req, res) => {
+    const { ids } = req.body;
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      throw new Error("Invalid or empty IDs array in the request body.");
+    }
+
+    let totalDeleted = 0;
+
+    for (const id of ids) {
+      const firm = await Firm.findByPk(id);
+
+      if (firm) {
+        // Her bir firmaya updaterId ekleyin
+        firm.updaterId = req.user.id;
+        await firm.destroy();
+        totalDeleted++;
+      }
+    }
+
+    res.status(totalDeleted ? 204 : 404).send({
+      error: !Boolean(totalDeleted),
+      message: "Firms not found or something went wrong.",
     });
   },
 };

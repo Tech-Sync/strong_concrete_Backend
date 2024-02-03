@@ -21,10 +21,6 @@ module.exports = {
 
     // const FirmId = req.query.firmId;
 
-    const data = await PurchaseAccount.findAndCountAll({
-      // include: ["Firm", "Material"],
-      // where: { FirmId },
-    });
     // const balance = await PurchaseAccount.sum("balance", { where: { FirmId : FirmId} });
 
     // data.totalBalance = balance
@@ -46,7 +42,12 @@ module.exports = {
     //   "Material"
     // ]);
 
-    res.status(200).send(data);
+    const data = await req.getModelList(PurchaseAccount);
+    
+    res.status(200).send({
+      details: await req.getModelListDetails(PurchaseAccount),
+      data,
+    });
   },
 
   create: async (req, res) => {
@@ -127,9 +128,7 @@ module.exports = {
 
     res.status(isDeleted ? 204 : 404).send({
       error: !Boolean(isDeleted),
-      message: isDeleted
-        ? "PurchaseAccount deleted successfuly."
-        : "PurchaseAccount not found or something went wrong.",
+      message:"PurchaseAccount not found or something went wrong.",
     });
   },
 
@@ -151,4 +150,30 @@ module.exports = {
         : "PurchaseAccount not found or something went wrong.",
     });
   },
+  multipleDelete: async (req, res) => {
+    const { ids } = req.body;
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+        throw new Error('Invalid or empty IDs array in the request body.');
+    }
+
+    let totalDeleted = 0;
+
+    for (const id of ids) {
+        const purchaseAccount = await PurchaseAccount.findByPk(id);
+
+        if (purchaseAccount) {
+
+            purchaseAccount.updaterId = req.user.id;
+            await purchaseAccount.destroy();
+            totalDeleted++;
+        }
+    }
+
+    res.status(totalDeleted ? 204 : 404).send({
+        error: !Boolean(totalDeleted),
+        message: "purchaseAccounts not found or something went wrong."
+    });
+},
+  
 };
