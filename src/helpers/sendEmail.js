@@ -14,7 +14,7 @@ function sendEmail(user, fileName, subject) {
     html: htmlTemplate
       .replace("user.emailToken", user.emailToken)
       .replace("companyMailAddress", process.env.EMAIL_ADDRESS)
-      .replace("frontend_url", "http://127.0.0.1:8000")
+      .replace("frontend_url", "http://localhost:3000/verify-email")
       .replace("encoded", encode(user.id)),
   };
 
