@@ -247,7 +247,7 @@ module.exports = {
     sendEmail(user, "reset-password", "Reset Password");
 
     res.status(200).send({
-      message: "Email has been sent.",
+      message: `Email has been sent to ${email}` ,
     });
   },
 
