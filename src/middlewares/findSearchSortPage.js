@@ -54,8 +54,8 @@ module.exports = (req, res, next) => {
     order: orderClause,
     offset,
     limit,
-    paranoid:  //(req.query?.showDeleted) ? true : false 
-  })
+    paranoid: false //(req.query?.showDeleted) ? true : false 
+  });
 
   };
 

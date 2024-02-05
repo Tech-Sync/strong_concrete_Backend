@@ -21,7 +21,7 @@ const User = sequelize.define(
         msg: "This nrc no is already in use.",
       },
     },
-    phoneNO: {
+    phoneNo: {
       type: DataTypes.STRING(15),
       allowNull: false,
     },
