@@ -64,8 +64,8 @@ PurchaseAccount.belongsTo(User, { foreignKey: "creatorId", as: "creator" });
 PurchaseAccount.belongsTo(User, { foreignKey: "updaterId", as: "updater" });
 
 // Purchase  - PurchaseAccount
-Purchase.hasOne(PurchaseAccount);
-PurchaseAccount.belongsTo(Purchase);
+// Purchase.hasOne(PurchaseAccount);
+// PurchaseAccount.belongsTo(Purchase);
 
 // Firm - PurchaseAccount
 Firm.hasMany(PurchaseAccount);
