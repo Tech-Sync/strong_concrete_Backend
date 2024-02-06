@@ -44,7 +44,7 @@ module.exports = (req, res, next) => {
 
    
 
-  req.getModelList = async (Model,filters={},include = null) => {
+  req.getModelList = async (Model, paranoid=true, filters={}, include = null) => {
     
     whereClause={...whereClause, ...filters}
 
@@ -54,7 +54,7 @@ module.exports = (req, res, next) => {
     order: orderClause,
     offset,
     limit,
-    paranoid: false //(req.query?.showDeleted) ? true : false 
+    paranoid
   });
 
   };

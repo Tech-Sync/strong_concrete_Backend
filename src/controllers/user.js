@@ -19,8 +19,17 @@ module.exports = {
     */
 
     // const data = await User.findAndCountAll({ paranoid: false }); // to see deleted users as well -> findAndCountAll({paranoid:false})
-    const data = await req.getModelList(User);
+    const { showDeleted } = req.query;
+    let paranoid;
+        console.log(showDeleted);
     
+    if (showDeleted && req.user.role ===5 ) {
+      paranoid= false 
+      console.log("if'e girdi");
+    }
+
+    const data = await req.getModelList(User, paranoid);
+
     res.status(200).send({
       details: await req.getModelListDetails(User),
       data,
@@ -211,12 +220,10 @@ module.exports = {
     await user.save();
     // userInfo, fileName, Subject
     sendEmail(user, "verify-email", "Email Verification");
-    res
-      .status(200)
-      .send({
-        message: "Check the e-mail sent to your new e-mail address!",
-        user,
-      });
+    res.status(200).send({
+      message: "Check the e-mail sent to your new e-mail address!",
+      user,
+    });
   },
   forgetPassword: async (req, res) => {
     /* 
