@@ -236,6 +236,23 @@ module.exports = {
     });
   },
   multipleDelete: async (req, res) => {
+     /* 
+      #swagger.tags = ['Sale']
+      #swagger.summary = 'Multiple-Delete  Sale with ID'
+      #swagger.description = `<b>-</b> Send access token in header.`
+       #swagger.parameters['body'] = {
+          in: 'body',
+          description: '
+            <ul> 
+              <li>You must write the IDs of the sales you want to delete into the array.</li>
+            </ul> ',
+          required: true,
+          schema: {
+            "ids": [1,2,3]
+            
+          }
+        } 
+    */
     const { ids } = req.body;
 
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
