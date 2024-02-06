@@ -20,14 +20,9 @@ module.exports = {
 
     // const data = await User.findAndCountAll({ paranoid: false }); // to see deleted users as well -> findAndCountAll({paranoid:false})
     const { showDeleted } = req.query;
-    let paranoid;
-        console.log(showDeleted);
+  
+    let paranoid = showDeleted && req.user.role == 5 ? true : false  //we're checking here is user admin or not..
     
-    if (showDeleted && req.user.role ===5 ) {
-      paranoid= false 
-      console.log("if'e girdi");
-    }
-
     const data = await req.getModelList(User, paranoid);
 
     res.status(200).send({
