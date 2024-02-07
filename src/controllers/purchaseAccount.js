@@ -1,5 +1,6 @@
 "use strict";
 
+const Purchase = require("../models/purchase");
 const PurchaseAccount = require("../models/purchaseAccount");
 
 module.exports = {
@@ -26,23 +27,19 @@ module.exports = {
     // data.totalBalance = balance
 
     //! filtreleme ve include(iç içe denememiz lazım)
-    // const data = await req.getModelList(PurchaseAccount, {}
-    //   // İçteki include için filters
-    // , [
-    //   {
-    //     model: Firm,
-    //     include: [
-    //       // İçteki içteki include
-    //       {
-    //         model: OtherModel,
-    //         // Diğer seçenekler
-    //       }
-    //     ]
-    //   },
-    //   "Material"
-    // ]);
-
-    const data = await req.getModelList(PurchaseAccount);
+    
+    const data = await req.getModelList(PurchaseAccount, {},[
+      {
+        model:Purchase,
+        attributes: ["id", "MaterialId"], 
+        include: [
+          {
+            model: Firm,
+            attributes: ["id", "name"],
+          },
+        ],
+          }
+    ]);
     
     res.status(200).send({
       details: await req.getModelListDetails(PurchaseAccount),
