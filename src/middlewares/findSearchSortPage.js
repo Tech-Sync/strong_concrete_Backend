@@ -1,7 +1,7 @@
 const { Op } = require("sequelize");
 
 module.exports = (req, res, next) => {
-  let { search, startDate, endDate, sort, page, limit, offset } = req.query;
+  let { search, startDate, endDate, sort, page, limit, offset, showDeleted } = req.query;
 
   //? Başlangıç olarak bir boş filtre nesnesi oluşturun
   //* ?search[status]=SALER
@@ -42,19 +42,19 @@ module.exports = (req, res, next) => {
 
   req.getModelList = async (
     Model,
-    paranoid = false,
+    paranoid = true,
     filters = {},
     include = null
   ) => {
-    whereClause = { ...whereClause, ...filters };
+    const where = showDeleted && req.user.role === 5 ? whereClause : { ...whereClause, ...filters };
 
     return await Model.findAll({
-      where:
-        Object.keys(whereClause).length > 0 ? { [Op.or]: [whereClause] } : {},
+      where,
       include,
       order: orderClause,
       offset,
       limit,
+      paranoid, 
     });
   };
 
