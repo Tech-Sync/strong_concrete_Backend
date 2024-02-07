@@ -145,7 +145,7 @@ module.exports = {
     });
 
     if (!user) {
-      res.errorStatusCode = 402;
+      res.errorStatusCode = 404;
       throw new Error("User not found! ");
     }
     if (user.password != passwordEncrypt(password)) {
@@ -187,7 +187,7 @@ module.exports = {
     });
 
     if (!user) {
-      res.errorStatusCode = 402;
+      res.errorStatusCode = 404;
       throw new Error("User not found! ");
     }
     if (user.email != currentEmail) {
@@ -195,7 +195,7 @@ module.exports = {
     }
 
     if (!user.isActive) {
-      res.errorStatusCode = 402;
+      res.errorStatusCode = 403;
       throw new Error("User is not active! ");
     }
 

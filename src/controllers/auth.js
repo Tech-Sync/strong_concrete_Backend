@@ -69,7 +69,7 @@ module.exports = {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      res.errorStatusCode = 401;
+      res.errorStatusCode = 400;
       throw new Error("Email and Password are required!");
     }
 
@@ -78,17 +78,17 @@ module.exports = {
     });
 
     if (!user) {
-      res.errorStatusCode = 402;
+      res.errorStatusCode = 401;
       throw new Error(" Invalid Email or Password!");
     }
 
     if (!user.isVerified) {
-      res.errorStatusCode = 402;
+      res.errorStatusCode = 401;
       throw new Error(" Please verify your email address !");
     }
 
     if (!user.isActive) {
-      res.errorStatusCode = 402;
+      res.errorStatusCode = 403;
       throw new Error(" User is not active!");
     }
 
@@ -109,7 +109,7 @@ module.exports = {
     const refreshToken = req.body?.refresh;
 
     if (!refreshToken) {
-      res.errorStatusCode = 401;
+      res.errorStatusCode = 400;
       throw new Error("Please provide refresh token!");
     }
 
@@ -118,7 +118,7 @@ module.exports = {
       process.env.REFRESH_KEY,
       async function (err, userData) {
         if (err) {
-          res.status(401).send({
+          res.status(400).send({
             error: true,
             message: err.message,
           });
@@ -126,7 +126,7 @@ module.exports = {
 
         const { id, password } = userData;
         if (!id || !password) {
-          res.errorStatusCode = 401;
+          res.errorStatusCode = 400;
           throw new Error("Please provide ID and password in refresh token!");
         }
 
@@ -138,7 +138,7 @@ module.exports = {
         }
 
         if (!user.isActive) {
-          res.errorStatusCode = 402;
+          res.errorStatusCode = 403;
           throw new Error(" User is not active!");
         }
 
