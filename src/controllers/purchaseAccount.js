@@ -1,5 +1,6 @@
 "use strict";
 
+const Firm = require("../models/firm");
 const Purchase = require("../models/purchase");
 const PurchaseAccount = require("../models/purchaseAccount");
 
