@@ -97,6 +97,23 @@ module.exports = {
     });
   },
   multipleDelete: async (req, res) => {
+     /* 
+      #swagger.tags = ['User']
+      #swagger.summary = 'Multiple-Delete  User with ID'
+      #swagger.description = `<b>-</b> Send access token in header.`
+       #swagger.parameters['body'] = {
+          in: 'body',
+          description: '
+            <ul> 
+              <li>You must write the IDs of the users you want to delete into the array.</li>
+            </ul> ',
+          required: true,
+          schema: {
+            "ids": [1,2,3]
+            
+          }
+        } 
+    */
     const { ids } = req.body;
 
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
@@ -145,7 +162,7 @@ module.exports = {
     });
 
     if (!user) {
-      res.errorStatusCode = 402;
+      res.errorStatusCode = 404;
       throw new Error("User not found! ");
     }
     if (user.password != passwordEncrypt(password)) {
@@ -187,7 +204,7 @@ module.exports = {
     });
 
     if (!user) {
-      res.errorStatusCode = 402;
+      res.errorStatusCode = 404;
       throw new Error("User not found! ");
     }
     if (user.email != currentEmail) {
@@ -195,7 +212,7 @@ module.exports = {
     }
 
     if (!user.isActive) {
-      res.errorStatusCode = 402;
+      res.errorStatusCode = 403;
       throw new Error("User is not active! ");
     }
 
