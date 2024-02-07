@@ -46,7 +46,7 @@
           {
             "name": "body",
             "in": "body",
-            "description": "   <ul>    <li>The Email should be a verified, otherwise user can not login.</li>   </ul> ",
+            "description": "  <ul>   <li>The Email should be a verified, otherwise user can not login.</li>  </ul> ",
             "required": true,
             "schema": {
               "type": "object",
@@ -76,7 +76,7 @@
           "Authentication"
         ],
         "summary": "Verify Email",
-        "description": "\r  <b>-</b> When user verify email address, He/She will be directed email verify UI page with emailToken in query. <br>\r  <b>-</b> Catch the emailToken and send in query by call this API.",
+        "description": "  <b>-</b> When user verify email address, He/She will be directed email verify UI page with emailToken in query. <br>  <b>-</b> Catch the emailToken and send in query by call this API.",
         "parameters": [
           {
             "name": "emailToken",
@@ -101,12 +101,12 @@
           "Authentication"
         ],
         "summary": "User Register",
-        "description": "\r  <b>-</b> Only admin can register a user from admin panel. <br>\r  <b>-</b> Once register successful, an email will be sent to user email address.",
+        "description": "  <b>-</b> Only admin can register a user from admin panel. <br>  <b>-</b> Once register successful, an email will be sent to user email address.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
-            "description": "   <ul>    <li>The Email should be a valid email, otherwise can not do any function.</li>   <li>Password should includes least capital and lower case, number, special char, and min 8 lenght.</li>   </ul> ",
+            "description": "  <ul>   <li>The Email should be a valid email, otherwise can not do any function.</li>  <li>Password should includes least capital and lower case, number, special char, and min 8 lenght.</li>  </ul> ",
             "required": true,
             "schema": {
               "type": "object",
@@ -260,7 +260,7 @@
           {
             "name": "body",
             "in": "body",
-            "description": "   <ul>    <li>Send the object includes attributes that should be  .</li>   <li>Password can not be updated with this API.</li>   </ul> ",
+            "description": "  <ul>   <li>Send the object includes attributes that should be  .</li>  <li>Password can not be updated with this API.</li>  </ul> ",
             "required": true,
             "schema": {
               "type": "object",
@@ -309,7 +309,7 @@
           "User"
         ],
         "summary": "Update User Password",
-        "description": "\r  <b>-</b> User should be logged in already.<br>\r  <b>-</b> Send access token in header.",
+        "description": "  <b>-</b> User should be logged in already.<br>  <b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
@@ -347,7 +347,7 @@
           "User"
         ],
         "summary": "Update User Password",
-        "description": "\r  <b>-</b> User should be logged in already.<br>\r  <b>-</b> Send access token in header.",
+        "description": "  <b>-</b> User should be logged in already.<br>  <b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
@@ -407,7 +407,7 @@
           "User"
         ],
         "summary": "Forget Password",
-        "description": "\r  <b>-</b> Send user email in body. <br>\r  <b>-</b> Once user click reset password in the email, he/she will be redirected reset password UI page. <br>\r  <b>-</b> Catch <b>uid</b> and <b>emailToken</b> queries to use when reset password API called.",
+        "description": "  <b>-</b> Send user email in body. <br>  <b>-</b> Once user click reset password in the email, he/she will be redirected reset password UI page. <br>  <b>-</b> Catch <b>uid</b> and <b>emailToken</b> queries to use when reset password API called.",
         "parameters": [
           {
             "name": "body",
@@ -437,7 +437,7 @@
           "User"
         ],
         "summary": "Reset Password",
-        "description": "\r  <b>-</b> Send user password in body. <br>\r  <b>-</b> Send as a paramas <b>uid</b> and <b>emailToken</b> values.",
+        "description": "  <b>-</b> Send user password in body. <br>  <b>-</b> Send as a paramas <b>uid</b> and <b>emailToken</b> values.",
         "parameters": [
           {
             "name": "uid",
@@ -479,16 +479,30 @@
     },
     "/users/multiple-delete": {
       "post": {
-        "description": "",
+        "tags": [
+          "User"
+        ],
+        "summary": "Multiple-Delete User with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "  <ul>   <li>You must write the IDs of the users you want to delete into the array.</li>  </ul> ",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "ids": {
-                  "example": "any"
+                  "type": "array",
+                  "example": [
+                    1,
+                    2,
+                    3
+                  ],
+                  "items": {
+                    "type": "number"
+                  }
                 }
               }
             }
@@ -510,7 +524,7 @@
           "Firm"
         ],
         "summary": "List All Firms",
-        "description": "\r  You can send query with endpoint for search[], sort[], page and limit.\r  <ul> Examples:\r   <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>\r   <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>\r   <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>",
+        "description": "  You can send query with endpoint for search[], sort[], page and limit.  <ul> Examples:   <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>   <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>   <li>URL/?<b>page=2&limit=1</b></li>  </ul>",
         "responses": {
           "200": {
             "description": "OK"
@@ -667,16 +681,30 @@
     },
     "/firms/multiple-delete": {
       "post": {
-        "description": "",
+        "tags": [
+          "Firm"
+        ],
+        "summary": "Multiple-Delete Firm with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "  <ul>   <li>You must write the IDs of the firms you want to delete into the array.</li>  </ul> ",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "ids": {
-                  "example": "any"
+                  "type": "array",
+                  "example": [
+                    1,
+                    2,
+                    3
+                  ],
+                  "items": {
+                    "type": "number"
+                  }
                 }
               }
             }
@@ -807,7 +835,7 @@
           {
             "name": "body",
             "in": "body",
-            "description": "   <ul>    <li>Send the object includes attributes that should be updated.</li>   </ul> ",
+            "description": "  <ul>   <li>Send the object includes attributes that should be updated.</li>  </ul> ",
             "required": true,
             "schema": {
               "type": "object",
@@ -874,16 +902,30 @@
     },
     "/products/multiple-delete": {
       "post": {
-        "description": "",
+        "tags": [
+          "Product"
+        ],
+        "summary": "Multiple-Delete Product with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "  <ul>   <li>You must write the IDs of the products you want to delete into the array.</li>  </ul> ",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "ids": {
-                  "example": "any"
+                  "type": "array",
+                  "example": [
+                    1,
+                    2,
+                    3
+                  ],
+                  "items": {
+                    "type": "number"
+                  }
                 }
               }
             }
@@ -1054,16 +1096,30 @@
     },
     "/materials/multiple-delete": {
       "post": {
-        "description": "",
+        "tags": [
+          "Material"
+        ],
+        "summary": "Multiple-Delete Material with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "  <ul>   <li>You must write the IDs of the materials you want to delete into the array.</li>  </ul> ",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "ids": {
-                  "example": "any"
+                  "type": "array",
+                  "example": [
+                    1,
+                    2,
+                    3
+                  ],
+                  "items": {
+                    "type": "number"
+                  }
                 }
               }
             }
@@ -1085,7 +1141,7 @@
           "Purchase"
         ],
         "summary": " Purchase List",
-        "description": "\r  <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>\r  \r  <ul> Examples:\r   <li><b>SEARCHING: URL?search[MaterialId]=3&search[FirmId]=2</b></li>\r   <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>\r   <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>\r   <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01 The date must be in year-month-day format</b></li>\r  </ul>",
+        "description": "  <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>    <ul> Examples:   <li><b>SEARCHING: URL?search[MaterialId]=3&search[FirmId]=2</b></li>   <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>   <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>   <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01 The date must be in year-month-day format</b></li>  </ul>",
         "responses": {
           "200": {
             "description": "OK"
@@ -1097,7 +1153,7 @@
           "Purchase"
         ],
         "summary": "Purchase Create",
-        "description": "\r  <b>-</b> MaterialId,quantity,FirmId,unitPrice is required to purchase materials <br>\r  <b>-</b> Send access token in header.",
+        "description": "  <b>-</b> MaterialId,quantity,FirmId,unitPrice is required to purchase materials <br>  <b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
@@ -1139,7 +1195,7 @@
           "Purchase"
         ],
         "summary": "Read purchase with id",
-        "description": "\r  <b>-</b> Send access token in header. ",
+        "description": "  <b>-</b> Send access token in header. ",
         "parameters": [
           {
             "name": "id",
@@ -1170,7 +1226,7 @@
           {
             "name": "body",
             "in": "body",
-            "description": "   <ul>    <li>Send the object includes attributes that should be updated.</li>      </ul> ",
+            "description": "  <ul>   <li>Send the object includes attributes that should be updated.</li>    </ul> ",
             "required": true,
             "schema": {
               "type": "object",
@@ -1237,16 +1293,30 @@
     },
     "/purchases/multiple-delete": {
       "post": {
-        "description": "",
+        "tags": [
+          "Purchase"
+        ],
+        "summary": "Multiple-Delete Purchase with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "  <ul>   <li>You must write the IDs of the purchases you want to delete into the array.</li>  </ul> ",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "ids": {
-                  "example": "any"
+                  "type": "array",
+                  "example": [
+                    1,
+                    2,
+                    3
+                  ],
+                  "items": {
+                    "type": "number"
+                  }
                 }
               }
             }
@@ -1268,7 +1338,7 @@
           "PurchaseAccount"
         ],
         "summary": " PurchaseAccount List",
-        "description": "\r  <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>\r  \r  <ul> Examples:\r   <li><b>SEARCHING: URL?search[PurchaseId]=3&search[FirmId]=2</b></li>\r   <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>\r   <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>\r   <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01 The date must be in year-month-day format</b></li>\r  </ul>",
+        "description": "  <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>    <ul> Examples:   <li><b>SEARCHING: URL?search[PurchaseId]=3&search[FirmId]=2</b></li>   <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>   <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>   <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01 The date must be in year-month-day format</b></li>  </ul>",
         "responses": {
           "200": {
             "description": "OK"
@@ -1280,7 +1350,7 @@
           "PurchaseAccount"
         ],
         "summary": "PurchaseAccount Create",
-        "description": "\r  <b>-</b> PurchaseAccount will be   automatically when the purchase is made. <br>\r  <b>-</b> There is no need to create a PurchaseAccount manually. <br>\r  <b>-</b> Send access token in header.",
+        "description": "  <b>-</b> PurchaseAccount will be   automatically when the purchase is made. <br>  <b>-</b> There is no need to create a PurchaseAccount manually. <br>  <b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
@@ -1317,7 +1387,7 @@
           "PurchaseAccount"
         ],
         "summary": "Read PurchaseAccount with id",
-        "description": "\r  <b>-</b> Send access token in header. ",
+        "description": "  <b>-</b> Send access token in header. ",
         "parameters": [
           {
             "name": "id",
@@ -1348,7 +1418,7 @@
           {
             "name": "body",
             "in": "body",
-            "description": "   <ul>    <li>Send the object includes attributes that should be updated.</li>      </ul> ",
+            "description": "  <ul>   <li>Send the object includes attributes that should be updated.</li>    </ul> ",
             "required": true,
             "schema": {
               "type": "object",
@@ -1415,16 +1485,30 @@
     },
     "/purchase_accounts/multiple-delete": {
       "post": {
-        "description": "",
+        "tags": [
+          "PurchaseAccount"
+        ],
+        "summary": "Multiple-Delete Firm with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "  <ul>   <li>You must write the IDs of the purchaseAccounts you want to delete into the array.</li>  </ul> ",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "ids": {
-                  "example": "any"
+                  "type": "array",
+                  "example": [
+                    1,
+                    2,
+                    3
+                  ],
+                  "items": {
+                    "type": "number"
+                  }
                 }
               }
             }
@@ -1603,16 +1687,30 @@
     },
     "/vehicles/multiple-delete": {
       "post": {
-        "description": "",
+        "tags": [
+          "Vehicle"
+        ],
+        "summary": "Multiple-Delete Vehicle with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "  <ul>   <li>You must write the IDs of the vehicles you want to delete into the array.</li>  </ul> ",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "ids": {
-                  "example": "any"
+                  "type": "array",
+                  "example": [
+                    1,
+                    2,
+                    3
+                  ],
+                  "items": {
+                    "type": "number"
+                  }
                 }
               }
             }
@@ -1634,7 +1732,7 @@
           "Sale"
         ],
         "summary": " Sale List",
-        "description": "\r  <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>\r  \r  <ul> Examples:\r   <li><b>SEARCHING: URL?search[FirmId]=3&search[quantity]=20</b></li>\r   <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>\r   <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>\r   <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01 The date must be in year-month-day format</b></li>\r  </ul>",
+        "description": "  <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>    <ul> Examples:   <li><b>SEARCHING: URL?search[FirmId]=3&search[quantity]=20</b></li>   <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>   <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>   <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01 The date must be in year-month-day format</b></li>  </ul>",
         "responses": {
           "200": {
             "description": "OK"
@@ -1646,7 +1744,7 @@
           "Sale"
         ],
         "summary": "Sale Create",
-        "description": "\r  <b>-</b>To create Sales, use FirmId,ProductId,quantity,location,requestedDate, sideContact are required <br>\r  <b>-</b> Send access token in header.",
+        "description": "  <b>-</b>To create Sales, use FirmId,ProductId,quantity,location,requestedDate, sideContact are required <br>  <b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
@@ -1696,7 +1794,7 @@
           "Sale"
         ],
         "summary": "Read sale with id",
-        "description": "\r  <b>-</b> Send access token in header. ",
+        "description": "  <b>-</b> Send access token in header. ",
         "parameters": [
           {
             "name": "id",
@@ -1727,7 +1825,7 @@
           {
             "name": "body",
             "in": "body",
-            "description": "   <ul>    <li>Send the object includes attributes that should be updated.</li>      </ul> ",
+            "description": "  <ul>   <li>Send the object includes attributes that should be updated.</li>    </ul> ",
             "required": true,
             "schema": {
               "type": "object",
@@ -1794,16 +1892,30 @@
     },
     "/sales/multiple-delete": {
       "post": {
-        "description": "",
+        "tags": [
+          "Sale"
+        ],
+        "summary": "Multiple-Delete Sale with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "  <ul>   <li>You must write the IDs of the sales you want to delete into the array.</li>  </ul> ",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "ids": {
-                  "example": "any"
+                  "type": "array",
+                  "example": [
+                    1,
+                    2,
+                    3
+                  ],
+                  "items": {
+                    "type": "number"
+                  }
                 }
               }
             }
@@ -1825,7 +1937,7 @@
           "Sale Account"
         ],
         "summary": " Sale Account List",
-        "description": "\r  <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>\r  \r  <ul> Examples:\r   <li><b>SEARCHING: URL?search[FirmId]=3&search[quantity]=20</b></li>\r   <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>\r   <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>\r   <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01 The date must be in year-month-day format</b></li>\r  </ul>",
+        "description": "  <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>    <ul> Examples:   <li><b>SEARCHING: URL?search[FirmId]=3&search[quantity]=20</b></li>   <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>   <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>   <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01 The date must be in year-month-day format</b></li>  </ul>",
         "responses": {
           "200": {
             "description": "OK"
@@ -1837,7 +1949,7 @@
           "Sale Account"
         ],
         "summary": "Sale Account Create",
-        "description": "\r  <b>-</b> SaleAccount will be created automatically after the sale is made. <br>\r  <b>-</b> Send access token in header.",
+        "description": "  <b>-</b> SaleAccount will be created automatically after the sale is made. <br>  <b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
@@ -1866,7 +1978,7 @@
           "Sale Account"
         ],
         "summary": "Read Sale Account with id",
-        "description": "\r  <b>-</b> Send access token in header. ",
+        "description": "  <b>-</b> Send access token in header. ",
         "parameters": [
           {
             "name": "id",
@@ -1897,7 +2009,7 @@
           {
             "name": "body",
             "in": "body",
-            "description": "   <ul>    <li>Send the object includes attributes that should be updated.</li>      </ul> ",
+            "description": "  <ul>   <li>Send the object includes attributes that should be updated.</li>    </ul> ",
             "required": true,
             "schema": {
               "type": "object",
@@ -1964,16 +2076,30 @@
     },
     "/sale_accounts/multiple-delete": {
       "post": {
-        "description": "",
+        "tags": [
+          "SaleAccount"
+        ],
+        "summary": "Multiple-Delete SaleAccount with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "  <ul>   <li>You must write the IDs of the SaleAccounts you want to delete into the array.</li>  </ul> ",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "ids": {
-                  "example": "any"
+                  "type": "array",
+                  "example": [
+                    1,
+                    2,
+                    3
+                  ],
+                  "items": {
+                    "type": "number"
+                  }
                 }
               }
             }
@@ -2014,12 +2140,12 @@
         "tags": [
           "Production"
         ],
-        "description": "\r  <b>-</b> Production is   automatically after sale status change to APPROVED. <br>\r  <b>-</b> No need to create production manuel.\r  <b>-</b> Send access token in header.",
+        "description": "  <b>-</b> Production is   automatically after sale status change to APPROVED. <br>  <b>-</b> No need to create production manuel.  <b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
-            "description": "   <ul>    <li>SaleId should be gotten from sale table</li>   <li>VehicleIds is an array contains integer, and should be gotten from vehicle table</li>   </ul> ",
+            "description": "  <ul>   <li>SaleId should be gotten from sale table</li>  <li>VehicleIds is an array contains integer, and should be gotten from vehicle table</li>  </ul> ",
             "required": true,
             "schema": {
               "type": "object",
@@ -2088,7 +2214,7 @@
           {
             "name": "body",
             "in": "body",
-            "description": "   <ul>    <li>Send the object includes attributes that should be updated.</li>   <li>Status is integer value.</li>   <li>VehicleIds is an array contains integer, and should be gotten from vehicle table</li>   </ul> ",
+            "description": "  <ul>   <li>Send the object includes attributes that should be updated.</li>  <li>Status is integer value.</li>  <li>VehicleIds is an array contains integer, and should be gotten from vehicle table</li>  </ul> ",
             "required": true,
             "schema": {
               "type": "object",
@@ -2165,16 +2291,30 @@
     },
     "/productions/multiple-delete": {
       "post": {
-        "description": "",
+        "tags": [
+          "Production"
+        ],
+        "summary": "Multiple-Delete Production with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "  <ul>   <li>You must write the IDs of the deliveries you want to delete into the array.</li>  </ul> ",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "ids": {
-                  "example": "any"
+                  "type": "array",
+                  "example": [
+                    1,
+                    2,
+                    3
+                  ],
+                  "items": {
+                    "type": "number"
+                  }
                 }
               }
             }
@@ -2215,12 +2355,12 @@
         "tags": [
           "Delivery"
         ],
-        "description": "\r  <b>-</b> Delivery is   automatically after production status change to BEING PRODUCED. <br>\r  <b>-</b> No need to create delivery manuel.\r  <b>-</b> Send access token in header.",
+        "description": "  <b>-</b> Delivery is   automatically after production status change to BEING PRODUCED. <br>  <b>-</b> No need to create delivery manuel.  <b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
-            "description": "   <ul>    <li>ProductionId is an integer and should be gotten from production table</li>   <li>VehicleId is an integer and should be gotten from vehicle table</li>   </ul> ",
+            "description": "  <ul>   <li>ProductionId is an integer and should be gotten from production table</li>  <li>VehicleId is an integer and should be gotten from vehicle table</li>  </ul> ",
             "required": true,
             "schema": {
               "type": "object",
@@ -2282,7 +2422,7 @@
           {
             "name": "body",
             "in": "body",
-            "description": "   <ul>    <li>Send the object includes attributes that should be  .</li>   <li>Status is integer value.</li>   <li>VehicleId is not able to be updated by driver from this stage.</li>   </ul> ",
+            "description": "  <ul>   <li>Send the object includes attributes that should be  .</li>  <li>Status is integer value.</li>  <li>VehicleId is not able to be updated by driver from this stage.</li>  </ul> ",
             "required": true,
             "schema": {
               "type": "object",
@@ -2349,16 +2489,30 @@
     },
     "/deliveries/multiple-delete": {
       "post": {
-        "description": "",
+        "tags": [
+          "Delivery"
+        ],
+        "summary": "Multiple-Delete delivery with ID",
+        "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "  <ul>   <li>You must write the IDs of the deliveries you want to delete into the array.</li>  </ul> ",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "ids": {
-                  "example": "any"
+                  "type": "array",
+                  "example": [
+                    1,
+                    2,
+                    3
+                  ],
+                  "items": {
+                    "type": "number"
+                  }
                 }
               }
             }

@@ -123,6 +123,23 @@ module.exports = {
   },
 
   multipleDelete: async (req, res) => {
+      /* 
+      #swagger.tags = ['Firm']
+      #swagger.summary = 'Multiple-Delete  Firm with ID'
+      #swagger.description = `<b>-</b> Send access token in header.`
+       #swagger.parameters['body'] = {
+          in: 'body',
+          description: '
+            <ul> 
+              <li>You must write the IDs of the firms you want to delete into the array.</li>
+            </ul> ',
+          required: true,
+          schema: {
+            "ids": [1,2,3]
+            
+          }
+        } 
+    */
     const { ids } = req.body;
 
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
