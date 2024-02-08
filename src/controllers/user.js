@@ -19,8 +19,15 @@ module.exports = {
     */
 
     // const data = await User.findAndCountAll({ paranoid: false }); // to see deleted users as well -> findAndCountAll({paranoid:false})
-    const data = await req.getModelList(User);
-    
+    const { showDeleted } = req.query;
+
+    let paranoid = true;
+    if (showDeleted && req.user.role == 5) {
+      paranoid = false;
+    }
+
+    const data = await req.getModelList(User, paranoid);
+
     res.status(200).send({
       details: await req.getModelListDetails(User),
       data,
@@ -97,7 +104,7 @@ module.exports = {
     });
   },
   multipleDelete: async (req, res) => {
-     /* 
+    /* 
       #swagger.tags = ['User']
       #swagger.summary = 'Multiple-Delete  User with ID'
       #swagger.description = `<b>-</b> Send access token in header.`
@@ -162,7 +169,7 @@ module.exports = {
     });
 
     if (!user) {
-      res.errorStatusCode = 402;
+      res.errorStatusCode = 404;
       throw new Error("User not found! ");
     }
     if (user.password != passwordEncrypt(password)) {
@@ -204,7 +211,7 @@ module.exports = {
     });
 
     if (!user) {
-      res.errorStatusCode = 402;
+      res.errorStatusCode = 404;
       throw new Error("User not found! ");
     }
     if (user.email != currentEmail) {
@@ -212,7 +219,7 @@ module.exports = {
     }
 
     if (!user.isActive) {
-      res.errorStatusCode = 402;
+      res.errorStatusCode = 403;
       throw new Error("User is not active! ");
     }
 
@@ -228,12 +235,10 @@ module.exports = {
     await user.save();
     // userInfo, fileName, Subject
     sendEmail(user, "verify-email", "Email Verification");
-    res
-      .status(200)
-      .send({
-        message: "Check the e-mail sent to your new e-mail address!",
-        user,
-      });
+    res.status(200).send({
+      message: "Check the e-mail sent to your new e-mail address!",
+      user,
+    });
   },
   forgetPassword: async (req, res) => {
     /* 
