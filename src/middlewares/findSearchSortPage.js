@@ -1,7 +1,8 @@
 const { Op } = require("sequelize");
 
 module.exports = (req, res, next) => {
-  let { search, startDate, endDate, sort, page, limit, offset, showDeleted } = req.query;
+  let { search, startDate, endDate, sort, page, limit, offset, showDeleted } =
+    req.query;
 
   //? Başlangıç olarak bir boş filtre nesnesi oluşturun
   //* ?search[status]=SALER
@@ -40,33 +41,37 @@ module.exports = (req, res, next) => {
   offset = Number(req.query?.offset);
   offset = offset > 0 ? offset : page * limit;
 
-  req.getModelList = async (
-    Model,
-    paranoid = true,
-    filters = {},
-    include = null
-  ) => {
-    const where = showDeleted && req.user.role === 5 ? whereClause : { ...whereClause, ...filters };
+  req.getModelList = async (Model, filters = {}, include = null) => {
+    let paranoid = true;
+
+    if (showDeleted === "true" && req.user.role === 5) paranoid = false;
+
+    whereClause = { ...whereClause, ...filters };
 
     return await Model.findAll({
-      where,
+      where:
+        Object.keys(whereClause).length > 0 ? { [Op.or]: [whereClause] } : {},
       include,
       order: orderClause,
       offset,
       limit,
-      paranoid, 
+      paranoid,
     });
   };
 
   req.getModelListDetails = async (Model, filters = {}) => {
     whereClause = { ...whereClause, ...filters };
 
+    let paranoid = true;
+
+    if (showDeleted === "true" && req.user.role === 5) paranoid = false;
+
     const data = await Model.findAll({
       where:
         Object.keys(whereClause).length > 0 ? { [Op.or]: [whereClause] } : {},
       include,
       order: orderClause,
-      paranoid: false,
+      paranoid,
     });
     let details = {
       search,
@@ -81,6 +86,7 @@ module.exports = (req, res, next) => {
         total: Math.ceil(data.length / limit),
       },
       totalRecords: data.length,
+      showDeleted: showDeleted === "true" && req.user.role === 5 ? true : false,
     };
     details.pages.next =
       details.pages.next > details.pages.total ? false : details.pages.next;

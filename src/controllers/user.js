@@ -18,15 +18,7 @@ module.exports = {
           }
     */
 
-    // const data = await User.findAndCountAll({ paranoid: false }); // to see deleted users as well -> findAndCountAll({paranoid:false})
-    const { showDeleted } = req.query;
-
-    let paranoid = true;
-    if (showDeleted && req.user.role == 5) {
-      paranoid = false;
-    }
-
-    const data = await req.getModelList(User, paranoid);
+    const data = await req.getModelList(User);
 
     res.status(200).send({
       details: await req.getModelListDetails(User),
