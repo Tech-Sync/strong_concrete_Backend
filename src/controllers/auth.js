@@ -25,7 +25,7 @@ module.exports = {
             firstName:'test',
             lastName:'test',
             nrcNo:'11111111',
-            phoneNO:'+26011111',
+            phoneNo:'+26011111',
             address:'ibex',
             role:4,
             email:'test@gmail.com',
