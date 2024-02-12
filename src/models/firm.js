@@ -60,12 +60,6 @@ const Firm = sequelize.define(
   },
   {
     paranoid: true,
-    hooks: {
-      beforeUpdate: (firm) => {
-        sale.totalPrice =
-          sale.quantity * sale.unitPrice + sale.otherCharges - sale.discount;
-      },
-    },
   }
 );
 
