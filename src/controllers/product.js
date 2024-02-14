@@ -7,12 +7,18 @@ module.exports = {
     /* 
         #swagger.tags = ['Product']
         #swagger.summary = 'List All Products'
-        #swagger.description = `<b>-</b> Only Admin can view all users.`
+        #swagger.description = `You can send query with endpoint for search[], sort[], page and limit.
+          <ul> Examples:
+              <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>
+              <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>
+              <li>URL/?<b>page=2&limit=1</b></li>
+          </ul>
+        `
         #swagger.parameters['showDeleted'] = {
-            in: 'query',
-            type: 'boolean',
-            description:'Includes deleted users as well, default value is false'
-          }
+        in: 'query',
+        type: 'boolean',
+        description:'Send true to show deleted data as well, default value is false'
+      }
     */
     const data = await req.getModelList(Product);
 
@@ -111,13 +117,30 @@ module.exports = {
     /* 
         #swagger.tags = ['Product']
         #swagger.summary = 'Delete product with ID'
-        #swagger.description = `<b>-</b> Send access token in header.`
+        #swagger.description = `
+          <b>-</b> Send access token in header. <br>
+          <b>-</b> This function returns data includes remaning items.
+        `
+        #swagger.parameters['hardDelete'] = {
+          in: 'query',
+          type: 'boolean',
+          description:'Send true for hard deletion, default value is false which is soft delete.'}
     */
-    const isDeleted = await Product.destroy({ where: { id: req.params.id } });
+    
+    const hardDelete = req.query.hardDelete === "true";
+    if(req.user.role !== 5 && hardDelete ) throw new Error('You are not authorized for permanent deletetion!')
 
-    res.status(isDeleted ? 204 : 404).send({
+    const product = await Product.findByPk(req.params.id);
+    if(!product) throw new Error('Product not found or already deleted.')
+    product.updaterId = req.user.id;
+    const isDeleted = await product.destroy({ force: hardDelete });
+
+    res.status(isDeleted ? 202 : 404).send({
       error: !Boolean(isDeleted),
-      message: "Product not found or something went wrong.",
+      message: !!isDeleted
+        ? `The product named ${product.name} has been deleted.`
+        : "Product not found or something went wrong.",
+      data: await req.getModelList(Product),
     });
   },
 
@@ -140,10 +163,13 @@ module.exports = {
     });
   },
   multipleDelete: async (req, res) => {
-     /* 
+    /* 
       #swagger.tags = ['Product']
       #swagger.summary = 'Multiple-Delete  Product with ID'
-      #swagger.description = `<b>-</b> Send access token in header.`
+      #swagger.description = `
+        <b>-</b> Send access token in header. <br>
+        <b>-</b> This function returns data includes remaning items.
+      `
        #swagger.parameters['body'] = {
           in: 'body',
           description: '
@@ -175,9 +201,12 @@ module.exports = {
       }
     }
 
-    res.status(totalDeleted ? 204 : 404).send({
+    res.status(totalDeleted ? 202 : 404).send({
       error: !Boolean(totalDeleted),
-      message: "products not found or something went wrong.",
+      message: !!totalDeleted
+        ? `The product id's ${ids} has been deleted.`
+        : "Product not found or something went wrong.",
+      data: await req.getModelList(Product),
     });
   },
 };

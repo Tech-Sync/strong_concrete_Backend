@@ -10,15 +10,18 @@ module.exports = {
     /* 
         #swagger.tags = ['Sale']
         #swagger.summary = ' Sale List'
-        #swagger.description = '
-        <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>
-        
-                <ul> Examples:
-                    <li><b>SEARCHING: URL?search[FirmId]=3&search[quantity]=20</b></li>
-                    <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>
-                    <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>
-                    <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01  The date must be in year-month-day format</b></li>
-                </ul>'
+        #swagger.description = `You can send query with endpoint for search[], sort[], page and limit.
+          <ul> Examples:
+              <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>
+              <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>
+              <li>URL/?<b>page=2&limit=1</b></li>
+          </ul>
+        `
+        #swagger.parameters['showDeleted'] = {
+        in: 'query',
+        type: 'boolean',
+        description:'Send true to show deleted data as well, default value is false'
+      }
     */
     const data = await req.getModelList(Sale);
 
@@ -205,15 +208,30 @@ module.exports = {
     /* 
         #swagger.tags = ['Sale']
         #swagger.summary = 'Delete sale with id'
-        #swagger.description = '<b>-</b> Send access token in header.'
+        #swagger.description = `
+          <b>-</b> Send access token in header. <br>
+          <b>-</b> This function returns data includes remaning items.
+        `
+        #swagger.parameters['hardDelete'] = {
+          in: 'query',
+          type: 'boolean',
+          description:'Send true for hard deletion, default value is false which is soft delete.'}
     */
-    const sale = await Sale.findByPk(req.params.id);
-    sale.updaterId = req.user.id;
-    const isDeleted = await sale.destroy();
+    
+    const hardDelete = req.query.hardDelete === "true";
+    if(req.user.role !== 5 && hardDelete ) throw new Error('You are not authorized for permanent deletetion!')
 
-    res.status(isDeleted ? 204 : 404).send({
+    const sale = await Sale.findByPk(req.params.id);
+    if(!sale) throw new Error('Sale not found or already deleted.')
+    sale.updaterId = req.user.id;
+    const isDeleted = await sale.destroy({ force: hardDelete });
+
+    res.status(isDeleted ? 202 : 404).send({
       error: !Boolean(isDeleted),
-      message: "Sale not found or something went wrong.",
+      message: !!isDeleted
+        ? `The sasle id ${sale.id} has been deleted.`
+        : "Sale not found or something went wrong.",
+      data: await req.getModelList(Sale),
     });
   },
 
@@ -236,10 +254,13 @@ module.exports = {
     });
   },
   multipleDelete: async (req, res) => {
-     /* 
+    /* 
       #swagger.tags = ['Sale']
       #swagger.summary = 'Multiple-Delete  Sale with ID'
-      #swagger.description = `<b>-</b> Send access token in header.`
+      #swagger.description = `
+        <b>-</b> Send access token in header. <br>
+        <b>-</b> This function returns data includes remaning items.
+      `
        #swagger.parameters['body'] = {
           in: 'body',
           description: '
@@ -259,17 +280,24 @@ module.exports = {
       throw new Error("Invalid or empty IDs array in the request body.");
     }
 
-    const multipleİsDeleted = await Sale.destroy({
-      where: {
-        id: ids,
-      },
-    });
+    let totalDeleted = 0;
 
-    res.status(multipleİsDeleted ? 204 : 404).send({
-      error: !Boolean(multipleİsDeleted),
-      message: multipleİsDeleted
-        ? `${multipleİsDeleted} Sale deleted successfully.`
+    for (const id of ids) {
+      const sale = await Sale.findByPk(id);
+
+      if (sale) {
+        sale.updaterId = req.user.id;
+        await sale.destroy();
+        totalDeleted++;
+      }
+    }
+
+    res.status(totalDeleted ? 202 : 404).send({
+      error: !Boolean(totalDeleted),
+      message: !!totalDeleted
+        ? `The sale id's ${ids} has been deleted.`
         : "Sale not found or something went wrong.",
+      data: await req.getModelList(Sale),
     });
   },
 };

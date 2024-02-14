@@ -207,13 +207,13 @@
           "User"
         ],
         "summary": "List All Users",
-        "description": "<b>-</b> Only Admin can view all users.",
+        "description": "You can send query with endpoint for search[], sort[], page and limit.\r  <ul> Examples:\r  <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>\r  <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>\r  <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>\r  ",
         "parameters": [
           {
             "name": "showDeleted",
             "in": "query",
             "type": "boolean",
-            "description": "Includes deleted users as well, default value is false"
+            "description": "Send true to show deleted data as well, default value is false"
           }
         ],
         "responses": {
@@ -284,18 +284,24 @@
           "User"
         ],
         "summary": "Delete user with ID",
-        "description": "<b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "hardDelete",
+            "in": "query",
+            "type": "boolean",
+            "description": "Send true for hard deletion, default value is false which is soft delete."
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "202": {
+            "description": "Accepted"
           },
           "404": {
             "description": "Not Found"
@@ -483,7 +489,7 @@
           "User"
         ],
         "summary": "Multiple-Delete User with ID",
-        "description": "<b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
             "name": "body",
@@ -509,8 +515,8 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "202": {
+            "description": "Accepted"
           },
           "404": {
             "description": "Not Found"
@@ -524,7 +530,15 @@
           "Firm"
         ],
         "summary": "List All Firms",
-        "description": "\r  You can send query with endpoint for search[], sort[], page and limit.\r  <ul> Examples:\r   <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>\r   <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>\r   <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>",
+        "description": "You can send query with endpoint for search[], sort[], page and limit.\r  <ul> Examples:\r  <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>\r  <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>\r  <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>\r  ",
+        "parameters": [
+          {
+            "name": "showDeleted",
+            "in": "query",
+            "type": "boolean",
+            "description": "Send true to show deleted data as well, default value is false"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -638,18 +652,24 @@
           "Firm"
         ],
         "summary": "Delete firm with ID",
-        "description": "<b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "hardDelete",
+            "in": "query",
+            "type": "boolean",
+            "description": "Send true for hard deletion, default value is false which is soft delete."
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "202": {
+            "description": "Accepted"
           },
           "404": {
             "description": "Not Found"
@@ -685,7 +705,7 @@
           "Firm"
         ],
         "summary": "Multiple-Delete Firm with ID",
-        "description": "<b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
             "name": "body",
@@ -711,8 +731,8 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "202": {
+            "description": "Accepted"
           },
           "404": {
             "description": "Not Found"
@@ -726,13 +746,13 @@
           "Product"
         ],
         "summary": "List All Products",
-        "description": "<b>-</b> Only Admin can view all users.",
+        "description": "You can send query with endpoint for search[], sort[], page and limit.\r  <ul> Examples:\r  <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>\r  <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>\r  <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>\r  ",
         "parameters": [
           {
             "name": "showDeleted",
             "in": "query",
             "type": "boolean",
-            "description": "Includes deleted users as well, default value is false"
+            "description": "Send true to show deleted data as well, default value is false"
           }
         ],
         "responses": {
@@ -788,9 +808,6 @@
           },
           "202": {
             "description": "Accepted"
-          },
-          "204": {
-            "description": "No Content"
           },
           "404": {
             "description": "Not Found"
@@ -859,18 +876,24 @@
           "Product"
         ],
         "summary": "Delete product with ID",
-        "description": "<b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "hardDelete",
+            "in": "query",
+            "type": "boolean",
+            "description": "Send true for hard deletion, default value is false which is soft delete."
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "202": {
+            "description": "Accepted"
           },
           "404": {
             "description": "Not Found"
@@ -906,7 +929,7 @@
           "Product"
         ],
         "summary": "Multiple-Delete Product with ID",
-        "description": "<b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
             "name": "body",
@@ -932,8 +955,8 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "202": {
+            "description": "Accepted"
           },
           "404": {
             "description": "Not Found"
@@ -947,13 +970,13 @@
           "Material"
         ],
         "summary": "List All Materials",
-        "description": "<b>-</b> Only Admin can view all materials.",
+        "description": "You can send query with endpoint for search[], sort[], page and limit.\r  <ul> Examples:\r  <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>\r  <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>\r  <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>\r  ",
         "parameters": [
           {
             "name": "showDeleted",
             "in": "query",
             "type": "boolean",
-            "description": "Includes deleted materials as well, default value is false"
+            "description": "Send true to show deleted data as well, default value is false"
           }
         ],
         "responses": {
@@ -1053,18 +1076,24 @@
           "Material"
         ],
         "summary": "Delete material with ID",
-        "description": "<b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "hardDelete",
+            "in": "query",
+            "type": "boolean",
+            "description": "Send true for hard deletion, default value is false which is soft delete."
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "202": {
+            "description": "Accepted"
           },
           "404": {
             "description": "Not Found"
@@ -1100,7 +1129,7 @@
           "Material"
         ],
         "summary": "Multiple-Delete Material with ID",
-        "description": "<b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
             "name": "body",
@@ -1126,8 +1155,8 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "202": {
+            "description": "Accepted"
           },
           "404": {
             "description": "Not Found"
@@ -1141,7 +1170,15 @@
           "Purchase"
         ],
         "summary": " Purchase List",
-        "description": "\r  <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>\r  \r  <ul> Examples:\r   <li><b>SEARCHING: URL?search[MaterialId]=3&search[FirmId]=2</b></li>\r   <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>\r   <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>\r   <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01 The date must be in year-month-day format</b></li>\r  </ul>",
+        "description": "You can send query with endpoint for search[], sort[], page and limit.\r  <ul> Examples:\r  <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>\r  <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>\r  <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>\r  ",
+        "parameters": [
+          {
+            "name": "showDeleted",
+            "in": "query",
+            "type": "boolean",
+            "description": "Send true to show deleted data as well, default value is false"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -1250,18 +1287,24 @@
           "Purchase"
         ],
         "summary": "Delete purchase with id",
-        "description": "<b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "hardDelete",
+            "in": "query",
+            "type": "boolean",
+            "description": "Send true for hard deletion, default value is false which is soft delete."
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "202": {
+            "description": "Accepted"
           },
           "404": {
             "description": "Not Found"
@@ -1297,7 +1340,7 @@
           "Purchase"
         ],
         "summary": "Multiple-Delete Purchase with ID",
-        "description": "<b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
             "name": "body",
@@ -1323,8 +1366,8 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "202": {
+            "description": "Accepted"
           },
           "404": {
             "description": "Not Found"
@@ -1338,7 +1381,15 @@
           "PurchaseAccount"
         ],
         "summary": " PurchaseAccount List",
-        "description": "\r  <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>\r  \r  <ul> Examples:\r   <li><b>SEARCHING: URL?search[PurchaseId]=3&search[FirmId]=2</b></li>\r   <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>\r   <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>\r   <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01 The date must be in year-month-day format</b></li>\r  </ul>",
+        "description": "You can send query with endpoint for search[], sort[], page and limit.\r  <ul> Examples:\r  <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>\r  <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>\r  <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>\r  ",
+        "parameters": [
+          {
+            "name": "showDeleted",
+            "in": "query",
+            "type": "boolean",
+            "description": "Send true to show deleted data as well, default value is false"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -1442,18 +1493,24 @@
           "PurchaseAccount"
         ],
         "summary": "Delete PurchaseAccount with id",
-        "description": "<b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "hardDelete",
+            "in": "query",
+            "type": "boolean",
+            "description": "Send true for hard deletion, default value is false which is soft delete."
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "202": {
+            "description": "Accepted"
           },
           "404": {
             "description": "Not Found"
@@ -1489,7 +1546,7 @@
           "PurchaseAccount"
         ],
         "summary": "Multiple-Delete Firm with ID",
-        "description": "<b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
             "name": "body",
@@ -1515,8 +1572,8 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "202": {
+            "description": "Accepted"
           },
           "404": {
             "description": "Not Found"
@@ -1530,13 +1587,13 @@
           "Vehicle"
         ],
         "summary": "List All Vehicles",
-        "description": "<b>-</b> Only Admin can view all vehicles.",
+        "description": "You can send query with endpoint for search[], sort[], page and limit.\r  <ul> Examples:\r  <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>\r  <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>\r  <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>\r  ",
         "parameters": [
           {
             "name": "showDeleted",
             "in": "query",
             "type": "boolean",
-            "description": "Includes deleted vehicles as well, default value is false"
+            "description": "Send true to show deleted data as well, default value is false"
           }
         ],
         "responses": {
@@ -1644,18 +1701,24 @@
           "Vehicle"
         ],
         "summary": "Delete vehicle with ID",
-        "description": "<b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "hardDelete",
+            "in": "query",
+            "type": "boolean",
+            "description": "Send true for hard deletion, default value is false which is soft delete."
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "202": {
+            "description": "Accepted"
           },
           "404": {
             "description": "Not Found"
@@ -1691,7 +1754,7 @@
           "Vehicle"
         ],
         "summary": "Multiple-Delete Vehicle with ID",
-        "description": "<b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
             "name": "body",
@@ -1717,8 +1780,8 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "202": {
+            "description": "Accepted"
           },
           "404": {
             "description": "Not Found"
@@ -1732,7 +1795,15 @@
           "Sale"
         ],
         "summary": " Sale List",
-        "description": "\r  <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>\r  \r  <ul> Examples:\r   <li><b>SEARCHING: URL?search[FirmId]=3&search[quantity]=20</b></li>\r   <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>\r   <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>\r   <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01 The date must be in year-month-day format</b></li>\r  </ul>",
+        "description": "You can send query with endpoint for search[], sort[], page and limit.\r  <ul> Examples:\r  <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>\r  <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>\r  <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>\r  ",
+        "parameters": [
+          {
+            "name": "showDeleted",
+            "in": "query",
+            "type": "boolean",
+            "description": "Send true to show deleted data as well, default value is false"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -1849,18 +1920,24 @@
           "Sale"
         ],
         "summary": "Delete sale with id",
-        "description": "<b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "hardDelete",
+            "in": "query",
+            "type": "boolean",
+            "description": "Send true for hard deletion, default value is false which is soft delete."
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "202": {
+            "description": "Accepted"
           },
           "404": {
             "description": "Not Found"
@@ -1896,7 +1973,7 @@
           "Sale"
         ],
         "summary": "Multiple-Delete Sale with ID",
-        "description": "<b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
             "name": "body",
@@ -1922,8 +1999,8 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "202": {
+            "description": "Accepted"
           },
           "404": {
             "description": "Not Found"
@@ -1937,7 +2014,15 @@
           "Sale Account"
         ],
         "summary": " Sale Account List",
-        "description": "\r  <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>\r  \r  <ul> Examples:\r   <li><b>SEARCHING: URL?search[FirmId]=3&search[quantity]=20</b></li>\r   <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>\r   <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>\r   <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01 The date must be in year-month-day format</b></li>\r  </ul>",
+        "description": "You can send query with endpoint for search[], sort[], page and limit.\r  <ul> Examples:\r  <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>\r  <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>\r  <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>\r  ",
+        "parameters": [
+          {
+            "name": "showDeleted",
+            "in": "query",
+            "type": "boolean",
+            "description": "Send true to show deleted data as well, default value is false"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -2033,18 +2118,24 @@
           "Sale Account"
         ],
         "summary": "Delete Sale Account with id",
-        "description": "<b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "hardDelete",
+            "in": "query",
+            "type": "boolean",
+            "description": "Send true for hard deletion, default value is false which is soft delete."
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "202": {
+            "description": "Accepted"
           },
           "404": {
             "description": "Not Found"
@@ -2080,7 +2171,7 @@
           "SaleAccount"
         ],
         "summary": "Multiple-Delete SaleAccount with ID",
-        "description": "<b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
             "name": "body",
@@ -2106,8 +2197,8 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "202": {
+            "description": "Accepted"
           },
           "404": {
             "description": "Not Found"
@@ -2121,13 +2212,13 @@
           "Production"
         ],
         "summary": "List All Productions",
-        "description": "",
+        "description": "You can send query with endpoint for search[], sort[], page and limit.\r  <ul> Examples:\r  <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>\r  <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>\r  <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>\r  ",
         "parameters": [
           {
             "name": "showDeleted",
             "in": "query",
             "type": "boolean",
-            "description": "Includes deleted productions as well, Default value is false"
+            "description": "Send true to show deleted data as well, default value is false"
           }
         ],
         "responses": {
@@ -2248,18 +2339,24 @@
           "Production"
         ],
         "summary": "Delete production with ID",
-        "description": "<b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "hardDelete",
+            "in": "query",
+            "type": "boolean",
+            "description": "Send true for hard deletion, default value is false which is soft delete."
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "202": {
+            "description": "Accepted"
           },
           "404": {
             "description": "Not Found"
@@ -2295,7 +2392,7 @@
           "Production"
         ],
         "summary": "Multiple-Delete Production with ID",
-        "description": "<b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
             "name": "body",
@@ -2321,8 +2418,8 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "202": {
+            "description": "Accepted"
           },
           "404": {
             "description": "Not Found"
@@ -2336,13 +2433,13 @@
           "Delivery"
         ],
         "summary": "List All Deliveries",
-        "description": "",
+        "description": "You can send query with endpoint for search[], sort[], page and limit.\r  <ul> Examples:\r  <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>\r  <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>\r  <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>\r  ",
         "parameters": [
           {
             "name": "showDeleted",
             "in": "query",
             "type": "boolean",
-            "description": "Includes deleted delivery as well, Default value is false"
+            "description": "Send true to show deleted data as well, default value is false"
           }
         ],
         "responses": {
@@ -2446,18 +2543,24 @@
           "Delivery"
         ],
         "summary": "Delete delivery with ID",
-        "description": "<b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "hardDelete",
+            "in": "query",
+            "type": "boolean",
+            "description": "Send true for hard deletion, default value is false which is soft delete."
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "202": {
+            "description": "Accepted"
           },
           "404": {
             "description": "Not Found"
@@ -2493,7 +2596,7 @@
           "Delivery"
         ],
         "summary": "Multiple-Delete delivery with ID",
-        "description": "<b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
             "name": "body",
