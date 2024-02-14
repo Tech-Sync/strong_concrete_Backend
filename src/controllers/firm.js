@@ -49,8 +49,8 @@ module.exports = {
       */
     const name = req.body?.name.toUpperCase();
     const firm = await Firm.findOne({ where: { name } });
-    if (firm)
-      throw new Error("With this name, Firm is already exist in DataBase !");
+    
+    if (firm) throw new Error(`${firm.name} name is already in used!`);
     req.body.creatorId = req.user.id;
     const data = await Firm.create(req.body);
 
@@ -106,12 +106,13 @@ module.exports = {
           type: 'boolean',
           description:'Send true for hard deletion, default value is false which is soft delete.'}
     */
-    
+
     const hardDelete = req.query.hardDelete === "true";
-    if(req.user.role !== 5 && hardDelete ) throw new Error('You are not authorized for permanent deletetion!')
+    if (req.user.role !== 5 && hardDelete)
+      throw new Error("You are not authorized for permanent deletetion!");
 
     const firm = await Firm.findByPk(req.params.id);
-    if(!firm) throw new Error('Firm not found or already deleted.')
+    if (!firm) throw new Error("Firm not found or already deleted.");
     firm.updaterId = req.user.id;
     const isDeleted = await firm.destroy({ force: hardDelete });
 
