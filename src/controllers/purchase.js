@@ -3,6 +3,7 @@
 const PurchaseAccount = require("../models/purchaseAccount");
 const Material = require("../models/material");
 const Purchase = require("../models/purchase");
+const Firm = require("../models/firm");
 
 module.exports = {
   list: async (req, res) => {
@@ -10,17 +11,25 @@ module.exports = {
         #swagger.tags = ['Purchase']
         #swagger.summary = ' Purchase List'
         #swagger.description = '
-        <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>
-        
-                <ul> Examples:
-                    <li><b>SEARCHING: URL?search[MaterialId]=3&search[FirmId]=2</b></li>
-                    <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>
-                    <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>
-                    <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01  The date must be in year-month-day format</b></li>
-                </ul>'
-        
+          <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>
+          <ul> Examples:
+              <li><b>SEARCHING: URL?search[MaterialId]=3&search[FirmId]=2</b></li>
+              <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>
+              <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>
+              <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01  The date must be in year-month-day format</b></li>
+          </ul>
+        '
     */
-    const data = await req.getModelList(Purchase);
+    const data = await req.getModelList(Purchase, {}, [
+      {
+        model: Material,
+        attributes: ["name"],
+      },
+      {
+        model: Firm,
+        attributes: ["name", "address", "phoneNo", "email"],
+      },
+    ]);
 
     res.status(200).send({
       details: await req.getModelListDetails(Purchase),

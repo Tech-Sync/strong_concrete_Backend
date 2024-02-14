@@ -27,8 +27,6 @@ module.exports = {
 
     // data.totalBalance = balance
 
-    //! filtreleme ve include(iç içe denememiz lazım)
-
     const data = await req.getModelList(PurchaseAccount, {}, [
       {
         model: Purchase,
