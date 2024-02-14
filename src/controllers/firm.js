@@ -7,14 +7,20 @@ module.exports = {
     /* 
         #swagger.tags = ['Firm']
         #swagger.summary = 'List All Firms'
-        #swagger.description = `
-                You can send query with endpoint for search[], sort[], page and limit.
-                <ul> Examples:
-                    <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>
-                    <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>
-                    <li>URL/?<b>page=2&limit=1</b></li>
-                </ul>`
+        #swagger.description = `You can send query with endpoint for search[], sort[], page and limit.
+          <ul> Examples:
+              <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>
+              <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>
+              <li>URL/?<b>page=2&limit=1</b></li>
+          </ul>
+        `
+        #swagger.parameters['showDeleted'] = {
+        in: 'query',
+        type: 'boolean',
+        description:'Send true to show deleted data as well, default value is false'
+      }
     */
+
     const data = await req.getModelList(Firm);
 
     res.status(200).send({
@@ -95,11 +101,19 @@ module.exports = {
           <b>-</b> Send access token in header. <br>
           <b>-</b> This function returns data includes remaning items.
         `
+        #swagger.parameters['hardDelete'] = {
+          in: 'query',
+          type: 'boolean',
+          description:'Send true for hard deletion, default value is false which is soft delete.'}
     */
-   
+    
+    const hardDelete = req.query.hardDelete === "true";
+    if(req.user.role !== 5 && hardDelete ) throw new Error('You are not authorized for permanent deletetion!')
+
     const firm = await Firm.findByPk(req.params.id);
+    if(!firm) throw new Error('Firm not found or already deleted.')
     firm.updaterId = req.user.id;
-    const isDeleted = await firm.destroy();
+    const isDeleted = await firm.destroy({ force: hardDelete });
 
     res.status(isDeleted ? 202 : 404).send({
       error: !Boolean(isDeleted),
