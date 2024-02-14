@@ -70,13 +70,22 @@ module.exports = {
     /* 
         #swagger.tags = ['User']
         #swagger.summary = 'Delete user with ID'
-        #swagger.description = `<b>-</b> Send access token in header.`
-
+        #swagger.description = `
+          <b>-</b> Send access token in header. <br>
+          <b>-</b> This function returns data includes remaning items.
+        `
      */
-    const isDeleted = await User.destroy({ where: { id: req.params.id } }); // add this att. for hard delete ->   force: true
-    res.status(isDeleted ? 204 : 404).send({
+
+    const user = await User.findByPk(req.params.id);
+    user.updaterId = req.user.id;
+    const isDeleted = await user.destroy();
+
+    res.status(isDeleted ? 202 : 404).send({
       error: !Boolean(isDeleted),
-      message: "User not found or something went wrong.",
+      message: !!isDeleted
+        ? `The user named ${user.name} has been deleted.`
+        : "User not found or something went wrong.",
+      data: await req.getModelList(User),
     });
   },
 
@@ -99,7 +108,10 @@ module.exports = {
     /* 
       #swagger.tags = ['User']
       #swagger.summary = 'Multiple-Delete  User with ID'
-      #swagger.description = `<b>-</b> Send access token in header.`
+      #swagger.description = `
+        <b>-</b> Send access token in header. <br>
+        <b>-</b> This function returns data includes remaning items.
+      `
        #swagger.parameters['body'] = {
           in: 'body',
           description: '
@@ -131,9 +143,12 @@ module.exports = {
       }
     }
 
-    res.status(totalDeleted ? 204 : 404).send({
+    res.status(totalDeleted ? 202 : 404).send({
       error: !Boolean(totalDeleted),
-      message: "users not found or something went wrong.",
+      message: !!totalDeleted
+        ? `The user id's ${ids} has been deleted.`
+        : "User not found or something went wrong.",
+      data: await req.getModelList(User),
     });
   },
 

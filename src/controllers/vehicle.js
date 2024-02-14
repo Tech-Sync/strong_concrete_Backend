@@ -82,15 +82,22 @@ module.exports = {
     /* 
         #swagger.tags = ['Vehicle']
         #swagger.summary = 'Delete vehicle with ID'
-        #swagger.description = `<b>-</b> Send access token in header.`
+        #swagger.description = `
+          <b>-</b> Send access token in header. <br>
+          <b>-</b> This function returns data includes remaning items.
+        `
      */
+
     const vehicle = await Vehicle.findByPk(req.params.id);
     vehicle.updaterId = req.user.id;
     const isDeleted = await vehicle.destroy();
 
-    res.status(isDeleted ? 204 : 404).send({
+    res.status(isDeleted ? 202 : 404).send({
       error: !Boolean(isDeleted),
-      message: "Vehicle not found or something went wrong.",
+      message: !!isDeleted
+        ? `The vehicle id ${vehicle.id} has been deleted.`
+        : "Vehicle not found or something went wrong.",
+      data: await req.getModelList(Vehicle),
     });
   },
 
@@ -116,7 +123,10 @@ module.exports = {
      /* 
       #swagger.tags = ['Vehicle']
       #swagger.summary = 'Multiple-Delete  Vehicle with ID'
-      #swagger.description = `<b>-</b> Send access token in header.`
+      #swagger.description = `
+        <b>-</b> Send access token in header. <br>
+        <b>-</b> This function returns data includes remaning items.
+      `
        #swagger.parameters['body'] = {
           in: 'body',
           description: '
@@ -148,9 +158,12 @@ module.exports = {
       }
     }
 
-    res.status(totalDeleted ? 204 : 404).send({
+    res.status(totalDeleted ? 202 : 404).send({
       error: !Boolean(totalDeleted),
-      message: "vehicles not found or something went wrong.",
+      message: !!totalDeleted
+        ? `The vehicle id's ${ids} has been deleted.`
+        : "Vehicle not found or something went wrong.",
+      data: await req.getModelList(Vehicle),
     });
   },
 };

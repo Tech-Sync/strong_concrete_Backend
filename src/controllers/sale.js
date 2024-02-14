@@ -205,15 +205,21 @@ module.exports = {
     /* 
         #swagger.tags = ['Sale']
         #swagger.summary = 'Delete sale with id'
-        #swagger.description = '<b>-</b> Send access token in header.'
+        #swagger.description = `
+          <b>-</b> Send access token in header. <br>
+          <b>-</b> This function returns data includes remaning items.
+        `
     */
     const sale = await Sale.findByPk(req.params.id);
     sale.updaterId = req.user.id;
     const isDeleted = await sale.destroy();
 
-    res.status(isDeleted ? 204 : 404).send({
+    res.status(isDeleted ? 202 : 404).send({
       error: !Boolean(isDeleted),
-      message: "Sale not found or something went wrong.",
+      message: !!isDeleted
+        ? `The sasle id ${sale.id} has been deleted.`
+        : "Sale not found or something went wrong.",
+      data: await req.getModelList(Sale),
     });
   },
 
@@ -236,10 +242,13 @@ module.exports = {
     });
   },
   multipleDelete: async (req, res) => {
-     /* 
+    /* 
       #swagger.tags = ['Sale']
       #swagger.summary = 'Multiple-Delete  Sale with ID'
-      #swagger.description = `<b>-</b> Send access token in header.`
+      #swagger.description = `
+        <b>-</b> Send access token in header. <br>
+        <b>-</b> This function returns data includes remaning items.
+      `
        #swagger.parameters['body'] = {
           in: 'body',
           description: '
@@ -259,17 +268,24 @@ module.exports = {
       throw new Error("Invalid or empty IDs array in the request body.");
     }
 
-    const multipleİsDeleted = await Sale.destroy({
-      where: {
-        id: ids,
-      },
-    });
+    let totalDeleted = 0;
 
-    res.status(multipleİsDeleted ? 204 : 404).send({
-      error: !Boolean(multipleİsDeleted),
-      message: multipleİsDeleted
-        ? `${multipleİsDeleted} Sale deleted successfully.`
+    for (const id of ids) {
+      const sale = await Sale.findByPk(id);
+
+      if (sale) {
+        sale.updaterId = req.user.id;
+        await sale.destroy();
+        totalDeleted++;
+      }
+    }
+
+    res.status(totalDeleted ? 202 : 404).send({
+      error: !Boolean(totalDeleted),
+      message: !!totalDeleted
+        ? `The sale id's ${ids} has been deleted.`
         : "Sale not found or something went wrong.",
+      data: await req.getModelList(Sale),
     });
   },
 };

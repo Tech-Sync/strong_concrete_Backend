@@ -28,20 +28,20 @@ module.exports = {
     // data.totalBalance = balance
 
     //! filtreleme ve include(iç içe denememiz lazım)
-    
-    const data = await req.getModelList(PurchaseAccount, {},[
+
+    const data = await req.getModelList(PurchaseAccount, {}, [
       {
-        model:Purchase,
-        attributes: ["id", "MaterialId"], 
+        model: Purchase,
+        attributes: ["id", "MaterialId"],
         include: [
           {
             model: Firm,
             attributes: ["id", "name"],
           },
         ],
-          }
+      },
     ]);
-    
+
     res.status(200).send({
       details: await req.getModelListDetails(PurchaseAccount),
       data,
@@ -64,7 +64,6 @@ module.exports = {
     if (!req.body.debit) req.body.balance = (0 - req.body.credit).toFixed(2);
 
     const data = await PurchaseAccount.create(req.body);
-
 
     res.status(200).send(data);
   },
@@ -117,16 +116,22 @@ module.exports = {
   delete: async (req, res) => {
     /* 
         #swagger.tags = ['PurchaseAccount']
-         #swagger.summary = 'Delete PurchaseAccount with id'
-        #swagger.description = '<b>-</b> Send access token in header.'
+        #swagger.summary = 'Delete PurchaseAccount with id'
+        #swagger.description = `
+          <b>-</b> Send access token in header. <br>
+          <b>-</b> This function returns data includes remaning items.
+        `
      */
     const purchaseAccount = await PurchaseAccount.findByPk(req.params.id);
     purchaseAccount.updaterId = req.user.id;
     const isDeleted = await purchaseAccount.destroy();
 
-    res.status(isDeleted ? 204 : 404).send({
+    res.status(isDeleted ? 202 : 404).send({
       error: !Boolean(isDeleted),
-      message:"PurchaseAccount not found or something went wrong.",
+      message: !!isDeleted
+        ? `The Purchase Account id ${purchaseAccount.id} has been deleted.`
+        : "Purchase Account not found or something went wrong.",
+      data: await req.getModelList(PurchaseAccount),
     });
   },
 
@@ -136,7 +141,9 @@ module.exports = {
          #swagger.summary = 'Restore PurchaseAccount with id'
         #swagger.description = '<b>-</b> Send access token in header.'
      */
-    const purchaseAccount = await PurchaseAccount.findByPk(req.params.id, { paranoid: false });
+    const purchaseAccount = await PurchaseAccount.findByPk(req.params.id, {
+      paranoid: false,
+    });
     if (!purchaseAccount) throw new Error("PurchaseAccount not Found.");
     purchaseAccount.updaterId = req.user.id;
     const isRestored = await purchaseAccount.restore();
@@ -149,10 +156,13 @@ module.exports = {
     });
   },
   multipleDelete: async (req, res) => {
-     /* 
+    /* 
       #swagger.tags = ['PurchaseAccount']
       #swagger.summary = 'Multiple-Delete  Firm with ID'
-      #swagger.description = `<b>-</b> Send access token in header.`
+      #swagger.description = `
+        <b>-</b> Send access token in header. <br>
+        <b>-</b> This function returns data includes remaning items.
+      `
        #swagger.parameters['body'] = {
           in: 'body',
           description: '
@@ -169,26 +179,27 @@ module.exports = {
     const { ids } = req.body;
 
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
-        throw new Error('Invalid or empty IDs array in the request body.');
+      throw new Error("Invalid or empty IDs array in the request body.");
     }
 
     let totalDeleted = 0;
 
     for (const id of ids) {
-        const purchaseAccount = await PurchaseAccount.findByPk(id);
+      const purchaseAccount = await PurchaseAccount.findByPk(id);
 
-        if (purchaseAccount) {
-
-            purchaseAccount.updaterId = req.user.id;
-            await purchaseAccount.destroy();
-            totalDeleted++;
-        }
+      if (purchaseAccount) {
+        purchaseAccount.updaterId = req.user.id;
+        await purchaseAccount.destroy();
+        totalDeleted++;
+      }
     }
 
-    res.status(totalDeleted ? 204 : 404).send({
-        error: !Boolean(totalDeleted),
-        message: "purchaseAccounts not found or something went wrong."
+    res.status(totalDeleted ? 202 : 404).send({
+      error: !Boolean(totalDeleted),
+      message: !!totalDeleted
+        ? `The purchase account id's ${ids} has been deleted.`
+        : "Purchase Account not found or something went wrong.",
+      data: await req.getModelList(PurchaseAccount),
     });
-},
-  
+  },
 };

@@ -128,15 +128,21 @@ module.exports = {
     /* 
       #swagger.tags = ['Delivery']
       #swagger.summary = 'Delete delivery with ID'
-      #swagger.description = `<b>-</b> Send access token in header.`
+      #swagger.description = `
+        <b>-</b> Send access token in header. <br>
+        <b>-</b> This function returns data includes remaning items.
+      `
     */
     const delivery = await Delivery.findByPk(req.params.id);
     delivery.updaterId = req.user.id;
     const isDeleted = await delivery.destroy();
 
-    res.status(isDeleted ? 204 : 404).send({
+    res.status(isDeleted ? 202 : 404).send({
       error: !Boolean(isDeleted),
-      message: "Delivery not found or something went wrong.",
+      message: !!isDeleted
+      ? `The delivery id ${delivery.id} has been deleted.`
+      : "Delivery not found or something went wrong.",
+    data: await req.getModelList(Delivery),
     });
   },
 
@@ -165,7 +171,10 @@ module.exports = {
     /* 
       #swagger.tags = ['Delivery']
       #swagger.summary = 'Multiple-Delete  delivery with ID'
-      #swagger.description = `<b>-</b> Send access token in header.`
+      #swagger.description = `
+        <b>-</b> Send access token in header. <br>
+        <b>-</b> This function returns data includes remaning items.
+      `
        #swagger.parameters['body'] = {
           in: 'body',
           description: '
@@ -199,7 +208,10 @@ module.exports = {
 
     res.status(totalDeleted ? 204 : 404).send({
       error: !Boolean(totalDeleted),
-      message: "Delivery not found or something went wrong.",
+      message: !!totalDeleted
+      ? `The delivery id's ${ids} has been deleted.`
+      : "Delivery not found or something went wrong.",
+    data: await req.getModelList(Delivery),
     });
   },
 };

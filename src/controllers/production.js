@@ -91,7 +91,7 @@ module.exports = {
 
     res.status(200).send(data);
   },
-  
+
   update: async (req, res) => {
     /* 
         #swagger.tags = ['Production']
@@ -256,15 +256,21 @@ module.exports = {
     /* 
       #swagger.tags = ['Production']
       #swagger.summary = 'Delete production with ID'
-      #swagger.description = `<b>-</b> Send access token in header.`
+      #swagger.description = `
+        <b>-</b> Send access token in header. <br>
+        <b>-</b> This function returns data includes remaning items.
+      `
     */
     const production = await Production.findByPk(req.params.id);
     production.updaterId = req.user.id;
     const isDeleted = await production.destroy();
 
-    res.status(isDeleted ? 204 : 404).send({
+    res.status(isDeleted ? 202 : 404).send({
       error: !Boolean(isDeleted),
-      message:"Production not found or something went wrong.",
+      message: !!isDeleted
+        ? `The production id ${production.id} has been deleted.`
+        : "Firm not found or something went wrong.",
+      data: await req.getModelList(Production),
     });
   },
 
@@ -289,10 +295,13 @@ module.exports = {
     });
   },
   multipleDelete: async (req, res) => {
-     /* 
+    /* 
       #swagger.tags = ['Production']
       #swagger.summary = 'Multiple-Delete  Production with ID'
-      #swagger.description = `<b>-</b> Send access token in header.`
+        #swagger.description = `
+        <b>-</b> Send access token in header. <br>
+        <b>-</b> This function returns data includes remaning items.
+      `
        #swagger.parameters['body'] = {
           in: 'body',
           description: '
@@ -309,25 +318,27 @@ module.exports = {
     const { ids } = req.body;
 
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
-        throw new Error('Invalid or empty IDs array in the request body.');
+      throw new Error("Invalid or empty IDs array in the request body.");
     }
 
     let totalDeleted = 0;
 
     for (const id of ids) {
-        const production = await Production.findByPk(id);
+      const production = await Production.findByPk(id);
 
-        if (production) {
-            
-            production.updaterId = req.user.id;
-            await production.destroy();
-            totalDeleted++;
-        }
+      if (production) {
+        production.updaterId = req.user.id;
+        await production.destroy();
+        totalDeleted++;
+      }
     }
 
-    res.status(totalDeleted ? 204 : 404).send({
-        error: !Boolean(totalDeleted),
-        message: "productions not found or something went wrong."
+    res.status(totalDeleted ? 202 : 404).send({
+      error: !Boolean(totalDeleted),
+      message: !!totalDeleted
+        ? `The production id's ${ids} has been deleted.`
+        : "Production not found or something went wrong.",
+      data: await req.getModelList(Production),
     });
-},
+  },
 };

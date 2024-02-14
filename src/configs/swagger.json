@@ -638,7 +638,7 @@
           "Firm"
         ],
         "summary": "Delete firm with ID",
-        "description": "<b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
             "name": "id",
@@ -648,8 +648,8 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "202": {
+            "description": "Accepted"
           },
           "404": {
             "description": "Not Found"
@@ -711,8 +711,8 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "No Content"
+          "202": {
+            "description": "Accepted"
           },
           "404": {
             "description": "Not Found"

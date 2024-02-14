@@ -94,15 +94,21 @@ module.exports = {
     /* 
         #swagger.tags = ['Sale Account']
         #swagger.summary = 'Delete Sale Account with id'
-        #swagger.description = '<b>-</b> Send access token in header.'
+        #swagger.description = `
+          <b>-</b> Send access token in header. <br>
+          <b>-</b> This function returns data includes remaning items.
+        `
     */
     const saleAccount = await SaleAccount.findByPk(req.params.id);
     saleAccount.updaterId = req.user.id;
     const isDeleted = await saleAccount.destroy();
 
-    res.status(isDeleted ? 204 : 404).send({
+    res.status(isDeleted ? 202 : 404).send({
       error: !Boolean(isDeleted),
-      message: "SaleAccount not found or something went wrong.",
+      message: !!isDeleted
+        ? `The sale account id ${saleAccount.id} has been deleted.`
+        : "Sale Account not found or something went wrong.",
+      data: await req.getModelList(SaleAccount),
     });
   },
 
@@ -127,10 +133,13 @@ module.exports = {
     });
   },
   multipleDelete: async (req, res) => {
-     /* 
+    /* 
       #swagger.tags = ['SaleAccount']
       #swagger.summary = 'Multiple-Delete  SaleAccount with ID'
-      #swagger.description = `<b>-</b> Send access token in header.`
+      #swagger.description = `
+        <b>-</b> Send access token in header. <br>
+        <b>-</b> This function returns data includes remaning items.
+      `
        #swagger.parameters['body'] = {
           in: 'body',
           description: '
@@ -162,9 +171,12 @@ module.exports = {
       }
     }
 
-    res.status(totalDeleted ? 204 : 404).send({
+    res.status(totalDeleted ? 202 : 404).send({
       error: !Boolean(totalDeleted),
-      message: "saleAccounts not found or something went wrong.",
+      message: !!totalDeleted
+        ? `The sale Account id's ${ids} has been deleted.`
+        : "Sale Account not found or something went wrong.",
+      data: await req.getModelList(saleAccount),
     });
   },
 };

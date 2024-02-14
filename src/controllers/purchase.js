@@ -135,17 +135,22 @@ module.exports = {
     /* 
         #swagger.tags = ['Purchase']
         #swagger.summary = 'Delete purchase with id'
-        #swagger.description = '<b>-</b> Send access token in header.'
+        #swagger.description = `
+          <b>-</b> Send access token in header. <br>
+          <b>-</b> This function returns data includes remaning items.
+        `
     */
+
     const purchase = await Purchase.findByPk(req.params.id);
     purchase.updaterId = req.user.id;
     const isDeleted = await purchase.destroy();
 
-    await PurchaseAccount.destroy({ where: { PurchaseId: req.params.id } });
-
-    res.status(isDeleted ? 204 : 404).send({
+    res.status(isDeleted ? 202 : 404).send({
       error: !Boolean(isDeleted),
-      message: "Purchase not found or something went wrong.",
+      message: !!isDeleted
+        ? `The purchase id ${purchase.id} has been deleted.`
+        : "Purchase not found or something went wrong.",
+      data: await req.getModelList(Purchase),
     });
   },
 
@@ -175,10 +180,13 @@ module.exports = {
     });
   },
   multipleDelete: async (req, res) => {
-     /* 
+    /* 
       #swagger.tags = ['Purchase']
       #swagger.summary = 'Multiple-Delete  Purchase with ID'
-      #swagger.description = `<b>-</b> Send access token in header.`
+      #swagger.description = `
+        <b>-</b> Send access token in header. <br>
+        <b>-</b> This function returns data includes remaning items.
+      `
        #swagger.parameters['body'] = {
           in: 'body',
           description: '
@@ -210,9 +218,12 @@ module.exports = {
       }
     }
 
-    res.status(totalDeleted ? 204 : 404).send({
+    res.status(totalDeleted ? 202 : 404).send({
       error: !Boolean(totalDeleted),
-      message: "purchases not found or something went wrong.",
+      message: !!totalDeleted
+        ? `The purchase id's ${ids} has been deleted.`
+        : "Purchase not found or something went wrong.",
+      data: await req.getModelList(Purchase),
     });
   },
 };

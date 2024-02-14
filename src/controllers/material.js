@@ -88,15 +88,21 @@ module.exports = {
     /* 
         #swagger.tags = ['Material']
         #swagger.summary = 'Delete material with ID'
-        #swagger.description = `<b>-</b> Send access token in header.`
+        #swagger.description = `
+          <b>-</b> Send access token in header. <br>
+          <b>-</b> This function returns data includes remaning items.
+        `
     */
     const material = await Material.findByPk(req.params.id);
     material.updaterId = req.user.id;
     const isDeleted = await material.destroy();
 
-    res.status(isDeleted ? 204 : 404).send({
+    res.status(isDeleted ? 202 : 404).send({
       error: !Boolean(isDeleted),
-      message: "Material not found or something went wrong.",
+      message: !!isDeleted
+        ? `The delivery named ${material.name} has been deleted.`
+        : "Delivery not found or something went wrong.",
+      data: await req.getModelList(Material),
     });
   },
 
@@ -122,10 +128,13 @@ module.exports = {
   },
 
   multipleDelete: async (req, res) => {
-     /* 
+    /* 
       #swagger.tags = ['Material']
       #swagger.summary = 'Multiple-Delete  Material with ID'
-      #swagger.description = `<b>-</b> Send access token in header.`
+      #swagger.description = `
+        <b>-</b> Send access token in header. <br>
+        <b>-</b> This function returns data includes remaning items.
+      `
        #swagger.parameters['body'] = {
           in: 'body',
           description: '
@@ -157,9 +166,12 @@ module.exports = {
       }
     }
 
-    res.status(totalDeleted ? 204 : 404).send({
+    res.status(totalDeleted ? 202 : 404).send({
       error: !Boolean(totalDeleted),
-      message: "materials not found or something went wrong.",
+      message: !!totalDeleted
+        ? `The material id's ${ids} has been deleted.`
+        : "Material not found or something went wrong.",
+      data: await req.getModelList(Material),
     });
   },
 };

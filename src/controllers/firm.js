@@ -91,15 +91,22 @@ module.exports = {
     /* 
         #swagger.tags = ['Firm']
         #swagger.summary = 'Delete firm with ID'
-        #swagger.description = `<b>-</b> Send access token in header.`
+        #swagger.description = `
+          <b>-</b> Send access token in header. <br>
+          <b>-</b> This function returns data includes remaning items.
+        `
     */
+   
     const firm = await Firm.findByPk(req.params.id);
     firm.updaterId = req.user.id;
     const isDeleted = await firm.destroy();
 
-    res.status(isDeleted ? 204 : 404).send({
+    res.status(isDeleted ? 202 : 404).send({
       error: !Boolean(isDeleted),
-      message: "Firm not found or something went wrong.",
+      message: !!isDeleted
+        ? `The company named ${firm.name} has been deleted.`
+        : "Firm not found or something went wrong.",
+      data: await req.getModelList(Firm),
     });
   },
 
@@ -123,11 +130,14 @@ module.exports = {
   },
 
   multipleDelete: async (req, res) => {
-      /* 
+    /* 
       #swagger.tags = ['Firm']
       #swagger.summary = 'Multiple-Delete  Firm with ID'
-      #swagger.description = `<b>-</b> Send access token in header.`
-       #swagger.parameters['body'] = {
+      #swagger.description = `
+        <b>-</b> Send access token in header. <br>
+        <b>-</b> This function returns data includes remaning items.
+      `
+      #swagger.parameters['body'] = {
           in: 'body',
           description: '
             <ul> 
@@ -152,16 +162,18 @@ module.exports = {
       const firm = await Firm.findByPk(id);
 
       if (firm) {
-        // Her bir firmaya updaterId ekleyin
         firm.updaterId = req.user.id;
         await firm.destroy();
         totalDeleted++;
       }
     }
 
-    res.status(totalDeleted ? 204 : 404).send({
+    res.status(totalDeleted ? 202 : 404).send({
       error: !Boolean(totalDeleted),
-      message: "Firms not found or something went wrong.",
+      message: !!totalDeleted
+        ? `The company id's ${ids} has been deleted.`
+        : "Firm not found or something went wrong.",
+      data: await req.getModelList(Firm),
     });
   },
 };
