@@ -3,24 +3,36 @@
 const PurchaseAccount = require("../models/purchaseAccount");
 const Material = require("../models/material");
 const Purchase = require("../models/purchase");
+const Firm = require("../models/firm");
 
 module.exports = {
   list: async (req, res) => {
     /* 
         #swagger.tags = ['Purchase']
         #swagger.summary = ' Purchase List'
-        #swagger.description = '
-        <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>
-        
-                <ul> Examples:
-                    <li><b>SEARCHING: URL?search[MaterialId]=3&search[FirmId]=2</b></li>
-                    <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>
-                    <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>
-                    <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01  The date must be in year-month-day format</b></li>
-                </ul>'
-        
+        #swagger.description = `You can send query with endpoint for search[], sort[], page and limit.
+          <ul> Examples:
+              <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>
+              <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>
+              <li>URL/?<b>page=2&limit=1</b></li>
+          </ul>
+        `
+        #swagger.parameters['showDeleted'] = {
+        in: 'query',
+        type: 'boolean',
+        description:'Send true to show deleted data as well, default value is false'
+      }
     */
-    const data = await req.getModelList(Purchase);
+    const data = await req.getModelList(Purchase, {}, [
+      {
+        model: Material,
+        attributes: ["name"],
+      },
+      {
+        model: Firm,
+        attributes: ["name", "address", "phoneNo", "email"],
+      },
+    ]);
 
     res.status(200).send({
       details: await req.getModelListDetails(Purchase),
@@ -135,17 +147,30 @@ module.exports = {
     /* 
         #swagger.tags = ['Purchase']
         #swagger.summary = 'Delete purchase with id'
-        #swagger.description = '<b>-</b> Send access token in header.'
+        #swagger.description = `
+          <b>-</b> Send access token in header. <br>
+          <b>-</b> This function returns data includes remaning items.
+        `
+        #swagger.parameters['hardDelete'] = {
+          in: 'query',
+          type: 'boolean',
+          description:'Send true for hard deletion, default value is false which is soft delete.'}
     */
+    
+    const hardDelete = req.query.hardDelete === "true";
+    if(req.user.role !== 5 && hardDelete ) throw new Error('You are not authorized for permanent deletetion!')
+
     const purchase = await Purchase.findByPk(req.params.id);
+    if(!purchase) throw new Error('Purchase not found or already deleted.')
     purchase.updaterId = req.user.id;
-    const isDeleted = await purchase.destroy();
+    const isDeleted = await purchase.destroy({ force: hardDelete });
 
-    await PurchaseAccount.destroy({ where: { PurchaseId: req.params.id } });
-
-    res.status(isDeleted ? 204 : 404).send({
+    res.status(isDeleted ? 202 : 404).send({
       error: !Boolean(isDeleted),
-      message: "Purchase not found or something went wrong.",
+      message: !!isDeleted
+        ? `The purchase id ${purchase.id} has been deleted.`
+        : "Purchase not found or something went wrong.",
+      data: await req.getModelList(Purchase),
     });
   },
 
@@ -175,10 +200,13 @@ module.exports = {
     });
   },
   multipleDelete: async (req, res) => {
-     /* 
+    /* 
       #swagger.tags = ['Purchase']
       #swagger.summary = 'Multiple-Delete  Purchase with ID'
-      #swagger.description = `<b>-</b> Send access token in header.`
+      #swagger.description = `
+        <b>-</b> Send access token in header. <br>
+        <b>-</b> This function returns data includes remaning items.
+      `
        #swagger.parameters['body'] = {
           in: 'body',
           description: '
@@ -210,9 +238,12 @@ module.exports = {
       }
     }
 
-    res.status(totalDeleted ? 204 : 404).send({
+    res.status(totalDeleted ? 202 : 404).send({
       error: !Boolean(totalDeleted),
-      message: "purchases not found or something went wrong.",
+      message: !!totalDeleted
+        ? `The purchase id's ${ids} has been deleted.`
+        : "Purchase not found or something went wrong.",
+      data: await req.getModelList(Purchase),
     });
   },
 };

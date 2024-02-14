@@ -30,7 +30,7 @@ const Firm = sequelize.define(
       allowNull: false,
       unique: {
         name: "unique_tpinNo_constraint",
-        msg: "TpinNo should be unique.",
+        msg: "Tpin Number should be unique.",
       },
     },
     email: {

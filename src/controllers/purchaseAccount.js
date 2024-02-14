@@ -9,15 +9,18 @@ module.exports = {
     /* 
         #swagger.tags = ['PurchaseAccount']
         #swagger.summary = ' PurchaseAccount List'
-        #swagger.description = '
-        <b>-</b> You can send query with endpoint for search[], sort[], page and limit. <br>
-        
-                <ul> Examples:
-                    <li><b>SEARCHING: URL?search[PurchaseId]=3&search[FirmId]=2</b></li>
-                    <li><b>SORTING: URL?sort[quantity]=desc&sort[totalPrice]=asc</b></li>
-                    <li><b>PAGINATION: URL?page=1&limit=10&offset=10</b></li>
-                    <li><b>DATE FILTER: URL?startDate=2023-07-13&endDate=2023-10-01  The date must be in year-month-day format</b></li>
-                </ul>'
+        #swagger.description = `You can send query with endpoint for search[], sort[], page and limit.
+          <ul> Examples:
+              <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>
+              <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>
+              <li>URL/?<b>page=2&limit=1</b></li>
+          </ul>
+        `
+        #swagger.parameters['showDeleted'] = {
+        in: 'query',
+        type: 'boolean',
+        description:'Send true to show deleted data as well, default value is false'
+      }
 
      */
 
@@ -27,21 +30,19 @@ module.exports = {
 
     // data.totalBalance = balance
 
-    //! filtreleme ve include(iç içe denememiz lazım)
-    
-    const data = await req.getModelList(PurchaseAccount, {},[
+    const data = await req.getModelList(PurchaseAccount, {}, [
       {
-        model:Purchase,
-        attributes: ["id", "MaterialId"], 
+        model: Purchase,
+        attributes: ["id", "MaterialId"],
         include: [
           {
             model: Firm,
             attributes: ["id", "name"],
           },
         ],
-          }
+      },
     ]);
-    
+
     res.status(200).send({
       details: await req.getModelListDetails(PurchaseAccount),
       data,
@@ -64,7 +65,6 @@ module.exports = {
     if (!req.body.debit) req.body.balance = (0 - req.body.credit).toFixed(2);
 
     const data = await PurchaseAccount.create(req.body);
-
 
     res.status(200).send(data);
   },
@@ -117,16 +117,31 @@ module.exports = {
   delete: async (req, res) => {
     /* 
         #swagger.tags = ['PurchaseAccount']
-         #swagger.summary = 'Delete PurchaseAccount with id'
-        #swagger.description = '<b>-</b> Send access token in header.'
-     */
+        #swagger.summary = 'Delete PurchaseAccount with id'
+        #swagger.description = `
+          <b>-</b> Send access token in header. <br>
+          <b>-</b> This function returns data includes remaning items.
+        `
+        #swagger.parameters['hardDelete'] = {
+          in: 'query',
+          type: 'boolean',
+          description:'Send true for hard deletion, default value is false which is soft delete.'}
+    */
+    
+    const hardDelete = req.query.hardDelete === "true";
+    if(req.user.role !== 5 && hardDelete ) throw new Error('You are not authorized for permanent deletetion!')
+    
     const purchaseAccount = await PurchaseAccount.findByPk(req.params.id);
+    if(!purchaseAccount) throw new Error('PurchaseAccount not found or already deleted.')
     purchaseAccount.updaterId = req.user.id;
-    const isDeleted = await purchaseAccount.destroy();
+    const isDeleted = await purchaseAccount.destroy({ force: hardDelete });
 
-    res.status(isDeleted ? 204 : 404).send({
+    res.status(isDeleted ? 202 : 404).send({
       error: !Boolean(isDeleted),
-      message:"PurchaseAccount not found or something went wrong.",
+      message: !!isDeleted
+        ? `The Purchase Account id ${purchaseAccount.id} has been deleted.`
+        : "Purchase Account not found or something went wrong.",
+      data: await req.getModelList(PurchaseAccount),
     });
   },
 
@@ -136,7 +151,9 @@ module.exports = {
          #swagger.summary = 'Restore PurchaseAccount with id'
         #swagger.description = '<b>-</b> Send access token in header.'
      */
-    const purchaseAccount = await PurchaseAccount.findByPk(req.params.id, { paranoid: false });
+    const purchaseAccount = await PurchaseAccount.findByPk(req.params.id, {
+      paranoid: false,
+    });
     if (!purchaseAccount) throw new Error("PurchaseAccount not Found.");
     purchaseAccount.updaterId = req.user.id;
     const isRestored = await purchaseAccount.restore();
@@ -149,10 +166,13 @@ module.exports = {
     });
   },
   multipleDelete: async (req, res) => {
-     /* 
+    /* 
       #swagger.tags = ['PurchaseAccount']
       #swagger.summary = 'Multiple-Delete  Firm with ID'
-      #swagger.description = `<b>-</b> Send access token in header.`
+      #swagger.description = `
+        <b>-</b> Send access token in header. <br>
+        <b>-</b> This function returns data includes remaning items.
+      `
        #swagger.parameters['body'] = {
           in: 'body',
           description: '
@@ -169,26 +189,27 @@ module.exports = {
     const { ids } = req.body;
 
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
-        throw new Error('Invalid or empty IDs array in the request body.');
+      throw new Error("Invalid or empty IDs array in the request body.");
     }
 
     let totalDeleted = 0;
 
     for (const id of ids) {
-        const purchaseAccount = await PurchaseAccount.findByPk(id);
+      const purchaseAccount = await PurchaseAccount.findByPk(id);
 
-        if (purchaseAccount) {
-
-            purchaseAccount.updaterId = req.user.id;
-            await purchaseAccount.destroy();
-            totalDeleted++;
-        }
+      if (purchaseAccount) {
+        purchaseAccount.updaterId = req.user.id;
+        await purchaseAccount.destroy();
+        totalDeleted++;
+      }
     }
 
-    res.status(totalDeleted ? 204 : 404).send({
-        error: !Boolean(totalDeleted),
-        message: "purchaseAccounts not found or something went wrong."
+    res.status(totalDeleted ? 202 : 404).send({
+      error: !Boolean(totalDeleted),
+      message: !!totalDeleted
+        ? `The purchase account id's ${ids} has been deleted.`
+        : "Purchase Account not found or something went wrong.",
+      data: await req.getModelList(PurchaseAccount),
     });
-},
-  
+  },
 };
