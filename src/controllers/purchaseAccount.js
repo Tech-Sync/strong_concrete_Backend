@@ -1,6 +1,7 @@
 "use strict";
 
 const Firm = require("../models/firm");
+const Material = require("../models/material");
 const Purchase = require("../models/purchase");
 const PurchaseAccount = require("../models/purchaseAccount");
 
@@ -33,14 +34,14 @@ module.exports = {
     const data = await req.getModelList(PurchaseAccount, {}, [
       {
         model: Purchase,
-        attributes: ["id", "MaterialId"],
         include: [
           {
-            model: Firm,
-            attributes: ["id", "name"],
+            model: Material,
+            attributes: ["name"],
           },
         ],
       },
+      { model: Firm, attributes: ["name"] },
     ]);
 
     res.status(200).send({
@@ -127,12 +128,14 @@ module.exports = {
           type: 'boolean',
           description:'Send true for hard deletion, default value is false which is soft delete.'}
     */
-    
+
     const hardDelete = req.query.hardDelete === "true";
-    if(req.user.role !== 5 && hardDelete ) throw new Error('You are not authorized for permanent deletetion!')
-    
+    if (req.user.role !== 5 && hardDelete)
+      throw new Error("You are not authorized for permanent deletetion!");
+
     const purchaseAccount = await PurchaseAccount.findByPk(req.params.id);
-    if(!purchaseAccount) throw new Error('PurchaseAccount not found or already deleted.')
+    if (!purchaseAccount)
+      throw new Error("PurchaseAccount not found or already deleted.");
     purchaseAccount.updaterId = req.user.id;
     const isDeleted = await purchaseAccount.destroy({ force: hardDelete });
 
