@@ -1,6 +1,7 @@
 "use strict";
 
 const Firm = require("../models/firm");
+const Material = require("../models/material");
 const Purchase = require("../models/purchase");
 const PurchaseAccount = require("../models/purchaseAccount");
 
@@ -33,14 +34,17 @@ module.exports = {
     const data = await req.getModelList(PurchaseAccount, {}, [
       {
         model: Purchase,
-        attributes: ["id", "MaterialId"],
+        attributes: [],
         include: [
           {
-            model: Firm,
-            attributes: ["id", "name"],
+            model: Material,
+            attributes: ["name"],
           },
         ],
       },
+      {model:Firm,
+       attributes:["name"],
+      }
     ]);
 
     res.status(200).send({
