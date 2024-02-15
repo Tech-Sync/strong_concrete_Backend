@@ -23,7 +23,16 @@ module.exports = {
         description:'Send true to show deleted data as well, default value is false'
       }
     */
-    const data = await req.getModelList(Sale);
+    const data = await req.getModelList(Sale, {}, [
+      {
+        model: Firm,
+        attributes: ["name"],
+      },
+      {
+        model: Product,
+        attributes: ["name"],
+      },
+    ]);
 
     res.status(200).send({
       details: await req.getModelListDetails(Sale),
