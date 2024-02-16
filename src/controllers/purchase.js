@@ -156,12 +156,12 @@ module.exports = {
           type: 'boolean',
           description:'Send true for hard deletion, default value is false which is soft delete.'}
     */
-    
+
     const hardDelete = req.query.hardDelete === "true";
-    if(req.user.role !== 5 && hardDelete ) throw new Error('You are not authorized for permanent deletetion!')
+    if (req.user.role !== 5 && hardDelete) throw new Error('You are not authorized for permanent deletetion!')
 
     const purchase = await Purchase.findByPk(req.params.id);
-    if(!purchase) throw new Error('Purchase not found or already deleted.')
+    if (!purchase) throw new Error('Purchase not found or already deleted.')
     purchase.updaterId = req.user.id;
     const isDeleted = await purchase.destroy({ force: hardDelete });
 
@@ -180,15 +180,13 @@ module.exports = {
         #swagger.summary = 'Restore deleted purchase with id'
         #swagger.description = `<b>-</b> Send access token in header.`
      */
-    const purchase = await Purchase.findByPk(req.params.id, {
-      paranoid: false,
-    });
+    const purchase = await Purchase.findByPk(req.params.id, { paranoid: false, });
     if (!purchase) throw new Error("Purchase not Found.");
     purchase.updaterId = req.user.id;
     const isRestored = await purchase.restore();
 
     const material = await Material.findByPk(purchase.MaterialId);
-    material.increment("quantity", { by: purchase.quantity });
+    if(material) material.increment("quantity", { by: purchase.quantity });
 
     await PurchaseAccount.restore({ where: { PurchaseId: req.params.id } });
 
@@ -233,6 +231,7 @@ module.exports = {
 
       if (purchase) {
         purchase.updaterId = req.user.id;
+
         await purchase.destroy();
         totalDeleted++;
       }
