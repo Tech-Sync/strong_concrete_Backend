@@ -47,7 +47,7 @@ const Purchase = sequelize.define(
         const originalPurchase = await Purchase.findByPk(purchase.id);
         const quantityDiff = (purchase.quantity - originalPurchase.quantity).toFixed(2);
         const material = await Material.findByPk(originalPurchase.MaterialId);
-        material.increment("quantity", { by: quantityDiff });
+        if (material) material.increment("quantity", { by: quantityDiff });
         purchase.totalPrice = (purchase.unitPrice * purchase.quantity).toFixed(2);
       },
       afterCreate: async (purchase) => {
@@ -57,7 +57,7 @@ const Purchase = sequelize.define(
       beforeDestroy: async (purchase) => {
         const deletedPurchase = await Purchase.findByPk(purchase.id);
         const material = await Material.findByPk(deletedPurchase.MaterialId);
-        material.decrement("quantity", { by: deletedPurchase.quantity });
+        if (material) material.decrement("quantity", { by: deletedPurchase.quantity });
       },
     },
   }
