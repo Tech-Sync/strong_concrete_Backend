@@ -4,6 +4,8 @@ const Sale = require("../models/sale");
 const Production = require("../models/production");
 const SaleAccount = require("../models/saleAccount");
 const Delivery = require("../models/delivery");
+const Firm = require("../models/firm");
+const Product = require("../models/product");
 
 module.exports = {
   list: async (req, res) => {
