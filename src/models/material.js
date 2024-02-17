@@ -27,17 +27,17 @@ const Material = sequelize.define(
       allowNull: false,
       defaultValue: 0,
       set(value) {
-        this.setDataValue("quantity", value.toFixed(2));
+        const numericValue = parseFloat(value);
+        if (!isNaN(numericValue)) {
+          this.setDataValue("quantity", parseFloat(numericValue.toFixed(2)));
+        } else {
+          this.setDataValue("quantity", 0);
+        }
       },
     },
   },
   {
     paranoid: true,
-    hooks: {
-      beforeUpdate: (material) => {
-        material.quantity = material.quantity.toFixed(2)
-      },
-    },
   }
 );
 
