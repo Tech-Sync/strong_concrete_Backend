@@ -90,10 +90,22 @@ module.exports = {
         #swagger.description = '
        <b>-</b> Send access token in header. '
     */
-    const data = await Purchase.findByPk(req.params.id);
+    const data = await Purchase.findByPk(req.params.id, {
+      include: [
+        {
+          model: Material,
+          attributes: ["name",'unitType'],
+        },
+        {
+          model: Firm,
+          attributes: ["name", "address", "phoneNo", "email"],
+        },
+      ]
+    });
+
     if (!data) {
       res.errorStatusCode = 404;
-      throw new Error("Not found !");
+      throw new Error("Data Not found !");
     }
 
     res.status(200).send(data);
@@ -165,12 +177,24 @@ module.exports = {
     purchase.updaterId = req.user.id;
     const isDeleted = await purchase.destroy({ force: hardDelete });
 
+    // return remaning data as wel
+    const data = await req.getModelList(Purchase, {}, [
+      {
+        model: Material,
+        attributes: ["name"],
+      },
+      {
+        model: Firm,
+        attributes: ["name", "address", "phoneNo", "email"],
+      },
+    ]);
+
     res.status(isDeleted ? 202 : 404).send({
       error: !Boolean(isDeleted),
       message: !!isDeleted
         ? `The purchase id ${purchase.id} has been deleted.`
         : "Purchase not found or something went wrong.",
-      data: await req.getModelList(Purchase),
+      data,
     });
   },
 
@@ -186,7 +210,7 @@ module.exports = {
     const isRestored = await purchase.restore();
 
     const material = await Material.findByPk(purchase.MaterialId);
-    if(material) material.increment("quantity", { by: purchase.quantity });
+    if (material) material.increment("quantity", { by: purchase.quantity });
 
     await PurchaseAccount.restore({ where: { PurchaseId: req.params.id } });
 
@@ -237,12 +261,24 @@ module.exports = {
       }
     }
 
+    // return remaning data as wel
+    const data = await req.getModelList(Purchase, {}, [
+      {
+        model: Material,
+        attributes: ["name"],
+      },
+      {
+        model: Firm,
+        attributes: ["name", "address", "phoneNo", "email"],
+      },
+    ]);
+
     res.status(totalDeleted ? 202 : 404).send({
       error: !Boolean(totalDeleted),
       message: !!totalDeleted
         ? `The purchase id's ${ids} has been deleted.`
         : "Purchase not found or something went wrong.",
-      data: await req.getModelList(Purchase),
+      data,
     });
   },
 };
