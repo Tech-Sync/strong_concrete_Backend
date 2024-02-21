@@ -771,32 +771,34 @@
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "creatorId": {
-                  "example": "any"
-                },
                 "name": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "C35"
                 },
-                "updaterId": {
-                  "example": "any"
+                "price": {
+                  "type": "number",
+                  "example": 100
                 },
-                "in": {
-                  "example": "any"
-                },
-                "required": {
-                  "example": "any"
-                },
-                "schema": {
-                  "example": "any"
-                },
-                "where": {
-                  "example": "any"
-                },
-                "individualHooks": {
-                  "example": "any"
+                "materials": {
+                  "type": "object",
+                  "properties": {
+                    "STONE": {
+                      "type": "number",
+                      "example": 1.9
+                    },
+                    "SAND": {
+                      "type": "number",
+                      "example": 1.9
+                    },
+                    "CEMENT": {
+                      "type": "number",
+                      "example": 270
+                    }
+                  }
                 }
               }
             }
@@ -805,12 +807,6 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "202": {
-            "description": "Accepted"
-          },
-          "404": {
-            "description": "Not Found"
           }
         }
       }

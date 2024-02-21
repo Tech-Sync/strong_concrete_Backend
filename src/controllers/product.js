@@ -37,12 +37,13 @@ module.exports = {
         in: 'body',
         required: true,
         schema: {
-          "name": "c35",
-          "price": 100,
-          "materials": {
-            "STONE": 1.9,
-            "SAND": 1.9,
-            "CEMENT": 270
+          name:'C35',
+          price: 100,
+            materials: {
+              STONE : 1.9,
+              SAND: 1.9,
+              CEMENT: 270
+            }
           }
         }
     */
