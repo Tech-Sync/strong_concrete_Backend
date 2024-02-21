@@ -76,7 +76,18 @@ module.exports = {
         #swagger.description = '
        <b>-</b> Send access token in header. '
         */
-    const data = await Sale.findByPk(req.params.id);
+    const data = await Sale.findByPk(req.params.id, {
+      include: [
+        {
+          model: Firm,
+          attributes: ["name"],
+        },
+        {
+          model: Product,
+          attributes: ["name"],
+        },
+      ]
+    });
     if (!data) {
       res.errorStatusCode = 404;
       throw new Error("Not found !");
@@ -228,12 +239,12 @@ module.exports = {
           type: 'boolean',
           description:'Send true for hard deletion, default value is false which is soft delete.'}
     */
-    
+
     const hardDelete = req.query.hardDelete === "true";
-    if(req.user.role !== 5 && hardDelete ) throw new Error('You are not authorized for permanent deletetion!')
+    if (req.user.role !== 5 && hardDelete) throw new Error('You are not authorized for permanent deletetion!')
 
     const sale = await Sale.findByPk(req.params.id);
-    if(!sale) throw new Error('Sale not found or already deleted.')
+    if (!sale) throw new Error('Sale not found or already deleted.')
     sale.updaterId = req.user.id;
     const isDeleted = await sale.destroy({ force: hardDelete });
 

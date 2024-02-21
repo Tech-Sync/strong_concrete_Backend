@@ -77,7 +77,20 @@ module.exports = {
         #swagger.description = '
        <b>-</b> Send access token in header. '
      */
-    const data = await PurchaseAccount.findByPk(req.params.id);
+    const data = await PurchaseAccount.findByPk(req.params.id, {
+      include: [
+        {
+          model: Purchase,
+          include: [
+            {
+              model: Material,
+              attributes: ["name"],
+            },
+          ],
+        },
+        { model: Firm, attributes: ["name"] },
+      ]
+    });
     if (!data) {
       res.errorStatusCode = 404;
       throw new Error("Not found !");
