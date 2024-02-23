@@ -352,7 +352,7 @@
         "tags": [
           "User"
         ],
-        "summary": "Update User Password",
+        "summary": "Update User email",
         "description": "\r  <b>-</b> User should be logged in already.<br>\r  <b>-</b> Send access token in header.",
         "parameters": [
           {

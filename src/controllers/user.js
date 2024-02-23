@@ -85,12 +85,13 @@ module.exports = {
           type: 'boolean',
           description:'Send true for hard deletion, default value is false which is soft delete.'}
     */
-    
+
     const hardDelete = req.query.hardDelete === "true";
-    if(req.user.role !== 5 && hardDelete ) throw new Error('You are not authorized for permanent deletetion!')
-    
+    if (req.user.role !== 5 && hardDelete)
+      throw new Error("You are not authorized for permanent deletetion!");
+
     const user = await User.findByPk(req.params.id);
-    if(!user) throw new Error('User not found or already deleted.')
+    if (!user) throw new Error("User not found or already deleted.");
     user.updaterId = req.user.id;
     const isDeleted = await user.destroy({ force: hardDelete });
 
@@ -219,9 +220,10 @@ module.exports = {
           in: 'body',
           required: true,
           schema: {
-            password:'aA12345.',
-            newPassword:'54321aA?',
-            reNewPassword:'54321aA?'
+            "currentEmail": "user@gmail.com",
+            "newEmail": "user2@gmail.com",
+            "reNewEmail": "user2@gmail.com"
+
           }
         } 
      */
