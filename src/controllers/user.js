@@ -116,7 +116,7 @@ module.exports = {
       error: !Boolean(isDeleted),
       message: !!isDeleted
       ? `The user ${
-        user.name ? `named ${user.name}` : `with ID ${user.id}`
+        user.firstName ? `named ${user.firstName}` : `with ID ${user.id}`
       } has been deleted.`
       : "User not found or something went wrong.",
       data: await req.getModelList(User),
