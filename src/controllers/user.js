@@ -211,7 +211,7 @@ module.exports = {
   uptadeEmail: async (req, res) => {
     /* 
         #swagger.tags = ['User']
-        #swagger.summary = 'Update User Password'
+        #swagger.summary = 'Update User email'
         #swagger.description = `
           <b>-</b> User should be logged in already.<br>
           <b>-</b> Send access token in header.`
