@@ -362,17 +362,17 @@
             "schema": {
               "type": "object",
               "properties": {
-                "password": {
+                "currentEmail": {
                   "type": "string",
-                  "example": "aA12345."
+                  "example": "user@gmail.com"
                 },
-                "newPassword": {
+                "newEmail": {
                   "type": "string",
-                  "example": "54321aA?"
+                  "example": "user2@gmail.com"
                 },
-                "reNewPassword": {
+                "reNewEmail": {
                   "type": "string",
-                  "example": "54321aA?"
+                  "example": "user2@gmail.com"
                 }
               }
             }
