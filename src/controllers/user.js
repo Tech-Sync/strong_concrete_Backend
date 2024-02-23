@@ -43,6 +43,7 @@ module.exports = {
 
     res.status(200).send(data);
   },
+ 
   update: async (req, res) => {
     /* 
         #swagger.tags = ['User']
@@ -61,16 +62,32 @@ module.exports = {
           }
         } 
      */
-    const isUpdated = await User.update(req.body, {
-      where: { id: req.params.id },
-      individualHooks: true,
-    });
+    const allowedUpdates = ['firstName', 'lastName', 'nrcNo', 'phoneNo', 'address', 'role']; 
+    
+    const updates = Object.keys(req.body);
+    
+    const isValidOperation = updates.every(update => allowedUpdates.includes(update));
 
-    res.status(202).send({
-      isUpdated: Boolean(isUpdated[0]),
-      data: await User.findByPk(req.params.id),
-    });
-  },
+    if (!isValidOperation) {
+        return res.status(400).send({ error: 'Invalid Update! Check Your Update Field..' });
+    }
+
+    try {
+        const isUpdated = await User.update(req.body, {
+            where: { id: req.params.id },
+            individualHooks: true,
+        });
+
+        if (!isUpdated[0]) {
+            return res.status(404).send({ error: 'User Not Found!' });
+        }
+
+        const user = await User.findByPk(req.params.id);
+        res.status(202).send({ isUpdated: true, data: user });
+    } catch (error) {
+        res.status(400).send(error);
+    }
+},
 
   delete: async (req, res) => {
     /* 
