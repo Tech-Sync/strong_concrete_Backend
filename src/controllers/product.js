@@ -1,5 +1,6 @@
 "use strict";
 
+const Material = require("../models/material");
 const Product = require("../models/product");
 
 module.exports = {
@@ -48,14 +49,14 @@ module.exports = {
     */
     const { materials } = req.body;
 
-    // Gerekli anahtarların (STONE, SAND, CEMENT) obje içinde olup olmadığını kontrol et
-    const requiredKeys = ["STONE", "SAND", "CEMENT"];
+    const materialsArray = await Material.findAll()
+
+    const requiredKeys = materialsArray.map(obj => obj.name);
     const hasRequiredKeys = requiredKeys.every((key) =>
       materials.hasOwnProperty(key)
     );
 
-    if (!hasRequiredKeys)
-      throw new Error("Missing or invalid keys in material information!");
+    if (!hasRequiredKeys) throw new Error("Missing or invalid keys in materiala!");
 
     req.body.creatorId = req.user.id;
     req.body.name = req.body.name.toUpperCase();
@@ -126,12 +127,12 @@ module.exports = {
           type: 'boolean',
           description:'Send true for hard deletion, default value is false which is soft delete.'}
     */
-    
+
     const hardDelete = req.query.hardDelete === "true";
-    if(req.user.role !== 5 && hardDelete ) throw new Error('You are not authorized for permanent deletetion!')
+    if (req.user.role !== 5 && hardDelete) throw new Error('You are not authorized for permanent deletetion!')
 
     const product = await Product.findByPk(req.params.id);
-    if(!product) throw new Error('Product not found or already deleted.')
+    if (!product) throw new Error('Product not found or already deleted.')
     product.updaterId = req.user.id;
     const isDeleted = await product.destroy({ force: hardDelete });
 
