@@ -115,8 +115,10 @@ module.exports = {
     res.status(isDeleted ? 202 : 404).send({
       error: !Boolean(isDeleted),
       message: !!isDeleted
-        ? `The user named ${user.name} has been deleted.`
-        : "User not found or something went wrong.",
+      ? `The user ${
+        user.name ? `named ${user.name}` : `with ID ${user.id}`
+      } has been deleted.`
+      : "User not found or something went wrong.",
       data: await req.getModelList(User),
     });
   },
