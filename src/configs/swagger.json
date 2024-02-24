@@ -1206,7 +1206,7 @@
           "Purchase"
         ],
         "summary": "Purchase Create",
-        "description": "\r  <b>-</b> MaterialId,quantity,FirmId,unitPrice is required to purchase materials <br>\r  <b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> To create an example from the Purchase table, you need the following information: MaterialId, quantity, FirmId and unitPrice. <br>\r  <b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
@@ -1279,14 +1279,18 @@
           {
             "name": "body",
             "in": "body",
-            "description": "   <ul>    <li>Send the object includes attributes that should be updated.</li>      </ul> ",
+            "description": "   <ul>    <li>Send the object includes attributes that should be  .</li>   <li>You can update : MaterialId, quantity, FirmId and unitPrice .</li>   </ul> ",
             "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "FirmId": {
+                "MaterialId": {
                   "type": "string",
-                  "example": "test1"
+                  "example": "newFirm"
+                },
+                "unitPrice": {
+                  "type": "string",
+                  "example": "newPrice"
                 }
               }
             }
