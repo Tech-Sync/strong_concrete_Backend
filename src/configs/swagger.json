@@ -1836,26 +1836,27 @@
           "Sale"
         ],
         "summary": "Sale Create",
-        "description": "\r  <b>-</b>To create Sales, use FirmId,ProductId,quantity,location,requestedDate, sideContact are required <br>\r  <b>-</b> Send access token in header.",
+        "description": "\r  <b>-</b> Create with FirmId, ProductId, quantity, location, requestedDate and sideContact <br>\r  <b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "   <ul>    <li>Time format must be Year-Month-Day </li>   </ul> ",
             "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "FirmId": {
-                  "type": "string",
-                  "example": "1"
+                  "type": "number",
+                  "example": 1
                 },
                 "ProductId": {
-                  "type": "string",
-                  "example": "50"
+                  "type": "number",
+                  "example": 50
                 },
                 "quantity": {
-                  "type": "string",
-                  "example": "11111"
+                  "type": "number",
+                  "example": 11111
                 },
                 "location": {
                   "type": "string",
@@ -1874,8 +1875,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
+          "default": {
+            "description": ""
           }
         }
       }
@@ -1917,22 +1918,22 @@
           {
             "name": "body",
             "in": "body",
-            "description": "   <ul>    <li>Send the object includes attributes that should be updated.</li>      </ul> ",
+            "description": "   <ul>    <li>Send the object includes attributes that should be  .</li>   <li>You can update : FirmId, ProductId, quantity, location, requestedDate and sideContact.</li>   </ul> ",
             "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "FirmId": {
-                  "type": "string",
-                  "example": "test1"
+                  "type": "number",
+                  "example": 1
                 }
               }
             }
           }
         ],
         "responses": {
-          "202": {
-            "description": "Accepted"
+          "default": {
+            "description": ""
           }
         }
       },

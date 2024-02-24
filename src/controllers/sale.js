@@ -47,21 +47,27 @@ module.exports = {
         #swagger.tags = ['Sale']
          #swagger.summary = 'Sale Create'
         #swagger.description = '
-          <b>-</b>To create Sales, use FirmId,ProductId,quantity,location,requestedDate, sideContact are required  <br>
+          <b>-</b> Create with FirmId, ProductId, quantity, location, requestedDate and sideContact <br>
           <b>-</b> Send access token in header.'
-        #swagger.parameters['body'] = {
-        in: 'body',
-        required: true,
-        schema: {
-          FirmId:'1',
-          ProductId:'50',
-          quantity:'11111',
-          location:'Konya',
-          requestedDate:"2024-07-01",
-          sideContact:"05659898"
+         #swagger.parameters['body'] = {
+          in: 'body',
+          description: '
+            <ul> 
+              <li>Time format must be   Year-Month-Day  </li>
+            </ul> ',
+          required: true,
+          schema: {
+            FirmId: 1,
+            ProductId: 50,
+            quantity: 11111,
+            location: "Konya",
+            requestedDate:"2024-07-01",
+            sideContact:"05659898"
+          }
         }
-      }
-    */
+      } 
+    */  
+
     req.body.creatorId = req.user.id;
 
     const data = await Sale.create(req.body);
@@ -105,13 +111,14 @@ module.exports = {
           description: '
             <ul> 
               <li>Send the object includes attributes that should be updated.</li>
-              
+              <li>You can update : FirmId, ProductId, quantity, location, requestedDate and sideContact.</li>
             </ul> ',
           required: true,
           schema: {
-            FirmId:'test1'
+            "FirmId": 1,
           }
-        } 
+        }
+      } 
     */
     req.body.updaterId = req.user.id;
     const user = req.user;
