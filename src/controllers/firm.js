@@ -60,7 +60,7 @@ module.exports = {
   read: async (req, res) => {
     /* 
         #swagger.tags = ['Firm']
-        #swagger.summary = 'Read Firm with id'
+        #swagger.summary = 'Read Firm With Id'
         #swagger.description = `<b>-</b> Send access token in header.`
     */
     const data = await Firm.findByPk(req.params.id);
@@ -74,7 +74,7 @@ module.exports = {
   update: async (req, res) => {
     /* 
         #swagger.tags = ['Firm']
-        #swagger.summary = 'Update firm with id'
+        #swagger.summary = 'Update Firm With Id'
         #swagger.description = `<b>-</b> Send access token in header.`
         #swagger.parameters['body'] = {
           in: 'body',
@@ -106,7 +106,7 @@ module.exports = {
   delete: async (req, res) => {
     /* 
         #swagger.tags = ['Firm']
-        #swagger.summary = 'Delete firm with ID'
+        #swagger.summary = 'Delete Firm With Id'
         #swagger.description = `
           <b>-</b> Send access token in header. <br>
           <b>-</b> This function returns data includes remaning items.
@@ -138,7 +138,7 @@ module.exports = {
   restore: async (req, res) => {
     /* 
         #swagger.tags = ['Firm']
-        #swagger.summary = 'Restore deleted firm with ID'
+        #swagger.summary = 'Restore Deleted Firm With Id'
         #swagger.description = `<b>-</b> Send access token in header.`
     */
     const firm = await Firm.findByPk(req.params.id, { paranoid: false });
@@ -157,7 +157,7 @@ module.exports = {
   multipleDelete: async (req, res) => {
     /* 
       #swagger.tags = ['Firm']
-      #swagger.summary = 'Multiple-Delete  Firm with ID'
+      #swagger.summary = 'Multiple-Delete Firms With Id'
       #swagger.description = `
         <b>-</b> Send access token in header. <br>
         <b>-</b> This function returns data includes remaning items.

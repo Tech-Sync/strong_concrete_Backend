@@ -605,7 +605,7 @@
         "tags": [
           "Firm"
         ],
-        "summary": "Read Firm with id",
+        "summary": "Read Firm With Id",
         "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -625,7 +625,7 @@
         "tags": [
           "Firm"
         ],
-        "summary": "Update firm with id",
+        "summary": "Update Firm With Id",
         "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -668,7 +668,7 @@
         "tags": [
           "Firm"
         ],
-        "summary": "Delete firm with ID",
+        "summary": "Delete Firm With Id",
         "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
@@ -699,7 +699,7 @@
         "tags": [
           "Firm"
         ],
-        "summary": "Restore deleted firm with ID",
+        "summary": "Restore Deleted Firm With Id",
         "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -721,7 +721,7 @@
         "tags": [
           "Firm"
         ],
-        "summary": "Multiple-Delete Firm with ID",
+        "summary": "Multiple-Delete Firms With Id",
         "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
