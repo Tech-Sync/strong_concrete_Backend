@@ -32,7 +32,7 @@ module.exports = {
     /* 
         #swagger.tags = ['Material']
         #swagger.summary = 'Material: Create'
-        #swagger.description = 'Create with name and unitType (ton or kilo)'
+        #swagger.description = 'Create With name and unitType (ton or kilo)'
        #swagger.parameters['body'] = {
           in: 'body',
           description: '
@@ -62,7 +62,7 @@ module.exports = {
   read: async (req, res) => {
     /* 
         #swagger.tags = ['Material']
-        #swagger.summary = 'Read Material with id'
+        #swagger.summary = 'Read Material With Id'
         #swagger.description = `<b>-</b> Send access token in header.`
     */
     const data = await Material.findByPk(req.params.id);
@@ -76,7 +76,7 @@ module.exports = {
   update: async (req, res) => {
     /* 
         #swagger.tags = ['Material']
-        #swagger.summary = 'Update material with id'
+        #swagger.summary = 'Update Material With Id'
         #swagger.description = `<b>-</b> Send access token in header.`
         #swagger.parameters['body'] = {
           in: 'body',
@@ -101,7 +101,7 @@ module.exports = {
   delete: async (req, res) => {
     /* 
         #swagger.tags = ['Material']
-        #swagger.summary = 'Delete material with ID'
+        #swagger.summary = 'Delete Material With Id'
         #swagger.description = `
           <b>-</b> Send access token in header. <br>
           <b>-</b> This function returns data includes remaning items.
@@ -132,7 +132,7 @@ module.exports = {
   restore: async (req, res) => {
     /* 
         #swagger.tags = ['Material']
-        #swagger.summary = 'Restore deleted material with ID'
+        #swagger.summary = 'Restore Deleted Material With Id'
         #swagger.description = `<b>-</b> Send access token in header.`
     */
     const material = await Material.findByPk(req.params.id, {
@@ -153,7 +153,7 @@ module.exports = {
   multipleDelete: async (req, res) => {
     /* 
       #swagger.tags = ['Material']
-      #swagger.summary = 'Multiple-Delete  Material with ID'
+      #swagger.summary = 'Multiple-Delete Materials With Id'
       #swagger.description = `
         <b>-</b> Send access token in header. <br>
         <b>-</b> This function returns data includes remaning items.

@@ -228,7 +228,7 @@
         "tags": [
           "User"
         ],
-        "summary": "Read user with id",
+        "summary": "Read User With Id",
         "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -248,7 +248,7 @@
         "tags": [
           "User"
         ],
-        "summary": "Update user with id",
+        "summary": "Update User With Id",
         "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -289,7 +289,7 @@
         "tags": [
           "User"
         ],
-        "summary": "Delete user with ID",
+        "summary": "Delete User With Id",
         "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
@@ -396,7 +396,7 @@
         "tags": [
           "User"
         ],
-        "summary": "Restore deleted user with ID",
+        "summary": "Restore Deleted User With Id",
         "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -494,7 +494,7 @@
         "tags": [
           "User"
         ],
-        "summary": "Multiple-Delete User with ID",
+        "summary": "Multiple-Delete Users With Id",
         "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
@@ -1003,7 +1003,7 @@
           "Material"
         ],
         "summary": "Material: Create",
-        "description": "Create with name and unitType (ton or kilo)",
+        "description": "Create With name and unitType (ton or kilo)",
         "parameters": [
           {
             "name": "body",
@@ -1037,7 +1037,7 @@
         "tags": [
           "Material"
         ],
-        "summary": "Read Material with id",
+        "summary": "Read Material With Id",
         "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -1057,7 +1057,7 @@
         "tags": [
           "Material"
         ],
-        "summary": "Update material with id",
+        "summary": "Update Material With Id",
         "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -1091,7 +1091,7 @@
         "tags": [
           "Material"
         ],
-        "summary": "Delete material with ID",
+        "summary": "Delete Material With Id",
         "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
@@ -1122,7 +1122,7 @@
         "tags": [
           "Material"
         ],
-        "summary": "Restore deleted material with ID",
+        "summary": "Restore Deleted Material With Id",
         "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -1144,7 +1144,7 @@
         "tags": [
           "Material"
         ],
-        "summary": "Multiple-Delete Material with ID",
+        "summary": "Multiple-Delete Materials With Id",
         "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {

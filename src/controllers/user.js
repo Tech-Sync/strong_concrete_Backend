@@ -35,7 +35,7 @@ module.exports = {
   read: async (req, res) => {
     /* 
         #swagger.tags = ['User']
-        #swagger.summary = 'Read user with id'
+        #swagger.summary = 'Read User With Id'
         #swagger.description = `<b>-</b> Send access token in header.`
      */
     const data = await User.findByPk(req.params.id);
@@ -47,7 +47,7 @@ module.exports = {
   update: async (req, res) => {
     /* 
         #swagger.tags = ['User']
-        #swagger.summary = 'Update user with id'
+        #swagger.summary = 'Update User With Id'
         #swagger.description = `<b>-</b> Send access token in header.`
         #swagger.parameters['body'] = {
           in: 'body',
@@ -92,7 +92,7 @@ module.exports = {
   delete: async (req, res) => {
     /* 
         #swagger.tags = ['User']
-        #swagger.summary = 'Delete user with ID'
+        #swagger.summary = 'Delete User With Id'
         #swagger.description = `
           <b>-</b> Send access token in header. <br>
           <b>-</b> This function returns data includes remaning items.
@@ -126,7 +126,7 @@ module.exports = {
   restore: async (req, res) => {
     /* 
         #swagger.tags = ['User']
-        #swagger.summary = 'Restore deleted user with ID'
+        #swagger.summary = 'Restore Deleted User With Id'
         #swagger.description = `<b>-</b> Send access token in header.`
      */
     const isRestored = await User.restore({ where: { id: req.params.id } });
@@ -141,7 +141,7 @@ module.exports = {
   multipleDelete: async (req, res) => {
     /* 
       #swagger.tags = ['User']
-      #swagger.summary = 'Multiple-Delete  User with ID'
+      #swagger.summary = 'Multiple-Delete Users With Id'
       #swagger.description = `
         <b>-</b> Send access token in header. <br>
         <b>-</b> This function returns data includes remaning items.
