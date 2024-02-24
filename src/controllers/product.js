@@ -33,31 +33,36 @@ module.exports = {
     /* 
         #swagger.tags = ['Product']
         #swagger.summary = 'Product: Create'
-        #swagger.description = 'Create with name, price and materials'
+        #swagger.description = 'Create with name, price and materials(previously created)'
         #swagger.parameters['body'] = {
-        in: 'body',
-        required: true,
-        schema: {
-          name:'C35',
-          price: 100,
-            materials: {
-              STONE : 1.9,
-              SAND: 1.9,
-              CEMENT: 270
+          in: 'body',
+          description: '
+            <ul> 
+              <li>Written materials must be written in capital letters.</li>
+            </ul> ',
+          required: true,
+          schema:{
+            "name": "C35",
+            "price": 100,
+            "materials": {
+              "STONE": 1.9,
+              "SAND": 1.9,
+              "CEMENT": 270
             }
           }
-        }
+        } 
     */
     const { materials } = req.body;
 
-    const materialsArray = await Material.findAll()
+    const materialsArray = await Material.findAll();
 
-    const requiredKeys = materialsArray.map(obj => obj.name);
+    const requiredKeys = materialsArray.map((obj) => obj.name);
     const hasRequiredKeys = requiredKeys.every((key) =>
       materials.hasOwnProperty(key)
     );
 
-    if (!hasRequiredKeys) throw new Error("Missing or invalid keys in materiala!");
+    if (!hasRequiredKeys)
+      throw new Error("Missing or invalid keys in materials!");
 
     req.body.creatorId = req.user.id;
     req.body.name = req.body.name.toUpperCase();
@@ -96,10 +101,11 @@ module.exports = {
           description: '
             <ul> 
               <li>Send the object includes attributes that should be updated.</li>
+              <li>You can update : name, price and materials .</li>
             </ul> ',
           required: true,
           schema: {
-            price:'5'
+            "price": 5
           }
         } 
     */
@@ -130,10 +136,11 @@ module.exports = {
     */
 
     const hardDelete = req.query.hardDelete === "true";
-    if (req.user.role !== 5 && hardDelete) throw new Error('You are not authorized for permanent deletetion!')
+    if (req.user.role !== 5 && hardDelete)
+      throw new Error("You are not authorized for permanent deletetion!");
 
     const product = await Product.findByPk(req.params.id);
-    if (!product) throw new Error('Product not found or already deleted.')
+    if (!product) throw new Error("Product not found or already deleted.");
     product.updaterId = req.user.id;
     const isDeleted = await product.destroy({ force: hardDelete });
 

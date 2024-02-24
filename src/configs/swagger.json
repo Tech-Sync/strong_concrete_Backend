@@ -783,11 +783,12 @@
           "Product"
         ],
         "summary": "Product: Create",
-        "description": "Create with name, price and materials",
+        "description": "Create with name, price and materials(previously created)",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "   <ul>    <li>Written materials must be written in capital letters.</li>   </ul> ",
             "required": true,
             "schema": {
               "type": "object",
@@ -865,14 +866,14 @@
           {
             "name": "body",
             "in": "body",
-            "description": "   <ul>    <li>Send the object includes attributes that should be updated.</li>   </ul> ",
+            "description": "   <ul>    <li>Send the object includes attributes that should be  .</li>   <li>You can update : name, price and materials .</li>   </ul> ",
             "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "price": {
-                  "type": "string",
-                  "example": "5"
+                  "type": "number",
+                  "example": 5
                 }
               }
             }
