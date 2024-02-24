@@ -32,16 +32,21 @@ module.exports = {
     /* 
         #swagger.tags = ['Material']
         #swagger.summary = 'Material: Create'
-        #swagger.description = 'Create with name and unitType'
-        #swagger.parameters['body'] = {
-        in: 'body',
-        required: true,
-        schema: {
-            "name": "MaterialName",
-            "unitType": "testType"
+        #swagger.description = 'Create with name and unitType (ton or kilo)'
+       #swagger.parameters['body'] = {
+          in: 'body',
+          description: '
+            <ul> 
+              <li>unitType must be ton or kilo</li>
+              <li>When writing the value of unitType and name, it does not matter whether it is lowercase or uppercase.</li>
+            </ul> ',
+          required: true,
+          schema: {
+            name:'sand',
+            unitType: "ton"
           }
-        }
-    */
+        } 
+     */
     const material = await Material.findOne({
       where: { name: req.body.name.toUpperCase() },
     });
@@ -73,11 +78,14 @@ module.exports = {
         #swagger.tags = ['Material']
         #swagger.summary = 'Update material with id'
         #swagger.description = `<b>-</b> Send access token in header.`
-        required: true,
+        #swagger.parameters['body'] = {
+          in: 'body',
+          required: true,
           schema: {
-            unitType :'updatedType'
+            unitType: "newType"
           }
-    */
+        } 
+     */
     req.body.updaterId = req.user.id;
     const isUpdated = await Material.update(req.body, {
       where: { id: req.params.id },
@@ -115,8 +123,8 @@ module.exports = {
     res.status(isDeleted ? 202 : 404).send({
       error: !Boolean(isDeleted),
       message: !!isDeleted
-        ? `The delivery named ${material.name} has been deleted.`
-        : "Delivery not found or something went wrong.",
+        ? `The material named ${material.name} has been deleted.`
+        : "Material not found or something went wrong.",
       data: await req.getModelList(Material),
     });
   },

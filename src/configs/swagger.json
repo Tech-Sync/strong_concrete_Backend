@@ -1003,22 +1003,23 @@
           "Material"
         ],
         "summary": "Material: Create",
-        "description": "Create with name and unitType",
+        "description": "Create with name and unitType (ton or kilo)",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "   <ul>    <li>unitType must be ton or kilo</li>   <li>When writing the value of unitType and name, it does not matter whether it is lowercase or uppercase.</li>   </ul> ",
             "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "name": {
                   "type": "string",
-                  "example": "MaterialName"
+                  "example": "sand"
                 },
                 "unitType": {
                   "type": "string",
-                  "example": "testType"
+                  "example": "ton"
                 }
               }
             }
@@ -1068,11 +1069,13 @@
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "updaterId": {
-                  "example": "any"
+                "unitType": {
+                  "type": "string",
+                  "example": "newType"
                 }
               }
             }
