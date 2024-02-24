@@ -276,6 +276,12 @@
         "responses": {
           "202": {
             "description": "Accepted"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       },
@@ -631,11 +637,22 @@
           {
             "name": "body",
             "in": "body",
+            "description": "   <ul>    <li>Send the object includes attributes that should be  .</li>   <li>You can update : name, address, phoneNo, tpinNo, email and status .</li>   </ul> ",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "updaterId": {
-                  "example": "any"
+                "name": {
+                  "type": "string",
+                  "example": "newName"
+                },
+                "address": {
+                  "type": "string",
+                  "example": "newAddress"
+                },
+                "phoneNo": {
+                  "type": "string",
+                  "example": "+123456"
                 }
               }
             }

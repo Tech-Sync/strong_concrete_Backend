@@ -76,10 +76,20 @@ module.exports = {
         #swagger.tags = ['Firm']
         #swagger.summary = 'Update firm with id'
         #swagger.description = `<b>-</b> Send access token in header.`
-        required: true,
+        #swagger.parameters['body'] = {
+          in: 'body',
+          description: '
+            <ul> 
+              <li>Send the object includes attributes that should be updated.</li>
+              <li>You can update : name, address, phoneNo, tpinNo, email and status .</li>
+            </ul> ',
+          required: true,
           schema: {
-            address:'updatedAdress'
+            "name":'newName',
+            "address": "newAddress",
+            "phoneNo": "+123456"
           }
+        } 
     */
     req.body.updaterId = req.user.id;
     const isUpdated = await Firm.update(req.body, {
