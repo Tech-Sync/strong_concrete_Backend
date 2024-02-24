@@ -45,7 +45,7 @@ module.exports = {
   create: async (req, res) => {
     /* 
         #swagger.tags = ['Sale']
-         #swagger.summary = 'Sale Create'
+         #swagger.summary = 'Sale: Create'
         #swagger.description = '
           <b>-</b> Create with FirmId, ProductId, quantity, location, requestedDate and sideContact <br>
           <b>-</b> Send access token in header.'

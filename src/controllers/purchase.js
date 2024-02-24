@@ -43,7 +43,7 @@ module.exports = {
   create: async (req, res) => {
     /* 
         #swagger.tags = ['Purchase']
-        #swagger.summary = 'Purchase Create'
+        #swagger.summary = 'Purchase: Create'
         #swagger.description = '
           <b>-</b> To create an example from the Purchase table, you need the following information: MaterialId, quantity, FirmId and unitPrice. <br>
           <b>-</b> Send access token in header.'

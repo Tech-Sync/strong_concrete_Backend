@@ -1206,7 +1206,7 @@
         "tags": [
           "Purchase"
         ],
-        "summary": "Purchase Create",
+        "summary": "Purchase: Create",
         "description": "\r  <b>-</b> To create an example from the Purchase table, you need the following information: MaterialId, quantity, FirmId and unitPrice. <br>\r  <b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -1421,7 +1421,7 @@
         "tags": [
           "PurchaseAccount"
         ],
-        "summary": "PurchaseAccount Create",
+        "summary": "PurchaseAccount: Create",
         "description": "\r  <b>-</b> PurchaseAccount will be   automatically when the purchase is made. <br>\r  <b>-</b> There is no need to create a PurchaseAccount manually. <br>\r  <b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -1628,7 +1628,7 @@
           "Vehicle"
         ],
         "summary": "Vehicle: Create",
-        "description": "Create with plateNumber, model and capacity",
+        "description": "Create with DriverID, plateNumber, model and capacity",
         "parameters": [
           {
             "name": "body",
@@ -1701,11 +1701,14 @@
           {
             "name": "body",
             "in": "body",
+            "description": "   <ul>    <li>Send the object includes attributes that should be  .</li>   <li>You can update: DriverId, plateNumber, capacity and model .</li>   </ul> ",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "updaterId": {
-                  "example": "any"
+                "plateNumber": {
+                  "type": "string",
+                  "example": "dada1848"
                 }
               }
             }
@@ -1835,7 +1838,7 @@
         "tags": [
           "Sale"
         ],
-        "summary": "Sale Create",
+        "summary": "Sale: Create",
         "description": "\r  <b>-</b> Create with FirmId, ProductId, quantity, location, requestedDate and sideContact <br>\r  <b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -2055,7 +2058,7 @@
         "tags": [
           "Sale Account"
         ],
-        "summary": "Sale Account Create",
+        "summary": "Sale Account: Create",
         "description": "\r  <b>-</b> SaleAccount will be created automatically after the sale is made. <br>\r  <b>-</b> Send access token in header.",
         "parameters": [
           {
