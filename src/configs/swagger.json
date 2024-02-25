@@ -228,7 +228,7 @@
         "tags": [
           "User"
         ],
-        "summary": "Read User With Id",
+        "summary": "Read user with id",
         "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -248,7 +248,7 @@
         "tags": [
           "User"
         ],
-        "summary": "Update User With Id",
+        "summary": "Update user with id",
         "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -276,12 +276,6 @@
         "responses": {
           "202": {
             "description": "Accepted"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
           }
         }
       },
@@ -289,7 +283,7 @@
         "tags": [
           "User"
         ],
-        "summary": "Delete User With Id",
+        "summary": "Delete user with ID",
         "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
@@ -358,7 +352,7 @@
         "tags": [
           "User"
         ],
-        "summary": "Update User email",
+        "summary": "Update User Password",
         "description": "\r  <b>-</b> User should be logged in already.<br>\r  <b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -368,17 +362,17 @@
             "schema": {
               "type": "object",
               "properties": {
-                "currentEmail": {
+                "password": {
                   "type": "string",
-                  "example": "user@gmail.com"
+                  "example": "aA12345."
                 },
-                "newEmail": {
+                "newPassword": {
                   "type": "string",
-                  "example": "user2@gmail.com"
+                  "example": "54321aA?"
                 },
-                "reNewEmail": {
+                "reNewPassword": {
                   "type": "string",
-                  "example": "user2@gmail.com"
+                  "example": "54321aA?"
                 }
               }
             }
@@ -396,7 +390,7 @@
         "tags": [
           "User"
         ],
-        "summary": "Restore Deleted User With Id",
+        "summary": "Restore deleted user with ID",
         "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -494,7 +488,7 @@
         "tags": [
           "User"
         ],
-        "summary": "Multiple-Delete Users With Id",
+        "summary": "Multiple-Delete User with ID",
         "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
@@ -605,7 +599,7 @@
         "tags": [
           "Firm"
         ],
-        "summary": "Read Firm With Id",
+        "summary": "Read Firm with id",
         "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -625,7 +619,7 @@
         "tags": [
           "Firm"
         ],
-        "summary": "Update Firm With Id",
+        "summary": "Update firm with id",
         "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -637,22 +631,11 @@
           {
             "name": "body",
             "in": "body",
-            "description": "   <ul>    <li>Send the object includes attributes that should be  .</li>   <li>You can update : name, address, phoneNo, tpinNo, email and status .</li>   </ul> ",
-            "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "name": {
-                  "type": "string",
-                  "example": "newName"
-                },
-                "address": {
-                  "type": "string",
-                  "example": "newAddress"
-                },
-                "phoneNo": {
-                  "type": "string",
-                  "example": "+123456"
+                "updaterId": {
+                  "example": "any"
                 }
               }
             }
@@ -668,7 +651,7 @@
         "tags": [
           "Firm"
         ],
-        "summary": "Delete Firm With Id",
+        "summary": "Delete firm with ID",
         "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
@@ -699,7 +682,7 @@
         "tags": [
           "Firm"
         ],
-        "summary": "Restore Deleted Firm With Id",
+        "summary": "Restore deleted firm with ID",
         "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -721,7 +704,7 @@
         "tags": [
           "Firm"
         ],
-        "summary": "Multiple-Delete Firms With Id",
+        "summary": "Multiple-Delete Firm with ID",
         "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
@@ -783,40 +766,37 @@
           "Product"
         ],
         "summary": "Product: Create",
-        "description": "Create with name, price and materials(previously created)",
+        "description": "Create with name, price and materials",
         "parameters": [
           {
             "name": "body",
             "in": "body",
-            "description": "   <ul>    <li>Written materials must be written in capital letters.</li>   </ul> ",
-            "required": true,
             "schema": {
               "type": "object",
               "properties": {
+                "creatorId": {
+                  "example": "any"
+                },
                 "name": {
-                  "type": "string",
-                  "example": "C35"
+                  "example": "any"
                 },
-                "price": {
-                  "type": "number",
-                  "example": 100
+                "updaterId": {
+                  "example": "any"
                 },
-                "materials": {
-                  "type": "object",
-                  "properties": {
-                    "STONE": {
-                      "type": "number",
-                      "example": 1.9
-                    },
-                    "SAND": {
-                      "type": "number",
-                      "example": 1.9
-                    },
-                    "CEMENT": {
-                      "type": "number",
-                      "example": 270
-                    }
-                  }
+                "in": {
+                  "example": "any"
+                },
+                "required": {
+                  "example": "any"
+                },
+                "schema": {
+                  "example": "any"
+                },
+                "where": {
+                  "example": "any"
+                },
+                "individualHooks": {
+                  "example": "any"
                 }
               }
             }
@@ -825,6 +805,12 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "202": {
+            "description": "Accepted"
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }
@@ -866,14 +852,14 @@
           {
             "name": "body",
             "in": "body",
-            "description": "   <ul>    <li>Send the object includes attributes that should be  .</li>   <li>You can update : name, price and materials .</li>   </ul> ",
+            "description": "   <ul>    <li>Send the object includes attributes that should be updated.</li>   </ul> ",
             "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "price": {
-                  "type": "number",
-                  "example": 5
+                  "type": "string",
+                  "example": "5"
                 }
               }
             }
@@ -1004,23 +990,22 @@
           "Material"
         ],
         "summary": "Material: Create",
-        "description": "Create With name and unitType (ton or kilo)",
+        "description": "Create with name and unitType",
         "parameters": [
           {
             "name": "body",
             "in": "body",
-            "description": "   <ul>    <li>unitType must be ton or kilo</li>   <li>When writing the value of unitType and name, it does not matter whether it is lowercase or uppercase.</li>   </ul> ",
             "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "name": {
                   "type": "string",
-                  "example": "sand"
+                  "example": "MaterialName"
                 },
                 "unitType": {
                   "type": "string",
-                  "example": "ton"
+                  "example": "testType"
                 }
               }
             }
@@ -1038,7 +1023,7 @@
         "tags": [
           "Material"
         ],
-        "summary": "Read Material With Id",
+        "summary": "Read Material with id",
         "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -1058,7 +1043,7 @@
         "tags": [
           "Material"
         ],
-        "summary": "Update Material With Id",
+        "summary": "Update material with id",
         "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -1070,13 +1055,11 @@
           {
             "name": "body",
             "in": "body",
-            "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "unitType": {
-                  "type": "string",
-                  "example": "newType"
+                "updaterId": {
+                  "example": "any"
                 }
               }
             }
@@ -1092,7 +1075,7 @@
         "tags": [
           "Material"
         ],
-        "summary": "Delete Material With Id",
+        "summary": "Delete material with ID",
         "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
@@ -1123,7 +1106,7 @@
         "tags": [
           "Material"
         ],
-        "summary": "Restore Deleted Material With Id",
+        "summary": "Restore deleted material with ID",
         "description": "<b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -1145,7 +1128,7 @@
         "tags": [
           "Material"
         ],
-        "summary": "Multiple-Delete Materials With Id",
+        "summary": "Multiple-Delete Material with ID",
         "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
         "parameters": [
           {
@@ -1206,8 +1189,8 @@
         "tags": [
           "Purchase"
         ],
-        "summary": "Purchase: Create",
-        "description": "\r  <b>-</b> To create an example from the Purchase table, you need the following information: MaterialId, quantity, FirmId and unitPrice. <br>\r  <b>-</b> Send access token in header.",
+        "summary": "Purchase Create",
+        "description": "\r  <b>-</b> MaterialId,quantity,FirmId,unitPrice is required to purchase materials <br>\r  <b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
@@ -1280,18 +1263,14 @@
           {
             "name": "body",
             "in": "body",
-            "description": "   <ul>    <li>Send the object includes attributes that should be  .</li>   <li>You can update : MaterialId, quantity, FirmId and unitPrice .</li>   </ul> ",
+            "description": "   <ul>    <li>Send the object includes attributes that should be updated.</li>      </ul> ",
             "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "MaterialId": {
+                "FirmId": {
                   "type": "string",
-                  "example": "newFirm"
-                },
-                "unitPrice": {
-                  "type": "string",
-                  "example": "newPrice"
+                  "example": "test1"
                 }
               }
             }
@@ -1421,7 +1400,7 @@
         "tags": [
           "PurchaseAccount"
         ],
-        "summary": "PurchaseAccount: Create",
+        "summary": "PurchaseAccount Create",
         "description": "\r  <b>-</b> PurchaseAccount will be   automatically when the purchase is made. <br>\r  <b>-</b> There is no need to create a PurchaseAccount manually. <br>\r  <b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -1628,7 +1607,7 @@
           "Vehicle"
         ],
         "summary": "Vehicle: Create",
-        "description": "Create with DriverID, plateNumber, model and capacity",
+        "description": "Create with plateNumber, model and capacity",
         "parameters": [
           {
             "name": "body",
@@ -1701,14 +1680,11 @@
           {
             "name": "body",
             "in": "body",
-            "description": "   <ul>    <li>Send the object includes attributes that should be  .</li>   <li>You can update: DriverId, plateNumber, capacity and model .</li>   </ul> ",
-            "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "plateNumber": {
-                  "type": "string",
-                  "example": "dada1848"
+                "updaterId": {
+                  "example": "any"
                 }
               }
             }
@@ -1838,28 +1814,27 @@
         "tags": [
           "Sale"
         ],
-        "summary": "Sale: Create",
-        "description": "\r  <b>-</b> Create with FirmId, ProductId, quantity, location, requestedDate and sideContact <br>\r  <b>-</b> Send access token in header.",
+        "summary": "Sale Create",
+        "description": "\r  <b>-</b>To create Sales, use FirmId,ProductId,quantity,location,requestedDate, sideContact are required <br>\r  <b>-</b> Send access token in header.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
-            "description": "   <ul>    <li>Time format must be Year-Month-Day </li>   </ul> ",
             "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "FirmId": {
-                  "type": "number",
-                  "example": 1
+                  "type": "string",
+                  "example": "1"
                 },
                 "ProductId": {
-                  "type": "number",
-                  "example": 50
+                  "type": "string",
+                  "example": "50"
                 },
                 "quantity": {
-                  "type": "number",
-                  "example": 11111
+                  "type": "string",
+                  "example": "11111"
                 },
                 "location": {
                   "type": "string",
@@ -1878,8 +1853,8 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -1921,22 +1896,22 @@
           {
             "name": "body",
             "in": "body",
-            "description": "   <ul>    <li>Send the object includes attributes that should be  .</li>   <li>You can update : FirmId, ProductId, quantity, location, requestedDate and sideContact.</li>   </ul> ",
+            "description": "   <ul>    <li>Send the object includes attributes that should be updated.</li>      </ul> ",
             "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "FirmId": {
-                  "type": "number",
-                  "example": 1
+                  "type": "string",
+                  "example": "test1"
                 }
               }
             }
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "202": {
+            "description": "Accepted"
           }
         }
       },
@@ -2058,7 +2033,7 @@
         "tags": [
           "Sale Account"
         ],
-        "summary": "Sale Account: Create",
+        "summary": "Sale Account Create",
         "description": "\r  <b>-</b> SaleAccount will be created automatically after the sale is made. <br>\r  <b>-</b> Send access token in header.",
         "parameters": [
           {
