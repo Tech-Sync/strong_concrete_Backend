@@ -35,7 +35,7 @@ module.exports = {
   read: async (req, res) => {
     /* 
         #swagger.tags = ['User']
-        #swagger.summary = 'Read user with id'
+        #swagger.summary = 'Read User With Id'
         #swagger.description = `<b>-</b> Send access token in header.`
      */
     const data = await User.findByPk(req.params.id);
@@ -43,10 +43,11 @@ module.exports = {
 
     res.status(200).send(data);
   },
+ 
   update: async (req, res) => {
     /* 
         #swagger.tags = ['User']
-        #swagger.summary = 'Update user with id'
+        #swagger.summary = 'Update User With Id'
         #swagger.description = `<b>-</b> Send access token in header.`
         #swagger.parameters['body'] = {
           in: 'body',
@@ -61,21 +62,37 @@ module.exports = {
           }
         } 
      */
-    const isUpdated = await User.update(req.body, {
-      where: { id: req.params.id },
-      individualHooks: true,
-    });
+    const allowedUpdates = ['firstName', 'lastName', 'nrcNo', 'phoneNo', 'address', 'role']; 
+    
+    const updates = Object.keys(req.body);
+    
+    const isValidOperation = updates.every(update => allowedUpdates.includes(update));
 
-    res.status(202).send({
-      isUpdated: Boolean(isUpdated[0]),
-      data: await User.findByPk(req.params.id),
-    });
-  },
+    if (!isValidOperation) {
+        return res.status(400).send({ error: 'Invalid Update! Check Your Update Field..' });
+    }
+
+    try {
+        const isUpdated = await User.update(req.body, {
+            where: { id: req.params.id },
+            individualHooks: true,
+        });
+
+        if (!isUpdated[0]) {
+            return res.status(404).send({ error: 'User Not Found!' });
+        }
+
+        const user = await User.findByPk(req.params.id);
+        res.status(202).send({ isUpdated: true, data: user });
+    } catch (error) {
+        res.status(400).send(error);
+    }
+},
 
   delete: async (req, res) => {
     /* 
         #swagger.tags = ['User']
-        #swagger.summary = 'Delete user with ID'
+        #swagger.summary = 'Delete User With Id'
         #swagger.description = `
           <b>-</b> Send access token in header. <br>
           <b>-</b> This function returns data includes remaning items.
@@ -85,20 +102,23 @@ module.exports = {
           type: 'boolean',
           description:'Send true for hard deletion, default value is false which is soft delete.'}
     */
-    
+
     const hardDelete = req.query.hardDelete === "true";
-    if(req.user.role !== 5 && hardDelete ) throw new Error('You are not authorized for permanent deletetion!')
-    
+    if (req.user.role !== 5 && hardDelete)
+      throw new Error("You are not authorized for permanent deletetion!");
+
     const user = await User.findByPk(req.params.id);
-    if(!user) throw new Error('User not found or already deleted.')
+    if (!user) throw new Error("User not found or already deleted.");
     user.updaterId = req.user.id;
     const isDeleted = await user.destroy({ force: hardDelete });
 
     res.status(isDeleted ? 202 : 404).send({
       error: !Boolean(isDeleted),
       message: !!isDeleted
-        ? `The user named ${user.name} has been deleted.`
-        : "User not found or something went wrong.",
+      ? `The user ${
+        user.firstName ? `named ${user.firstName}` : `with ID ${user.id}`
+      } has been deleted.`
+      : "User not found or something went wrong.",
       data: await req.getModelList(User),
     });
   },
@@ -106,7 +126,7 @@ module.exports = {
   restore: async (req, res) => {
     /* 
         #swagger.tags = ['User']
-        #swagger.summary = 'Restore deleted user with ID'
+        #swagger.summary = 'Restore Deleted User With Id'
         #swagger.description = `<b>-</b> Send access token in header.`
      */
     const isRestored = await User.restore({ where: { id: req.params.id } });
@@ -121,7 +141,7 @@ module.exports = {
   multipleDelete: async (req, res) => {
     /* 
       #swagger.tags = ['User']
-      #swagger.summary = 'Multiple-Delete  User with ID'
+      #swagger.summary = 'Multiple-Delete Users With Id'
       #swagger.description = `
         <b>-</b> Send access token in header. <br>
         <b>-</b> This function returns data includes remaning items.
@@ -211,7 +231,7 @@ module.exports = {
   uptadeEmail: async (req, res) => {
     /* 
         #swagger.tags = ['User']
-        #swagger.summary = 'Update User Password'
+        #swagger.summary = 'Update User email'
         #swagger.description = `
           <b>-</b> User should be logged in already.<br>
           <b>-</b> Send access token in header.`
@@ -219,9 +239,10 @@ module.exports = {
           in: 'body',
           required: true,
           schema: {
-            password:'aA12345.',
-            newPassword:'54321aA?',
-            reNewPassword:'54321aA?'
+            "currentEmail": "user@gmail.com",
+            "newEmail": "user2@gmail.com",
+            "reNewEmail": "user2@gmail.com"
+
           }
         } 
      */
