@@ -31,7 +31,7 @@ module.exports = {
   create: async (req, res) => {
     /* 
         #swagger.tags = ['Sale Account']
-        #swagger.summary = 'Sale Account: Create'
+        #swagger.summary = 'Sale Account Create'
         #swagger.description = '
           <b>-</b> SaleAccount will be created automatically after the sale is made. <br>
           <b>-</b> Send access token in header.'

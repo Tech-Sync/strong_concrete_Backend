@@ -53,7 +53,7 @@ module.exports = {
   create: async (req, res) => {
     /* 
         #swagger.tags = ['PurchaseAccount']
-        #swagger.summary = 'PurchaseAccount: Create'
+        #swagger.summary = 'PurchaseAccount Create'
         #swagger.description = '
           <b>-</b> PurchaseAccount will be created automatically when the purchase is made. <br>
           <b>-</b> There is no need to create a PurchaseAccount manually. <br>

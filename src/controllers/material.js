@@ -32,21 +32,16 @@ module.exports = {
     /* 
         #swagger.tags = ['Material']
         #swagger.summary = 'Material: Create'
-        #swagger.description = 'Create With name and unitType (ton or kilo)'
-       #swagger.parameters['body'] = {
-          in: 'body',
-          description: '
-            <ul> 
-              <li>unitType must be ton or kilo</li>
-              <li>When writing the value of unitType and name, it does not matter whether it is lowercase or uppercase.</li>
-            </ul> ',
-          required: true,
-          schema: {
-            name:'sand',
-            unitType: "ton"
+        #swagger.description = 'Create with name and unitType'
+        #swagger.parameters['body'] = {
+        in: 'body',
+        required: true,
+        schema: {
+            "name": "MaterialName",
+            "unitType": "testType"
           }
-        } 
-     */
+        }
+    */
     const material = await Material.findOne({
       where: { name: req.body.name.toUpperCase() },
     });
@@ -62,7 +57,7 @@ module.exports = {
   read: async (req, res) => {
     /* 
         #swagger.tags = ['Material']
-        #swagger.summary = 'Read Material With Id'
+        #swagger.summary = 'Read Material with id'
         #swagger.description = `<b>-</b> Send access token in header.`
     */
     const data = await Material.findByPk(req.params.id);
@@ -76,16 +71,13 @@ module.exports = {
   update: async (req, res) => {
     /* 
         #swagger.tags = ['Material']
-        #swagger.summary = 'Update Material With Id'
+        #swagger.summary = 'Update material with id'
         #swagger.description = `<b>-</b> Send access token in header.`
-        #swagger.parameters['body'] = {
-          in: 'body',
-          required: true,
+        required: true,
           schema: {
-            unitType: "newType"
+            unitType :'updatedType'
           }
-        } 
-     */
+    */
     req.body.updaterId = req.user.id;
     const isUpdated = await Material.update(req.body, {
       where: { id: req.params.id },
@@ -101,7 +93,7 @@ module.exports = {
   delete: async (req, res) => {
     /* 
         #swagger.tags = ['Material']
-        #swagger.summary = 'Delete Material With Id'
+        #swagger.summary = 'Delete material with ID'
         #swagger.description = `
           <b>-</b> Send access token in header. <br>
           <b>-</b> This function returns data includes remaning items.
@@ -123,8 +115,8 @@ module.exports = {
     res.status(isDeleted ? 202 : 404).send({
       error: !Boolean(isDeleted),
       message: !!isDeleted
-        ? `The material named ${material.name} has been deleted.`
-        : "Material not found or something went wrong.",
+        ? `The delivery named ${material.name} has been deleted.`
+        : "Delivery not found or something went wrong.",
       data: await req.getModelList(Material),
     });
   },
@@ -132,7 +124,7 @@ module.exports = {
   restore: async (req, res) => {
     /* 
         #swagger.tags = ['Material']
-        #swagger.summary = 'Restore Deleted Material With Id'
+        #swagger.summary = 'Restore deleted material with ID'
         #swagger.description = `<b>-</b> Send access token in header.`
     */
     const material = await Material.findByPk(req.params.id, {
@@ -153,7 +145,7 @@ module.exports = {
   multipleDelete: async (req, res) => {
     /* 
       #swagger.tags = ['Material']
-      #swagger.summary = 'Multiple-Delete Materials With Id'
+      #swagger.summary = 'Multiple-Delete  Material with ID'
       #swagger.description = `
         <b>-</b> Send access token in header. <br>
         <b>-</b> This function returns data includes remaning items.
