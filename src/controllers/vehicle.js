@@ -33,7 +33,7 @@ module.exports = {
     /* 
         #swagger.tags = ['Vehicle']
         #swagger.summary = 'Vehicle: Create'
-        #swagger.description = 'Create with plateNumber, model and capacity'
+        #swagger.description = 'Create with DriverID, plateNumber, model and capacity'
         #swagger.parameters['body'] = {
           in: 'body',
           required: true,
@@ -67,11 +67,19 @@ module.exports = {
         #swagger.tags = ['Vehicle']
         #swagger.summary = 'Update vehicle with id'
         #swagger.description = `<b>-</b> Send access token in header.`
-        required: true,
+        #swagger.parameters['body'] = {
+          in: 'body',
+          description: '
+            <ul> 
+              <li>Send the object includes attributes that should be updated.</li>
+              <li>You can update: DriverId, plateNumber, capacity and model .</li>
+            </ul> ',
+          required: true,
           schema: {
-            plateNumber:'18vtn48'
+            plateNumber: "dada1848"
           }
-     */
+        } 
+    */
     req.body.updaterId = req.user.id;
     const isUpdated = await Vehicle.update(req.body, {
       where: { id: req.params.id },

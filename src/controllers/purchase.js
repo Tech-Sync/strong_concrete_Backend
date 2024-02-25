@@ -43,9 +43,9 @@ module.exports = {
   create: async (req, res) => {
     /* 
         #swagger.tags = ['Purchase']
-        #swagger.summary = 'Purchase Create'
+        #swagger.summary = 'Purchase: Create'
         #swagger.description = '
-          <b>-</b> MaterialId,quantity,FirmId,unitPrice is required to purchase materials <br>
+          <b>-</b> To create an example from the Purchase table, you need the following information: MaterialId, quantity, FirmId and unitPrice. <br>
           <b>-</b> Send access token in header.'
         #swagger.parameters['body'] = {
         in: 'body',
@@ -120,14 +120,15 @@ module.exports = {
           description: '
             <ul> 
               <li>Send the object includes attributes that should be updated.</li>
-              
+              <li>You can update : MaterialId, quantity, FirmId and unitPrice .</li>
             </ul> ',
           required: true,
           schema: {
-            FirmId:'test1'
+            "MaterialId": "newFirm",
+            "unitPrice": "newPrice"
           }
         } 
-     */
+    */
     req.body.updaterId = req.user.id;
 
     const isUpdated = await Purchase.update(req.body, {
