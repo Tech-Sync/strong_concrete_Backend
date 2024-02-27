@@ -1,5 +1,5 @@
 const User = require("../models/user");
-const cyrpto = require("node:crypto");
+const cyrpto = require("crypto");
 const sendEmail = require("../helpers/sendEmail");
 const passwordEncrypt = require("../helpers/passEncrypt");
 const setToken = require("../helpers/setToken");
