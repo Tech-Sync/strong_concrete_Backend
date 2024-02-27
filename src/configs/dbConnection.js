@@ -7,7 +7,7 @@ const HOST = process.env.HOST;
 const DB = process.env.DB;
 
 const sequelize = new Sequelize(DB_NAME, DB_USERNAME, DB_PASSWORD, {
-  host: HOST,
+  // host: HOST,
   dialect: DB,
 });
 
