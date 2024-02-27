@@ -1,6 +1,7 @@
 "use strict";
 
 const Production = require("../models/production");
+const User = require("../models/user");
 const Vehicle = require("../models/vehicle");
 
 module.exports = {
@@ -21,10 +22,16 @@ module.exports = {
         description:'Send true to show deleted data as well, default value is false'
       }
      */
-    const data = await req.getModelList(Production);
+    const data = await req.getModelList(Vehicle, {}, [
+      {
+        model: User,
+        as: 'driver',
+        attributes: ["firstName", "lastName"],
+      },
+    ]);
 
     res.status(200).send({
-      details: await req.getModelListDetails(Production),
+      details: await req.getModelListDetails(Vehicle),
       data,
     });
   },
@@ -76,7 +83,11 @@ module.exports = {
             </ul> ',
           required: true,
           schema: {
-            plateNumber: "dada1848"
+            "DriverId": 1,
+            "plateNumber": "dada7049",
+            "model": 2000,
+            "capacity": 7,
+            "status":2
           }
         } 
     */
@@ -105,12 +116,12 @@ module.exports = {
           type: 'boolean',
           description:'Send true for hard deletion, default value is false which is soft delete.'}
     */
-    
+
     const hardDelete = req.query.hardDelete === "true";
-    if(req.user.role !== 5 && hardDelete ) throw new Error('You are not authorized for permanent deletetion!')
+    if (req.user.role !== 5 && hardDelete) throw new Error('You are not authorized for permanent deletetion!')
 
     const vehicle = await Vehicle.findByPk(req.params.id);
-    if(!vehicle) throw new Error('Vehicle not found or already deleted.')
+    if (!vehicle) throw new Error('Vehicle not found or already deleted.')
     vehicle.updaterId = req.user.id;
     const isDeleted = await vehicle.destroy({ force: hardDelete });
 
@@ -142,26 +153,26 @@ module.exports = {
     });
   },
   multipleDelete: async (req, res) => {
-     /* 
-      #swagger.tags = ['Vehicle']
-      #swagger.summary = 'Multiple-Delete  Vehicle with ID'
-      #swagger.description = `
-        <b>-</b> Send access token in header. <br>
-        <b>-</b> This function returns data includes remaning items.
-      `
-       #swagger.parameters['body'] = {
-          in: 'body',
-          description: '
-            <ul> 
-              <li>You must write the IDs of the vehicles you want to delete into the array.</li>
-            </ul> ',
-          required: true,
-          schema: {
-            "ids": [1,2,3]
-            
-          }
-        } 
-    */
+    /* 
+     #swagger.tags = ['Vehicle']
+     #swagger.summary = 'Multiple-Delete  Vehicle with ID'
+     #swagger.description = `
+       <b>-</b> Send access token in header. <br>
+       <b>-</b> This function returns data includes remaning items.
+     `
+      #swagger.parameters['body'] = {
+         in: 'body',
+         description: '
+           <ul> 
+             <li>You must write the IDs of the vehicles you want to delete into the array.</li>
+           </ul> ',
+         required: true,
+         schema: {
+           "ids": [1,2,3]
+           
+         }
+       } 
+   */
     const { ids } = req.body;
 
     if (!ids || !Array.isArray(ids) || ids.length === 0) {

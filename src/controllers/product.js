@@ -54,9 +54,10 @@ module.exports = {
     */
     const { materials } = req.body;
 
-    const materialsArray = await Material.findAll();
+    // const materialsArray = await Material.findAll();
+    // const requiredKeys = materialsArray.map((obj) => obj.name);
 
-    const requiredKeys = materialsArray.map((obj) => obj.name);
+    const requiredKeys = ['CEMENT', 'STONE', 'SAND'];
     const hasRequiredKeys = requiredKeys.every((key) =>
       materials.hasOwnProperty(key)
     );
