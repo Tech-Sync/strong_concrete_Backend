@@ -9,11 +9,11 @@ module.exports = (req, res, next) => {
   //! SEARCHING: URL?search[key1]=value1&search[key2]=value2
   let whereClause = {};
   let include = null;
-  
+
   for (const key in search) {
     const value = search[key];
-
-    if (['model', 'DriverId', 'capacity', 'statusm', 'creatorId'].includes(key)) {
+    console.log(value);
+    if (['model', 'DriverId', 'capacity', 'status', 'creatorId', 'role'].includes(key)) {
       whereClause[key] = value;
     } else {
       whereClause[key] = { [Op.like]: `%${value}%` };
