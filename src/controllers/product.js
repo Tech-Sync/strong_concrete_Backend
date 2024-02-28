@@ -42,12 +42,12 @@ module.exports = {
             </ul> ',
           required: true,
           schema:{
-            "name": "C35",
-            "price": 100,
+            "name": "string",
+            "price": "number",
             "materials": {
-              "STONE": 1.9,
-              "SAND": 1.9,
-              "CEMENT": 270
+              "STONE": "number",
+              "SAND": "number",
+              "CEMENT": "number"
             }
           }
         } 
@@ -106,7 +106,13 @@ module.exports = {
             </ul> ',
           required: true,
           schema: {
-            "price": 5
+            "name": "string",
+            "price": "number",
+            "materials": {
+              "STONE": "number",
+              "SAND": "number",
+              "CEMENT": "number"
+            }
           }
         } 
     */

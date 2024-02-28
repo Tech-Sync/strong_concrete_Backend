@@ -38,12 +38,12 @@ module.exports = {
         in: 'body',
         required: true,
         schema: {
-            "name": "FirmName",
-            "address": "FirmAdress",
-            "phoneNo": "+2602222",
-            "tpinNo": "22222",
-            "email": "firm@gmail.com",
-            "status": "1 or 2"
+            "name": "string",
+            "address": "string",
+            "phoneNo": "string",
+            "tpinNo": "string",
+            "email": "string",
+            "status": "number"
           }
         }
       */
@@ -85,9 +85,12 @@ module.exports = {
             </ul> ',
           required: true,
           schema: {
-            "name":'newName',
-            "address": "newAddress",
-            "phoneNo": "+123456"
+            "name": "string",
+            "address": "string",
+            "phoneNo": "string",
+            "tpinNo": "string",
+            "email": "string",
+            "status": "number"
           }
         } 
     */

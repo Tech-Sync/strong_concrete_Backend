@@ -46,8 +46,8 @@ module.exports = {
             </ul> ',
           required: true,
           schema: {
-            ProductionId: 54245232,
-            VehicleId: 9,
+            ProductionId: "number",
+            VehicleId: "number",
           }
         } 
     */
@@ -87,7 +87,7 @@ module.exports = {
           </ul> ',
         required: true,
         schema: {
-          status: 2
+          status: "number"
         }
       } 
     */

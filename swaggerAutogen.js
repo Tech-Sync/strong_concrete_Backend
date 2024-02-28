@@ -1,6 +1,6 @@
 "use strict";
 require("dotenv").config();
-const HOST = process.env.HOST || "127.0.0.1";
+const HOST = process.env.BASE_URL || process.env.HOST || "127.0.0.1";
 const PORT = process.env.PORT || 8000;
 
 const options = {
@@ -22,7 +22,7 @@ const document = {
     },
     license: { name: packageJson.license },
   },
-  host: `${HOST}:${PORT}`,
+  host: `${HOST}`,
   basePath: "/",
   schemes: ["http", "https"],
   consumes: ["application/json"],

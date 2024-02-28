@@ -45,10 +45,10 @@ module.exports = {
           in: 'body',
           required: true,
           schema: {
-            "DriverId": 1,
-            "plateNumber": "dada7049",
-            "model": 2000,
-            "capacity": 7
+            "DriverId": "number",
+            "plateNumber": "string",
+            "model": "number",
+            "capacity": "number"
           }
         }
      */
@@ -83,11 +83,11 @@ module.exports = {
             </ul> ',
           required: true,
           schema: {
-            "DriverId": 1,
-            "plateNumber": "dada7049",
-            "model": 2000,
-            "capacity": 7,
-            "status":2
+            "DriverId": "number",
+            "plateNumber": "string",
+            "model": "number",
+            "capacity": "number",
+            "status":"number"
           }
         } 
     */

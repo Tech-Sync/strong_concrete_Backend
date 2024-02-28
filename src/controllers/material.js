@@ -42,8 +42,8 @@ module.exports = {
             </ul> ',
           required: true,
           schema: {
-            name:'sand',
-            unitType: "ton"
+            name:'string',
+            unitType: "string"
           }
         } 
      */
@@ -82,7 +82,8 @@ module.exports = {
           in: 'body',
           required: true,
           schema: {
-            unitType: "newType"
+            name:'string',
+            unitType: "string"
           }
         } 
      */
