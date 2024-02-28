@@ -267,7 +267,31 @@
               "properties": {
                 "firstName": {
                   "type": "string",
-                  "example": "test1"
+                  "example": "string"
+                },
+                "lastName": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "nrcNo": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "phoneNo": {
+                  "type": "string",
+                  "example": "number"
+                },
+                "address": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "role": {
+                  "type": "string",
+                  "example": "number"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "string"
                 }
               }
             }
@@ -567,27 +591,27 @@
               "properties": {
                 "name": {
                   "type": "string",
-                  "example": "FirmName"
+                  "example": "string"
                 },
                 "address": {
                   "type": "string",
-                  "example": "FirmAdress"
+                  "example": "string"
                 },
                 "phoneNo": {
                   "type": "string",
-                  "example": "+2602222"
+                  "example": "string"
                 },
                 "tpinNo": {
                   "type": "string",
-                  "example": "22222"
+                  "example": "string"
                 },
                 "email": {
                   "type": "string",
-                  "example": "firm@gmail.com"
+                  "example": "string"
                 },
                 "status": {
                   "type": "string",
-                  "example": "1 or 2"
+                  "example": "number"
                 }
               }
             }
@@ -644,15 +668,27 @@
               "properties": {
                 "name": {
                   "type": "string",
-                  "example": "newName"
+                  "example": "string"
                 },
                 "address": {
                   "type": "string",
-                  "example": "newAddress"
+                  "example": "string"
                 },
                 "phoneNo": {
                   "type": "string",
-                  "example": "+123456"
+                  "example": "string"
+                },
+                "tpinNo": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "example": "number"
                 }
               }
             }
@@ -795,26 +831,26 @@
               "properties": {
                 "name": {
                   "type": "string",
-                  "example": "C35"
+                  "example": "string"
                 },
                 "price": {
-                  "type": "number",
-                  "example": 100
+                  "type": "string",
+                  "example": "number"
                 },
                 "materials": {
                   "type": "object",
                   "properties": {
                     "STONE": {
-                      "type": "number",
-                      "example": 1.9
+                      "type": "string",
+                      "example": "number"
                     },
                     "SAND": {
-                      "type": "number",
-                      "example": 1.9
+                      "type": "string",
+                      "example": "number"
                     },
                     "CEMENT": {
-                      "type": "number",
-                      "example": 270
+                      "type": "string",
+                      "example": "number"
                     }
                   }
                 }
@@ -871,9 +907,30 @@
             "schema": {
               "type": "object",
               "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "string"
+                },
                 "price": {
-                  "type": "number",
-                  "example": 5
+                  "type": "string",
+                  "example": "number"
+                },
+                "materials": {
+                  "type": "object",
+                  "properties": {
+                    "STONE": {
+                      "type": "string",
+                      "example": "number"
+                    },
+                    "SAND": {
+                      "type": "string",
+                      "example": "number"
+                    },
+                    "CEMENT": {
+                      "type": "string",
+                      "example": "number"
+                    }
+                  }
                 }
               }
             }
@@ -1016,11 +1073,11 @@
               "properties": {
                 "name": {
                   "type": "string",
-                  "example": "sand"
+                  "example": "string"
                 },
                 "unitType": {
                   "type": "string",
-                  "example": "ton"
+                  "example": "string"
                 }
               }
             }
@@ -1074,9 +1131,13 @@
             "schema": {
               "type": "object",
               "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "string"
+                },
                 "unitType": {
                   "type": "string",
-                  "example": "newType"
+                  "example": "string"
                 }
               }
             }
@@ -1218,19 +1279,19 @@
               "properties": {
                 "MaterialId": {
                   "type": "string",
-                  "example": "1"
+                  "example": "number"
                 },
                 "quantity": {
                   "type": "string",
-                  "example": "50"
+                  "example": "number"
                 },
                 "unitPrice": {
                   "type": "string",
-                  "example": "11111"
+                  "example": "number"
                 },
                 "FirmId": {
                   "type": "string",
-                  "example": "2"
+                  "example": "number"
                 }
               }
             }
@@ -1287,11 +1348,19 @@
               "properties": {
                 "MaterialId": {
                   "type": "string",
-                  "example": "newFirm"
+                  "example": "number"
+                },
+                "quantity": {
+                  "type": "string",
+                  "example": "number"
                 },
                 "unitPrice": {
                   "type": "string",
-                  "example": "newPrice"
+                  "example": "number"
+                },
+                "FirmId": {
+                  "type": "string",
+                  "example": "number"
                 }
               }
             }
@@ -1427,20 +1496,17 @@
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "creatorId": {
-                  "example": "any"
-                },
-                "debit": {
-                  "example": "any"
-                },
-                "balance": {
-                  "example": "any"
+                "FirmId": {
+                  "type": "string",
+                  "example": "number"
                 },
                 "credit": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "number"
                 }
               }
             }
@@ -1450,7 +1516,8 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "deprecated": true
       }
     },
     "/purchase_accounts/{id}": {
@@ -1497,7 +1564,11 @@
               "properties": {
                 "FirmId": {
                   "type": "string",
-                  "example": "test1"
+                  "example": "number"
+                },
+                "credit": {
+                  "type": "string",
+                  "example": "number"
                 }
               }
             }
@@ -1638,20 +1709,20 @@
               "type": "object",
               "properties": {
                 "DriverId": {
-                  "type": "number",
-                  "example": 1
+                  "type": "string",
+                  "example": "number"
                 },
                 "plateNumber": {
                   "type": "string",
-                  "example": "dada7049"
+                  "example": "string"
                 },
                 "model": {
-                  "type": "number",
-                  "example": 2000
+                  "type": "string",
+                  "example": "number"
                 },
                 "capacity": {
-                  "type": "number",
-                  "example": 7
+                  "type": "string",
+                  "example": "number"
                 }
               }
             }
@@ -1707,20 +1778,24 @@
               "type": "object",
               "properties": {
                 "DriverId": {
-                  "type": "number",
-                  "example": 1
+                  "type": "string",
+                  "example": "number"
                 },
                 "plateNumber": {
                   "type": "string",
-                  "example": "dada7049"
+                  "example": "string"
                 },
                 "model": {
-                  "type": "number",
-                  "example": 2000
+                  "type": "string",
+                  "example": "number"
                 },
                 "capacity": {
-                  "type": "number",
-                  "example": 7
+                  "type": "string",
+                  "example": "number"
+                },
+                "status": {
+                  "type": "string",
+                  "example": "number"
                 }
               }
             }
@@ -1862,28 +1937,28 @@
               "type": "object",
               "properties": {
                 "FirmId": {
-                  "type": "number",
-                  "example": 1
+                  "type": "string",
+                  "example": "number"
                 },
                 "ProductId": {
-                  "type": "number",
-                  "example": 50
+                  "type": "string",
+                  "example": "number"
                 },
                 "quantity": {
-                  "type": "number",
-                  "example": 11111
+                  "type": "string",
+                  "example": "number"
                 },
                 "location": {
                   "type": "string",
-                  "example": "Konya"
+                  "example": "string"
                 },
                 "requestedDate": {
                   "type": "string",
-                  "example": "2024-07-01"
+                  "example": "string"
                 },
                 "sideContact": {
                   "type": "string",
-                  "example": "05659898"
+                  "example": "string"
                 }
               }
             }
@@ -1933,14 +2008,42 @@
           {
             "name": "body",
             "in": "body",
-            "description": "   <ul>    <li>Send the object includes attributes that should be  .</li>   <li>You can update : FirmId, ProductId, quantity, location, requestedDate and sideContact.</li>   </ul> ",
+            "description": "   <ul>    <li>Only admin can update status and confirmDate.</li>   <li>When confirmDate  , status also should  ./</li>   <li>sale account will be created when status of sale is approved./</li>   <li>Send the object includes attributes that should be  .</li>   <li>You can update : FirmId, ProductId, quantity, location, requestedDate, status, sideContact and confirmDate.</li>   </ul> ",
             "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "FirmId": {
-                  "type": "number",
-                  "example": 1
+                  "type": "string",
+                  "example": "number"
+                },
+                "ProductId": {
+                  "type": "string",
+                  "example": "number"
+                },
+                "quantity": {
+                  "type": "string",
+                  "example": "number"
+                },
+                "location": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "requestedDate": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "sideContact": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "confirmDate": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "example": "number"
                 }
               }
             }
@@ -2078,20 +2181,16 @@
             "in": "body",
             "schema": {
               "type": "object",
-              "properties": {
-                "creatorId": {
-                  "example": "any"
-                }
-              }
-            },
-            "required": true
+              "properties": {}
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "deprecated": true
       }
     },
     "/sale_accounts/{id}": {
@@ -2131,14 +2230,18 @@
           {
             "name": "body",
             "in": "body",
-            "description": "   <ul>    <li>Send the object includes attributes that should be updated.</li>      </ul> ",
+            "description": "   <ul>    <li>Send the object includes attributes that should be updated.</li>   </ul> ",
             "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "FirmId": {
                   "type": "string",
-                  "example": "test1"
+                  "example": "number"
+                },
+                "paid": {
+                  "type": "string",
+                  "example": "number"
                 }
               }
             }
@@ -2205,7 +2308,7 @@
     "/sale_accounts/multiple-delete": {
       "post": {
         "tags": [
-          "SaleAccount"
+          "Sale Account"
         ],
         "summary": "Multiple-Delete SaleAccount with ID",
         "description": "\r  <b>-</b> Send access token in header. <br>\r  <b>-</b> This returns data includes remaning items.\r  ",
@@ -2279,19 +2382,12 @@
               "type": "object",
               "properties": {
                 "SaleId": {
-                  "type": "number",
-                  "example": 643234723
+                  "type": "string",
+                  "example": "number"
                 },
                 "VehicleIds": {
-                  "type": "array",
-                  "example": [
-                    1,
-                    2,
-                    3
-                  ],
-                  "items": {
-                    "type": "number"
-                  }
+                  "type": "string",
+                  "example": "array with number"
                 }
               }
             }
@@ -2348,18 +2444,12 @@
               "type": "object",
               "properties": {
                 "status": {
-                  "type": "number",
-                  "example": 2
+                  "type": "string",
+                  "example": "number"
                 },
                 "VehicleIds": {
-                  "type": "array",
-                  "example": [
-                    1,
-                    2
-                  ],
-                  "items": {
-                    "type": "number"
-                  }
+                  "type": "string",
+                  "example": "array with numbers"
                 }
               }
             }
@@ -2500,12 +2590,12 @@
               "type": "object",
               "properties": {
                 "ProductionId": {
-                  "type": "number",
-                  "example": 54245232
+                  "type": "string",
+                  "example": "number"
                 },
                 "VehicleId": {
-                  "type": "number",
-                  "example": 9
+                  "type": "string",
+                  "example": "number"
                 }
               }
             }
@@ -2562,8 +2652,8 @@
               "type": "object",
               "properties": {
                 "status": {
-                  "type": "number",
-                  "example": 2
+                  "type": "string",
+                  "example": "number"
                 }
               }
             }

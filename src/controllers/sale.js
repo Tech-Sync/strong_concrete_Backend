@@ -57,12 +57,12 @@ module.exports = {
             </ul> ',
           required: true,
           schema: {
-            FirmId: 1,
-            ProductId: 50,
-            quantity: 11111,
-            location: "Konya",
-            requestedDate:"2024-07-01",
-            sideContact:"05659898"
+            FirmId:"number",
+            ProductId:"number",
+            quantity:"number",
+            location:"string",
+            requestedDate:"string",
+            sideContact:"string"
           }
         }
       } 
@@ -110,12 +110,22 @@ module.exports = {
           in: 'body',
           description: '
             <ul> 
+              <li>Only admin can update status and confirmDate.</li>
+              <li>When confirmDate updated, status also should updated./</li>
+              <li>sale account will be created when status of sale is approved./</li>
               <li>Send the object includes attributes that should be updated.</li>
-              <li>You can update : FirmId, ProductId, quantity, location, requestedDate and sideContact.</li>
+              <li>You can update : FirmId, ProductId, quantity, location, requestedDate, status, sideContact and confirmDate.</li>
             </ul> ',
           required: true,
           schema: {
-            "FirmId": 1,
+            FirmId:"number",
+            ProductId:"number",
+            quantity:"number",
+            location:"string",
+            requestedDate:"string",
+            sideContact:"string",
+            confirmDate:"string",
+            status:"number"
           }
         }
       } 
