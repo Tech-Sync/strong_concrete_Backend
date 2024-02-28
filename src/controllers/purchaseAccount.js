@@ -34,6 +34,7 @@ module.exports = {
     const data = await req.getModelList(PurchaseAccount, {}, [
       {
         model: Purchase,
+        attributes: ['id'],
         include: [
           {
             model: Material,
