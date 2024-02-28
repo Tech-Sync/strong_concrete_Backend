@@ -29,7 +29,6 @@ module.exports = {
         attributes: ["firstName", "lastName"],
       },
     ]);
-
     res.status(200).send({
       details: await req.getModelListDetails(Vehicle),
       data,
@@ -87,7 +86,8 @@ module.exports = {
             "plateNumber": "string",
             "model": "number",
             "capacity": "number",
-            "status":"number"
+            "status":"number",
+            "isPublic": "boolean"
           }
         } 
     */
