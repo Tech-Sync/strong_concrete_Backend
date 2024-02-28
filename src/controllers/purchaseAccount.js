@@ -54,11 +54,20 @@ module.exports = {
   create: async (req, res) => {
     /* 
         #swagger.tags = ['PurchaseAccount']
+        #swagger.deprecated  = true
         #swagger.summary = 'PurchaseAccount: Create'
         #swagger.description = '
           <b>-</b> PurchaseAccount will be created automatically when the purchase is made. <br>
           <b>-</b> There is no need to create a PurchaseAccount manually. <br>
           <b>-</b> Send access token in header.'
+        #swagger.parameters['body'] = {
+          in: 'body',
+          required: true,
+          schema: {
+            "FirmId": "number",
+            "credit": "number"
+          }
+        } 
        
       
      */
@@ -113,7 +122,8 @@ module.exports = {
             </ul> ',
           required: true,
           schema: {
-            FirmId:'test1'
+            "FirmId": "number",
+            "credit": "number"
           }
         } 
      */
@@ -158,7 +168,19 @@ module.exports = {
       message: !!isDeleted
         ? `The Purchase Account id ${purchaseAccount.id} has been deleted.`
         : "Purchase Account not found or something went wrong.",
-      data: await req.getModelList(PurchaseAccount),
+      data: await req.getModelList(PurchaseAccount, {}, [
+        {
+          model: Purchase,
+          attributes: ['id'],
+          include: [
+            {
+              model: Material,
+              attributes: ["name"],
+            },
+          ],
+        },
+        { model: Firm, attributes: ["name"] },
+      ]),
     });
   },
 
@@ -226,7 +248,19 @@ module.exports = {
       message: !!totalDeleted
         ? `The purchase account id's ${ids} has been deleted.`
         : "Purchase Account not found or something went wrong.",
-      data: await req.getModelList(PurchaseAccount),
+      data: await req.getModelList(PurchaseAccount, {}, [
+        {
+          model: Purchase,
+          attributes: ['id'],
+          include: [
+            {
+              model: Material,
+              attributes: ["name"],
+            },
+          ],
+        },
+        { model: Firm, attributes: ["name"] },
+      ]),
     });
   },
 };

@@ -24,20 +24,19 @@ module.exports = {
         description:'Send true to show deleted data as well, default value is false'
       }
     */
-    const data = await Production.findAndCountAll({
-      include: [
-        {
-          model: Sale,
-          attributes: ["id", "quantity", "FirmId", "confirmDate"],
-          include: [
-            {
-              model: Product,
-              attributes: ["id", "name"],
-            },
-          ],
-        },
-      ],
-    });
+
+    const data = await req.getModelList(Production, {}, [
+      {
+        model: Sale,
+        attributes: ["id", "quantity", "FirmId", "confirmDate"],
+        include: [
+          {
+            model: Product,
+            attributes: ["id", "name"],
+          },
+        ],
+      },
+    ])
 
     res.status(200).send(data);
   },
@@ -59,8 +58,8 @@ module.exports = {
             </ul> ',
           required: true,
           schema: {
-            SaleId: 643234723,
-            VehicleIds:[ 1, 2, 3],
+            SaleId: "number",
+            VehicleIds:'array with number',
           }
         } 
     */
@@ -114,8 +113,8 @@ module.exports = {
             </ul> ',
           required: true,
           schema: {
-            status:2,
-            VehicleIds: [1,2]
+            status:"number",
+            VehicleIds:"array with numbers"
           }
         } 
     */
@@ -272,12 +271,12 @@ module.exports = {
           type: 'boolean',
           description:'Send true for hard deletion, default value is false which is soft delete.'}
     */
-    
+
     const hardDelete = req.query.hardDelete === "true";
-    if(req.user.role !== 5 && hardDelete ) throw new Error('You are not authorized for permanent deletetion!')
+    if (req.user.role !== 5 && hardDelete) throw new Error('You are not authorized for permanent deletetion!')
 
     const production = await Production.findByPk(req.params.id);
-    if(!production) throw new Error('Production not found or already deleted.')
+    if (!production) throw new Error('Production not found or already deleted.')
     production.updaterId = req.user.id;
     const isDeleted = await production.destroy({ force: hardDelete });
 
@@ -286,7 +285,18 @@ module.exports = {
       message: !!isDeleted
         ? `The production id ${production.id} has been deleted.`
         : "Firm not found or something went wrong.",
-      data: await req.getModelList(Production),
+      data: await req.getModelList(Production, {}, [
+        {
+          model: Sale,
+          attributes: ["id", "quantity", "FirmId", "confirmDate"],
+          include: [
+            {
+              model: Product,
+              attributes: ["id", "name"],
+            },
+          ],
+        },
+      ]),
     });
   },
 
@@ -354,7 +364,18 @@ module.exports = {
       message: !!totalDeleted
         ? `The production id's ${ids} has been deleted.`
         : "Production not found or something went wrong.",
-      data: await req.getModelList(Production),
+      data: await req.getModelList(Production, {}, [
+        {
+          model: Sale,
+          attributes: ["id", "quantity", "FirmId", "confirmDate"],
+          include: [
+            {
+              model: Product,
+              attributes: ["id", "name"],
+            },
+          ],
+        },
+      ]),
     });
   },
 };

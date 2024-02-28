@@ -80,12 +80,10 @@ const Sale = sequelize.define(
           sale.unitPrice = product.price;
         }
 
-        sale.totalPrice =
-          sale.quantity * sale.unitPrice + sale.otherCharges - sale.discount;
+        sale.totalPrice = sale.quantity * sale.unitPrice + sale.otherCharges - sale.discount;
       },
       beforeUpdate: (sale) => {
-        sale.totalPrice =
-          sale.quantity * sale.unitPrice + sale.otherCharges - sale.discount;
+        sale.totalPrice = sale.quantity * sale.unitPrice + sale.otherCharges - sale.discount;
       },
     },
   }

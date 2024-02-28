@@ -42,21 +42,22 @@ module.exports = {
             </ul> ',
           required: true,
           schema:{
-            "name": "C35",
-            "price": 100,
+            "name": "string",
+            "price": "number",
             "materials": {
-              "STONE": 1.9,
-              "SAND": 1.9,
-              "CEMENT": 270
+              "STONE": "number",
+              "SAND": "number",
+              "CEMENT": "number"
             }
           }
         } 
     */
     const { materials } = req.body;
 
-    const materialsArray = await Material.findAll();
+    // const materialsArray = await Material.findAll();
+    // const requiredKeys = materialsArray.map((obj) => obj.name);
 
-    const requiredKeys = materialsArray.map((obj) => obj.name);
+    const requiredKeys = ['CEMENT', 'STONE', 'SAND'];
     const hasRequiredKeys = requiredKeys.every((key) =>
       materials.hasOwnProperty(key)
     );
@@ -105,7 +106,13 @@ module.exports = {
             </ul> ',
           required: true,
           schema: {
-            "price": 5
+            "name": "string",
+            "price": "number",
+            "materials": {
+              "STONE": "number",
+              "SAND": "number",
+              "CEMENT": "number"
+            }
           }
         } 
     */

@@ -43,7 +43,7 @@ module.exports = {
 
     res.status(200).send(data);
   },
- 
+
   update: async (req, res) => {
     /* 
         #swagger.tags = ['User']
@@ -58,36 +58,43 @@ module.exports = {
             </ul> ',
           required: true,
           schema: {
-            firstName:'test1'
+            firstName:"string",
+            lastName:"string",
+            nrcNo:"string",
+            phoneNo:'number',
+            address:'string',
+            role:"number",
+            email:'string'
           }
         } 
      */
-    const allowedUpdates = ['firstName', 'lastName', 'nrcNo', 'phoneNo', 'address', 'role']; 
-    
+
+    const allowedUpdates = ['firstName', 'lastName', 'nrcNo', 'phoneNo', 'address', 'role'];
+
     const updates = Object.keys(req.body);
-    
+
     const isValidOperation = updates.every(update => allowedUpdates.includes(update));
 
     if (!isValidOperation) {
-        return res.status(400).send({ error: 'Invalid Update! Check Your Update Field..' });
+      return res.status(400).send({ error: 'Invalid Update! Check Your Update Field..' });
     }
 
     try {
-        const isUpdated = await User.update(req.body, {
-            where: { id: req.params.id },
-            individualHooks: true,
-        });
+      const isUpdated = await User.update(req.body, {
+        where: { id: req.params.id },
+        individualHooks: true,
+      });
 
-        if (!isUpdated[0]) {
-            return res.status(404).send({ error: 'User Not Found!' });
-        }
+      if (!isUpdated[0]) {
+        return res.status(404).send({ error: 'User Not Found!' });
+      }
 
-        const user = await User.findByPk(req.params.id);
-        res.status(202).send({ isUpdated: true, data: user });
+      const user = await User.findByPk(req.params.id);
+      res.status(202).send({ isUpdated: true, data: user });
     } catch (error) {
-        res.status(400).send(error);
+      res.status(400).send(error);
     }
-},
+  },
 
   delete: async (req, res) => {
     /* 
@@ -115,10 +122,9 @@ module.exports = {
     res.status(isDeleted ? 202 : 404).send({
       error: !Boolean(isDeleted),
       message: !!isDeleted
-      ? `The user ${
-        user.firstName ? `named ${user.firstName}` : `with ID ${user.id}`
-      } has been deleted.`
-      : "User not found or something went wrong.",
+        ? `The user ${user.firstName ? `named ${user.firstName}` : `with ID ${user.id}`
+        } has been deleted.`
+        : "User not found or something went wrong.",
       data: await req.getModelList(User),
     });
   },

@@ -1,5 +1,8 @@
 "use strict";
 
+const Firm = require("../models/firm");
+const Product = require("../models/product");
+const Sale = require("../models/sale");
 const SaleAccount = require("../models/saleAccount");
 
 module.exports = {
@@ -20,7 +23,19 @@ module.exports = {
         description:'Send true to show deleted data as well, default value is false'
       }
     */
-    const data = await req.getModelList(SaleAccount);
+    const data = await req.getModelList(SaleAccount, {}, [
+      {
+        model: Sale,
+        attributes: ["id"],
+        include: [
+          {
+            model: Product,
+            attributes: ["name"],
+          },
+        ],
+      },
+      { model: Firm, attributes: ["name"] },
+    ]);
 
     res.status(200).send({
       details: await req.getModelListDetails(SaleAccount),
@@ -31,15 +46,17 @@ module.exports = {
   create: async (req, res) => {
     /* 
         #swagger.tags = ['Sale Account']
+        #swagger.deprecated  = true
         #swagger.summary = 'Sale Account: Create'
         #swagger.description = '
           <b>-</b> SaleAccount will be created automatically after the sale is made. <br>
           <b>-</b> Send access token in header.'
         #swagger.parameters['body'] = {
         in: 'body',
-        required: true,
-        
-      }
+        schema: {
+
+        }
+      } 
     */
     req.body.creatorId = req.user.id;
 
@@ -55,7 +72,21 @@ module.exports = {
         #swagger.description = '
        <b>-</b> Send access token in header. '
     */
-    const data = await SaleAccount.findByPk(req.params.id);
+    const data = await SaleAccount.findByPk(req.params.id, {
+      include: [
+        {
+          model: Sale,
+          attributes: ["id"],
+          include: [
+            {
+              model: Product,
+              attributes: ["name"],
+            },
+          ],
+        },
+        { model: Firm, attributes: ["name"] },
+      ]
+    });
     if (!data) {
       res.errorStatusCode = 404;
       throw new Error("Not found !");
@@ -73,11 +104,11 @@ module.exports = {
           description: '
             <ul> 
               <li>Send the object includes attributes that should be updated.</li>
-              
             </ul> ',
           required: true,
           schema: {
-            FirmId:'test1'
+            FirmId:'number',
+            paid:'number'
           }
         } 
     */
@@ -106,12 +137,12 @@ module.exports = {
           type: 'boolean',
           description:'Send true for hard deletion, default value is false which is soft delete.'}
     */
-    
+
     const hardDelete = req.query.hardDelete === "true";
-    if(req.user.role !== 5 && hardDelete ) throw new Error('You are not authorized for permanent deletetion!')
-    
+    if (req.user.role !== 5 && hardDelete) throw new Error('You are not authorized for permanent deletetion!')
+
     const saleAccount = await SaleAccount.findByPk(req.params.id);
-    if(!saleAccount) throw new Error('SaleAccount not found or already deleted.')
+    if (!saleAccount) throw new Error('SaleAccount not found or already deleted.')
     saleAccount.updaterId = req.user.id;
     const isDeleted = await saleAccount.destroy({ force: hardDelete });
 
@@ -120,7 +151,19 @@ module.exports = {
       message: !!isDeleted
         ? `The sale account id ${saleAccount.id} has been deleted.`
         : "Sale Account not found or something went wrong.",
-      data: await req.getModelList(SaleAccount),
+      data: await req.getModelList(SaleAccount, {}, [
+        {
+          model: Sale,
+          attributes: ["id"],
+          include: [
+            {
+              model: Product,
+              attributes: ["name"],
+            },
+          ],
+        },
+        { model: Firm, attributes: ["name"] },
+      ]),
     });
   },
 
@@ -146,7 +189,7 @@ module.exports = {
   },
   multipleDelete: async (req, res) => {
     /* 
-      #swagger.tags = ['SaleAccount']
+      #swagger.tags = ['Sale Account']
       #swagger.summary = 'Multiple-Delete  SaleAccount with ID'
       #swagger.description = `
         <b>-</b> Send access token in header. <br>
@@ -188,7 +231,19 @@ module.exports = {
       message: !!totalDeleted
         ? `The sale Account id's ${ids} has been deleted.`
         : "Sale Account not found or something went wrong.",
-      data: await req.getModelList(saleAccount),
+      data: await req.getModelList(SaleAccount, {}, [
+        {
+          model: Sale,
+          attributes: ["id"],
+          include: [
+            {
+              model: Product,
+              attributes: ["name"],
+            },
+          ],
+        },
+        { model: Firm, attributes: ["name"] },
+      ]),
     });
   },
 };

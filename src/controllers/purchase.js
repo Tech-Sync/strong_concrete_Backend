@@ -51,10 +51,10 @@ module.exports = {
         in: 'body',
         required: true,
         schema: {
-          MaterialId:'1',
-          quantity:'50',
-          unitPrice:'11111',
-          FirmId:'2'
+          MaterialId:'number',
+          quantity:'number',
+          unitPrice:'number',
+          FirmId:'number'
         }
       }
     
@@ -124,8 +124,10 @@ module.exports = {
             </ul> ',
           required: true,
           schema: {
-            "MaterialId": "newFirm",
-            "unitPrice": "newPrice"
+            MaterialId:'number',
+            quantity:'number',
+            unitPrice:'number',
+            FirmId:'number'
           }
         } 
     */
