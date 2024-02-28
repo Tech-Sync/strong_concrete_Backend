@@ -1706,9 +1706,21 @@
             "schema": {
               "type": "object",
               "properties": {
+                "DriverId": {
+                  "type": "number",
+                  "example": 1
+                },
                 "plateNumber": {
                   "type": "string",
-                  "example": "dada1848"
+                  "example": "dada7049"
+                },
+                "model": {
+                  "type": "number",
+                  "example": 2000
+                },
+                "capacity": {
+                  "type": "number",
+                  "example": 7
                 }
               }
             }

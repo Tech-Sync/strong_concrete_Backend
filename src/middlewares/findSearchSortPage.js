@@ -9,10 +9,15 @@ module.exports = (req, res, next) => {
   //! SEARCHING: URL?search[key1]=value1&search[key2]=value2
   let whereClause = {};
   let include = null;
-
+  
   for (const key in search) {
     const value = search[key];
-    whereClause[key] = { [Op.like]: `%${value}%` };
+
+    if (['model', 'DriverId', 'capacity', 'statusm', 'creatorId'].includes(key)) {
+      whereClause[key] = value;
+    } else {
+      whereClause[key] = { [Op.like]: `%${value}%` };
+    }
   }
   //!tarih filtresi URL?startDate=2023-07-13&endDate=2023-10-01  tarih yıl-ay-gün formatında olmalı
   if (startDate && endDate) {
