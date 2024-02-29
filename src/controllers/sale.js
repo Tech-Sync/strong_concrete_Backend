@@ -66,8 +66,14 @@ module.exports = {
           }
         }
       } 
-    */  
+    */
 
+    const { requestedDate } = req.body
+
+    const existingOrders = await Sale.findAll({ where: { requestedDate } })
+    const nextOrderNumber = existingOrders.length + 1
+
+    req.body.orderNumber = nextOrderNumber
     req.body.creatorId = req.user.id;
 
     const data = await Sale.create(req.body);
