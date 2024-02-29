@@ -6,6 +6,9 @@ const SaleAccount = require("../models/saleAccount");
 const Delivery = require("../models/delivery");
 const Firm = require("../models/firm");
 const Product = require("../models/product");
+const { sequelize } = require("../configs/dbConnection");
+const { col, Op } = require("sequelize");
+
 
 module.exports = {
   list: async (req, res) => {
@@ -45,7 +48,7 @@ module.exports = {
   create: async (req, res) => {
     /* 
         #swagger.tags = ['Sale']
-         #swagger.summary = 'Sale: Create'
+         #swagger.summary = 'Sale Create'
         #swagger.description = '
           <b>-</b> Create with FirmId, ProductId, quantity, location, requestedDate and sideContact <br>
           <b>-</b> Send access token in header.'
@@ -66,8 +69,14 @@ module.exports = {
           }
         }
       } 
-    */  
+    */
 
+    const { requestedDate } = req.body
+
+    const existingOrders = await Sale.findAll({ where: { requestedDate } })
+    const nextOrderNumber = existingOrders.length + 1
+
+    req.body.orderNumber = nextOrderNumber
     req.body.creatorId = req.user.id;
 
     const data = await Sale.create(req.body);
@@ -339,4 +348,90 @@ module.exports = {
       data: await req.getModelList(Sale),
     });
   },
+
+  updateOrder: async (req, res) => {
+
+    /* 
+       #swagger.tags = ['Sale']
+       #swagger.summary = 'Update sale order'
+       #swagger.description = '
+         <b>-</b> Send ID number of the whose orderNumber you want to change as a param. <br>
+         <b>-</b> Send access token in header.'
+        #swagger.parameters['body'] = {
+         in: 'body',
+         description: '
+           <ul> 
+             <li>Send the newOrderNumber in the body. </li>
+           </ul> ',
+         required: true,
+         schema: {
+           newOrderNumber:"number"
+         }
+       }
+     } 
+   */
+
+    const transaction = await sequelize.transaction();
+
+    try {
+
+      const orderToUpdate = await Sale.findByPk(req.params.id);
+
+      if (!orderToUpdate) throw new Error('The order not found!')
+
+      const { newOrderNumber } = req.body
+      const orderId = req.params.id;
+      const prevOrderNumber = orderToUpdate.orderNumber
+
+      const parsedNewOrderNumber = parseInt(newOrderNumber, 10);
+
+      orderToUpdate.orderNumber = parsedNewOrderNumber
+      await orderToUpdate.save({ transaction });
+
+      console.log("requestData", orderToUpdate.requestedDate);
+      console.log("newOrder", orderToUpdate.orderNumber);
+      console.log("oldOrder", prevOrderNumber);
+
+      if (newOrderNumber > prevOrderNumber) {
+        await Sale.update({ orderNumber: sequelize.literal('"orderNumber" - 1') }, {
+          where: {
+            requestedDate: orderToUpdate.requestedDate,
+            orderNumber: {
+              [Op.gt]: prevOrderNumber,
+              [Op.lte]: newOrderNumber
+            },
+            id: { [Op.ne]: orderId }
+          }, transaction
+        })
+      } else if (newOrderNumber < prevOrderNumber) {
+        await Sale.update({ orderNumber: sequelize.literal('"orderNumber" + 1') }, {
+          where: {
+            requestedDate: orderToUpdate.requestedDate,
+            orderNumber: {
+              [Op.gte]: newOrderNumber,
+              [Op.lt]: prevOrderNumber
+            },
+            id: { [Op.ne]: orderId }
+          }, transaction
+        })
+      }
+
+
+
+      await transaction.commit();
+
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
+    }
+
+
+    res.status(200).send({
+      // details: await req.getModelListDetails(Sale),
+      newOrderNumber: req.body.newOrderNumber,
+      query: req.params.id,
+      data: await req.getModelList(Sale)
+
+    });
+  }
 };

@@ -1,10 +1,10 @@
 module.exports = (err, req, res, next) => {
-    return res.status(res?.errorStatusCode || 400).send({
-      error: true,
-      message: err.message,
-      cause: err.cause,
-      body: req.body,
-    
-    });
-  };
-  
+  console.log(err);
+  return res.status(res?.errorStatusCode || 400).send({
+    error: true,
+    message: err.message,
+    cause: err.cause,
+    body: req.body,
+
+  });
+};
