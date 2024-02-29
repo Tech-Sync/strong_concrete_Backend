@@ -45,7 +45,7 @@ const Sale = sequelize.define(
       defaultValue: 0,
     },
     requestedDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
       allowNull: false,
     },
     sideContact: {
@@ -53,7 +53,10 @@ const Sale = sequelize.define(
       allowNull: false,
     },
     confirmDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
+    },
+    orderNumber: {
+      type: DataTypes.INTEGER,
     },
     status: {
       type: DataTypes.INTEGER,

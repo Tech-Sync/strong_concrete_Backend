@@ -12,7 +12,6 @@ module.exports = (req, res, next) => {
 
   for (const key in search) {
     const value = search[key];
-    console.log(value);
     if (['model', 'DriverId', 'capacity', 'status', 'creatorId', 'role'].includes(key)) {
       whereClause[key] = value;
     } else {

@@ -14,7 +14,7 @@
       "name": "BSD Licence"
     }
   },
-  "host": "strong-concrete.onrender.com",
+  "host": "strong-concrete.onrender.com:8000",
   "basePath": "/",
   "schemes": [
     "http",
@@ -1796,6 +1796,10 @@
                 "status": {
                   "type": "string",
                   "example": "number"
+                },
+                "isPublic": {
+                  "type": "string",
+                  "example": "boolean"
                 }
               }
             }
@@ -1925,7 +1929,7 @@
         "tags": [
           "Sale"
         ],
-        "summary": "Sale: Create",
+        "summary": "Sale Create",
         "description": "\r  <b>-</b> Create with FirmId, ProductId, quantity, location, requestedDate and sideContact <br>\r  <b>-</b> Send access token in header.",
         "parameters": [
           {
@@ -2103,6 +2107,43 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/sales/update-order/{id}": {
+      "post": {
+        "tags": [
+          "Sale"
+        ],
+        "summary": "Update sale order",
+        "description": "\r  <b>-</b> Send ID number of the whose orderNumber you want to change as a param. <br>\r  <b>-</b> Send access token in header.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "   <ul>    <li>Send the newOrderNumber in the body. </li>   </ul> ",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "newOrderNumber": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
           }
         }
       }
