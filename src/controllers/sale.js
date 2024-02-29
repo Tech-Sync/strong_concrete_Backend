@@ -48,7 +48,7 @@ module.exports = {
   create: async (req, res) => {
     /* 
         #swagger.tags = ['Sale']
-         #swagger.summary = 'Sale: Create'
+         #swagger.summary = 'Sale Create'
         #swagger.description = '
           <b>-</b> Create with FirmId, ProductId, quantity, location, requestedDate and sideContact <br>
           <b>-</b> Send access token in header.'
@@ -350,6 +350,26 @@ module.exports = {
   },
 
   updateOrder: async (req, res) => {
+
+    /* 
+       #swagger.tags = ['Sale']
+       #swagger.summary = 'Update sale order'
+       #swagger.description = '
+         <b>-</b> Send ID number of the whose orderNumber you want to change as a param. <br>
+         <b>-</b> Send access token in header.'
+        #swagger.parameters['body'] = {
+         in: 'body',
+         description: '
+           <ul> 
+             <li>Send the newOrderNumber in the body. </li>
+           </ul> ',
+         required: true,
+         schema: {
+           newOrderNumber:"number"
+         }
+       }
+     } 
+   */
 
     const transaction = await sequelize.transaction();
 
