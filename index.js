@@ -5,7 +5,7 @@ const app = express();
 
 // ENV
 require("dotenv").config();
-const HOST = process.env.HOST;
+const BASE_URL = process.env.BASE_URL;
 const PORT = process.env.PORT;
 
 // ASYNC ERRORS
@@ -41,6 +41,6 @@ app.use(require("./src/routes"));
 // ERROR HANDLER
 app.use(require("./src/middlewares/errorHandler"));
 
-app.listen(PORT, () => console.log(`Running on http://${HOST}:${PORT}`));
+app.listen(PORT, () => console.log(`Running on http://${BASE_URL}`));
 
 module.exports = app
