@@ -151,6 +151,7 @@ module.exports = {
 
     res.status(200).send(data);
   },
+
   update: async (req, res) => {
     /* 
         #swagger.tags = ['Sale']
@@ -361,6 +362,7 @@ module.exports = {
         : "Sale not found or something went wrong.",
     });
   },
+  
   multipleDelete: async (req, res) => {
     /* 
       #swagger.tags = ['Sale']
@@ -425,7 +427,8 @@ module.exports = {
            </ul> ',
          required: true,
          schema: {
-           newOrderNumber:"number"
+           newOrderNumber:"number",
+          newOrderDate: "YYYY-MM-DD"
          }
        }
      } 
@@ -439,44 +442,73 @@ module.exports = {
 
       if (!orderToUpdate) throw new Error('The order not found!')
 
-      const { newOrderNumber } = req.body
+      const { newOrderNumber, newOrderDate } = req.body
+
       const orderId = req.params.id;
       const prevOrderNumber = orderToUpdate.orderNumber
+      const prevOrderDate = orderToUpdate.orderDate
 
-      const parsedNewOrderNumber = parseInt(newOrderNumber, 10);
+      orderToUpdate.orderNumber = newOrderNumber
+      let orderDateChanged = false;
 
-      orderToUpdate.orderNumber = parsedNewOrderNumber
-      await orderToUpdate.save({ transaction });
+      // Check if orderDate is being changed
+      if (newOrderDate && newOrderDate !== prevOrderDate) {
+        orderDateChanged = true;
+        orderToUpdate.orderDate = new Date(newOrderDate);
 
-      console.log("requestData", orderToUpdate.requestedDate);
-      console.log("newOrder", orderToUpdate.orderNumber);
-      console.log("oldOrder", prevOrderNumber);
-
-      if (newOrderNumber > prevOrderNumber) {
-        await Sale.update({ orderNumber: sequelize.literal('"orderNumber" - 1') }, {
-          where: {
-            requestedDate: orderToUpdate.requestedDate,
-            orderNumber: {
-              [Op.gt]: prevOrderNumber,
-              [Op.lte]: newOrderNumber
+        //Decrement  all orderNumbers for prev date
+        await Sale.update(
+          { orderNumber: sequelize.literal('"orderNumber" - 1') },
+          {
+            where: {
+              orderDate: prevOrderDate,
+              orderNumber: { [Op.gt]: prevOrderNumber },
             },
-            id: { [Op.ne]: orderId }
-          }, transaction
-        })
-      } else if (newOrderNumber < prevOrderNumber) {
-        await Sale.update({ orderNumber: sequelize.literal('"orderNumber" + 1') }, {
-          where: {
-            requestedDate: orderToUpdate.requestedDate,
-            orderNumber: {
-              [Op.gte]: newOrderNumber,
-              [Op.lt]: prevOrderNumber
-            },
-            id: { [Op.ne]: orderId }
-          }, transaction
-        })
+            transaction
+          }
+        );
+      } else {
+        if (newOrderNumber > prevOrderNumber) {
+          await Sale.update({ orderNumber: sequelize.literal('"orderNumber" - 1') }, {
+            where: {
+              orderDate: orderToUpdate.orderDate,
+              orderNumber: {
+                [Op.gt]: prevOrderNumber,
+                [Op.lte]: newOrderNumber
+              },
+              id: { [Op.ne]: orderId }
+            }, transaction
+          })
+        } else if (newOrderNumber < prevOrderNumber) {
+          await Sale.update({ orderNumber: sequelize.literal('"orderNumber" + 1') }, {
+            where: {
+              orderDate: orderToUpdate.orderDate,
+              orderNumber: {
+                [Op.gte]: newOrderNumber,
+                [Op.lt]: prevOrderNumber
+              },
+              id: { [Op.ne]: orderId }
+            }, transaction
+          })
+        }
       }
 
+      await orderToUpdate.save({ transaction });
 
+      // Increment order numbers for the new date if necessary
+      if (orderDateChanged) {
+        await Sale.update(
+          { orderNumber: sequelize.literal('"orderNumber" + 1') },
+          {
+            where: {
+              orderDate: orderToUpdate.orderDate,
+              orderNumber: { [Op.gte]: orderToUpdate.orderNumber },
+              id: { [Op.ne]: orderId }
+            },
+            transaction
+          }
+        );
+      }
 
       await transaction.commit();
 
@@ -493,5 +525,7 @@ module.exports = {
       data: await req.getModelList(Sale)
 
     });
-  }
+  },
+
+
 };

@@ -14,7 +14,7 @@
       "name": "BSD Licence"
     }
   },
-  "host": "strong-concrete.onrender.com:8000",
+  "host": "127.0.0.1:8000",
   "basePath": "/",
   "schemes": [
     "http",
@@ -1910,7 +1910,7 @@
           "Sale"
         ],
         "summary": " Sale List",
-        "description": "\r  You can send query with endpoint for search[], sort[], page and limit.<br><br>\r  For date filtering you can filter with preDefiend keywords or picking custom range;<br>\r  -- for the preDefiend query values are [today, nextWeek, lastWeek]. <br>\r  -- for custom range needed queries are startDate, endDate and dateField.\r  <ul> Examples:\r  <li>endpoint?<b>preDefined=today&dateField=requestedDate</b></li>\r  <li>endpoint?<b>preDefined=lastWeek&dateField=orderDate</b></li>\r  <li>endpoint?startDate=2023-01-01&endDate=2023-01-07&dateField=requestedDate</b></li>\r  <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>\r  <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>\r  <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>\r  ",
+        "description": "\r  You can send query with endpoint for search[], sort[], page and limit.<br><br>\r  For date filtering you can filter with preDefiend keywords or picking custom range;<br>\r  -- for the preDefiend query values are [today, nextWeek, lastWeek, thisWeek]. <br>\r  -- for custom range needed queries are startDate, endDate and dateField.\r  <ul> Examples:\r  <li>endpoint?<b>preDefined=today&dateField=requestedDate</b></li>\r  <li>endpoint?<b>preDefined=lastWeek&dateField=orderDate</b></li>\r  <li>endpoint?startDate=2023-01-01&endDate=2023-01-07&dateField=requestedDate</b></li>\r  <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>\r  <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>\r  <li>URL/?<b>page=2&limit=1</b></li>\r  </ul>\r  ",
         "parameters": [
           {
             "name": "showDeleted",
@@ -1928,7 +1928,7 @@
             "name": "preDefiend",
             "in": "query",
             "type": "string",
-            "description": "exp: [today, nextWeek, lastWeek]"
+            "description": "exp: [today, nextWeek, lastWeek, thisWeek]"
           },
           {
             "name": "startDate",
@@ -2166,6 +2166,10 @@
                 "newOrderNumber": {
                   "type": "string",
                   "example": "number"
+                },
+                "newOrderDate": {
+                  "type": "string",
+                  "example": "YYYY-MM-DD"
                 }
               }
             }
