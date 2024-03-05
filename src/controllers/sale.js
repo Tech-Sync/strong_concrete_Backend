@@ -15,8 +15,15 @@ module.exports = {
     /* 
         #swagger.tags = ['Sale']
         #swagger.summary = ' Sale List'
-        #swagger.description = `You can send query with endpoint for search[], sort[], page and limit.
+        #swagger.description = `
+        You can send query with endpoint for search[], sort[], page and limit.<br><br>
+        For date filtering you can filter with preDefiend keywords or picking custom range;<br>
+        -- for the preDefiend query values are [today, nextWeek, lastWeek]. <br>
+        -- for custom range needed queries are startDate, endDate and dateField.
           <ul> Examples:
+              <li>endpoint?<b>preDefined=today&dateField=requestedDate</b></li>
+              <li>endpoint?<b>preDefined=lastWeek&dateField=orderDate</b></li>
+              <li>endpoint?startDate=2023-01-01&endDate=2023-01-07&dateField=requestedDate</b></li>
               <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>
               <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>
               <li>URL/?<b>page=2&limit=1</b></li>
@@ -27,8 +34,41 @@ module.exports = {
         type: 'boolean',
         description:'Send true to show deleted data as well, default value is false'
       }
+        #swagger.parameters['showQuote'] = {
+        in: 'query',
+        type: 'boolean',
+        description:'Send true to show quotetions as well (orderDate is Null), default value is false'
+      }
+        #swagger.parameters['preDefiend'] = {
+        in: 'query',
+        type: 'string',
+        description:'exp: [today, nextWeek, lastWeek]'
+      }
+        #swagger.parameters['startDate'] = {
+        in: 'query',
+        type: 'string',
+        description:'Format is YEAR-MONTH-DAY'
+      }
+        #swagger.parameters['endDate'] = {
+        in: 'query',
+        type: 'string',
+        description:'Format is YEAR-MONTH-DAY'
+      }
+        #swagger.parameters['dateField'] = {
+        in: 'query',
+        type: 'string',
+        description:'exp:[requestedDate, orderDate, createdAt, updatedAt]'
+      }
     */
-    const data = await req.getModelList(Sale, {}, [
+
+    let filter = { orderDate: { [Op.not]: null } }
+
+    if (req.query.showQuote === "true") {
+      filter = {};
+    }
+
+
+    const data = await req.getModelList(Sale, filter, [
       {
         model: Firm,
         attributes: ["name"],
@@ -190,7 +230,7 @@ module.exports = {
       const prevOrderNumber = sale.orderNumber
       await Sale.update({ orderNumber: sequelize.literal('"orderNumber" - 1') }, {
         where: {
-          orderDate:sale.orderDate,
+          orderDate: sale.orderDate,
           orderNumber: { [Op.gt]: prevOrderNumber, },
         }
       })
