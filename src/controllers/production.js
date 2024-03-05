@@ -28,7 +28,7 @@ module.exports = {
     const data = await req.getModelList(Production, {}, [
       {
         model: Sale,
-        attributes: ["id", "quantity", "FirmId", "confirmDate"],
+        attributes: ["id", "quantity", "FirmId", "orderDate"],
         include: [
           {
             model: Product,
@@ -288,7 +288,7 @@ module.exports = {
       data: await req.getModelList(Production, {}, [
         {
           model: Sale,
-          attributes: ["id", "quantity", "FirmId", "confirmDate"],
+          attributes: ["id", "quantity", "FirmId", "orderDate"],
           include: [
             {
               model: Product,
@@ -367,7 +367,7 @@ module.exports = {
       data: await req.getModelList(Production, {}, [
         {
           model: Sale,
-          attributes: ["id", "quantity", "FirmId", "confirmDate"],
+          attributes: ["id", "quantity", "FirmId", "orderDate"],
           include: [
             {
               model: Product,

@@ -15,8 +15,15 @@ module.exports = {
     /* 
         #swagger.tags = ['Sale']
         #swagger.summary = ' Sale List'
-        #swagger.description = `You can send query with endpoint for search[], sort[], page and limit.
+        #swagger.description = `
+        You can send query with endpoint for search[], sort[], page and limit.<br><br>
+        For date filtering you can filter with preDefiend keywords or picking custom range;<br>
+        -- for the preDefiend query values are [today, nextWeek, lastWeek, thisWeek]. <br>
+        -- for custom range needed queries are startDate, endDate and dateField.
           <ul> Examples:
+              <li>endpoint?<b>preDefined=today&dateField=requestedDate</b></li>
+              <li>endpoint?<b>preDefined=lastWeek&dateField=orderDate</b></li>
+              <li>endpoint?startDate=2023-01-01&endDate=2023-01-07&dateField=requestedDate</b></li>
               <li>URL/?<b>search[field1]=value1&search[field2]=value2</b></li>
               <li>URL/?<b>sort[field1]=1&sort[field2]=-1</b></li>
               <li>URL/?<b>page=2&limit=1</b></li>
@@ -27,7 +34,35 @@ module.exports = {
         type: 'boolean',
         description:'Send true to show deleted data as well, default value is false'
       }
+        #swagger.parameters['showQuote'] = {
+        in: 'query',
+        type: 'boolean',
+        description:'Send true to show quotetions as well (orderDate is Null), default value is false'
+      }
+        #swagger.parameters['preDefiend'] = {
+        in: 'query',
+        type: 'string',
+        description:'exp: [today, nextWeek, lastWeek, thisWeek]'
+      }
+        #swagger.parameters['startDate'] = {
+        in: 'query',
+        type: 'string',
+        description:'Format is YEAR-MONTH-DAY'
+      }
+        #swagger.parameters['endDate'] = {
+        in: 'query',
+        type: 'string',
+        description:'Format is YEAR-MONTH-DAY'
+      }
+        #swagger.parameters['dateField'] = {
+        in: 'query',
+        type: 'string',
+        description:'exp:[requestedDate, orderDate, createdAt, updatedAt]'
+      }
     */
+
+
+
     const data = await req.getModelList(Sale, {}, [
       {
         model: Firm,
@@ -73,10 +108,16 @@ module.exports = {
 
     const { requestedDate } = req.body
 
-    const existingOrders = await Sale.findAll({ where: { requestedDate } })
-    const nextOrderNumber = existingOrders.length + 1
+    if (requestedDate) {
+      req.body.orderDate = requestedDate
 
-    req.body.orderNumber = nextOrderNumber
+      const existingOrders = await Sale.findAll({ where: { orderDate: req.body.orderDate } })
+      const nextOrderNumber = existingOrders.length + 1
+
+      req.body.orderNumber = nextOrderNumber
+    }
+
+
     req.body.creatorId = req.user.id;
 
     const data = await Sale.create(req.body);
@@ -110,6 +151,7 @@ module.exports = {
 
     res.status(200).send(data);
   },
+
   update: async (req, res) => {
     /* 
         #swagger.tags = ['Sale']
@@ -119,11 +161,11 @@ module.exports = {
           in: 'body',
           description: '
             <ul> 
-              <li>Only admin can update status and confirmDate.</li>
-              <li>When confirmDate updated, status also should updated./</li>
+              <li>Only admin can update status and orderDate.</li>
+              <li>When orderDate updated, status also should updated./</li>
               <li>sale account will be created when status of sale is approved./</li>
               <li>Send the object includes attributes that should be updated.</li>
-              <li>You can update : FirmId, ProductId, quantity, location, requestedDate, status, sideContact and confirmDate.</li>
+              <li>You can update : FirmId, ProductId, quantity, location, requestedDate, status, sideContact and orderDate.</li>
             </ul> ',
           required: true,
           schema: {
@@ -133,42 +175,61 @@ module.exports = {
             location:"string",
             requestedDate:"string",
             sideContact:"string",
-            confirmDate:"string",
+            orderDate:"string",
             status:"number"
           }
         }
       } 
     */
-    req.body.updaterId = req.user.id;
+
     const user = req.user;
     let msg;
 
     const sale = await Sale.findByPk(req.params.id);
 
-    if (req.body.status || req.body.confirmDate) {
+    const { status, orderDate } = req.body
+
+    if (status || orderDate) {
       // Checking for auth
       if (user.role !== 5) {
-        throw new Error(
-          "You are not athorized to change Status or Confirm-Date !"
-        );
+        throw new Error("You are not athorized to change Status or Confirm-Date !");
       }
 
       // check confirm date when status changing
-      if (req.body.status === 2) {
-        if (!(req.body.confirmDate || sale.confirmDate)) {
-          throw new Error("Confirm Date is missing ");
+      if (status === 2) {
+        if (!(orderDate || sale.orderDate)) {
+          throw new Error("Order Date is missing ");
         }
       }
 
       // check if confirm date is past
-      if (new Date() > new Date(req.body.confirmDate)) {
+      if (new Date() > new Date(orderDate)) {
         throw new Error("Confirm date can not be past !");
       }
+
+      // update orderNumber if orderDate changes
+      if (orderDate) {
+        const existingOrders = await Sale.findAll({ where: { orderDate } })
+        const newOrderNumber = existingOrders.length + 1
+        req.body.orderNumber = newOrderNumber
+
+      }
+
+      req.body.updaterId = req.user.id;
 
       const isUpdated = await Sale.update(req.body, {
         where: { id: req.params.id },
         individualHooks: true,
       });
+
+      // change the orderNumbers for remaing sale
+      const prevOrderNumber = sale.orderNumber
+      await Sale.update({ orderNumber: sequelize.literal('"orderNumber" - 1') }, {
+        where: {
+          orderDate: sale.orderDate,
+          orderNumber: { [Op.gt]: prevOrderNumber, },
+        }
+      })
 
       // check conditions for creating production
       try {
@@ -301,6 +362,7 @@ module.exports = {
         : "Sale not found or something went wrong.",
     });
   },
+  
   multipleDelete: async (req, res) => {
     /* 
       #swagger.tags = ['Sale']
@@ -365,7 +427,8 @@ module.exports = {
            </ul> ',
          required: true,
          schema: {
-           newOrderNumber:"number"
+           newOrderNumber:"number",
+          newOrderDate: "YYYY-MM-DD"
          }
        }
      } 
@@ -379,44 +442,73 @@ module.exports = {
 
       if (!orderToUpdate) throw new Error('The order not found!')
 
-      const { newOrderNumber } = req.body
+      const { newOrderNumber, newOrderDate } = req.body
+
       const orderId = req.params.id;
       const prevOrderNumber = orderToUpdate.orderNumber
+      const prevOrderDate = orderToUpdate.orderDate
 
-      const parsedNewOrderNumber = parseInt(newOrderNumber, 10);
+      orderToUpdate.orderNumber = newOrderNumber
+      let orderDateChanged = false;
 
-      orderToUpdate.orderNumber = parsedNewOrderNumber
-      await orderToUpdate.save({ transaction });
+      // Check if orderDate is being changed
+      if (newOrderDate && newOrderDate !== prevOrderDate) {
+        orderDateChanged = true;
+        orderToUpdate.orderDate = new Date(newOrderDate);
 
-      console.log("requestData", orderToUpdate.requestedDate);
-      console.log("newOrder", orderToUpdate.orderNumber);
-      console.log("oldOrder", prevOrderNumber);
-
-      if (newOrderNumber > prevOrderNumber) {
-        await Sale.update({ orderNumber: sequelize.literal('"orderNumber" - 1') }, {
-          where: {
-            requestedDate: orderToUpdate.requestedDate,
-            orderNumber: {
-              [Op.gt]: prevOrderNumber,
-              [Op.lte]: newOrderNumber
+        //Decrement  all orderNumbers for prev date
+        await Sale.update(
+          { orderNumber: sequelize.literal('"orderNumber" - 1') },
+          {
+            where: {
+              orderDate: prevOrderDate,
+              orderNumber: { [Op.gt]: prevOrderNumber },
             },
-            id: { [Op.ne]: orderId }
-          }, transaction
-        })
-      } else if (newOrderNumber < prevOrderNumber) {
-        await Sale.update({ orderNumber: sequelize.literal('"orderNumber" + 1') }, {
-          where: {
-            requestedDate: orderToUpdate.requestedDate,
-            orderNumber: {
-              [Op.gte]: newOrderNumber,
-              [Op.lt]: prevOrderNumber
-            },
-            id: { [Op.ne]: orderId }
-          }, transaction
-        })
+            transaction
+          }
+        );
+      } else {
+        if (newOrderNumber > prevOrderNumber) {
+          await Sale.update({ orderNumber: sequelize.literal('"orderNumber" - 1') }, {
+            where: {
+              orderDate: orderToUpdate.orderDate,
+              orderNumber: {
+                [Op.gt]: prevOrderNumber,
+                [Op.lte]: newOrderNumber
+              },
+              id: { [Op.ne]: orderId }
+            }, transaction
+          })
+        } else if (newOrderNumber < prevOrderNumber) {
+          await Sale.update({ orderNumber: sequelize.literal('"orderNumber" + 1') }, {
+            where: {
+              orderDate: orderToUpdate.orderDate,
+              orderNumber: {
+                [Op.gte]: newOrderNumber,
+                [Op.lt]: prevOrderNumber
+              },
+              id: { [Op.ne]: orderId }
+            }, transaction
+          })
+        }
       }
 
+      await orderToUpdate.save({ transaction });
 
+      // Increment order numbers for the new date if necessary
+      if (orderDateChanged) {
+        await Sale.update(
+          { orderNumber: sequelize.literal('"orderNumber" + 1') },
+          {
+            where: {
+              orderDate: orderToUpdate.orderDate,
+              orderNumber: { [Op.gte]: orderToUpdate.orderNumber },
+              id: { [Op.ne]: orderId }
+            },
+            transaction
+          }
+        );
+      }
 
       await transaction.commit();
 
@@ -433,5 +525,7 @@ module.exports = {
       data: await req.getModelList(Sale)
 
     });
-  }
+  },
+
+
 };
