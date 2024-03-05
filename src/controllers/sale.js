@@ -18,7 +18,7 @@ module.exports = {
         #swagger.description = `
         You can send query with endpoint for search[], sort[], page and limit.<br><br>
         For date filtering you can filter with preDefiend keywords or picking custom range;<br>
-        -- for the preDefiend query values are [today, nextWeek, lastWeek]. <br>
+        -- for the preDefiend query values are [today, nextWeek, lastWeek, thisWeek]. <br>
         -- for custom range needed queries are startDate, endDate and dateField.
           <ul> Examples:
               <li>endpoint?<b>preDefined=today&dateField=requestedDate</b></li>
@@ -42,7 +42,7 @@ module.exports = {
         #swagger.parameters['preDefiend'] = {
         in: 'query',
         type: 'string',
-        description:'exp: [today, nextWeek, lastWeek]'
+        description:'exp: [today, nextWeek, lastWeek, thisWeek]'
       }
         #swagger.parameters['startDate'] = {
         in: 'query',
@@ -61,14 +61,9 @@ module.exports = {
       }
     */
 
-    let filter = { orderDate: { [Op.not]: null } }
-
-    if (req.query.showQuote === "true") {
-      filter = {};
-    }
 
 
-    const data = await req.getModelList(Sale, filter, [
+    const data = await req.getModelList(Sale, {}, [
       {
         model: Firm,
         attributes: ["name"],

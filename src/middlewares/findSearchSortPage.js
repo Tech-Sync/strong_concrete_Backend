@@ -15,13 +15,18 @@ function getDateRange(filter) {
         moment().add(1, 'weeks').startOf('isoWeek').toDate(),
         moment().add(1, 'weeks').endOf('isoWeek').toDate()
       ];
+    case 'thisWeek':
+      return [
+        moment().startOf('isoWeek').toDate(),
+        moment().endOf('isoWeek').toDate()
+      ];
     default:
       return null;
   }
 }
 
 module.exports = (req, res, next) => {
-  let { search, startDate, endDate, sort, page, limit, offset, showDeleted, dateField, preDefined } = req.query;
+  let { search, startDate, endDate, sort, page, limit, offset, showDeleted, dateField, preDefined, showQuote } = req.query;
 
   //* ?search[status]=SALER
   //! SEARCHING: URL?search[key1]=value1&search[key2]=value2
@@ -44,17 +49,22 @@ module.exports = (req, res, next) => {
 
   const allowedDateFields = ['requestedDate', 'orderDate', 'createdAt', 'updatedAt'];
 
+  if (!showQuote || showQuote !== 'true') {
+    whereClause['orderDate'] = { [Op.not]: null };
+  }
+
 
   if (preDefined) {
     const dateRange = getDateRange(preDefined);
     if (dateRange && allowedDateFields.includes(dateField)) {
-      console.log(dateRange);
       whereClause[dateField] = {
+        ...whereClause[dateField],
         [Op.between]: dateRange,
       };
     }
   } else if (startDate && endDate && dateField && allowedDateFields.includes(dateField)) {
     whereClause[dateField] = {
+      ...whereClause[dateField],
       [Op.between]: [moment(startDate).startOf('day').toDate(), moment(endDate).endOf('day').toDate()],
     };
   } else {
@@ -86,11 +96,14 @@ module.exports = (req, res, next) => {
 
     if (showDeleted === "true" && req.user.role === 5) paranoid = false;
 
+    console.log(whereClause);
+
     whereClause = { ...whereClause, ...filters };
 
+    console.log(whereClause);
+
     return await Model.findAll({
-      where:
-        Object.keys(whereClause).length > 0 ? { [Op.or]: [whereClause] } : {},
+      where: Object.keys(whereClause).length > 0 ? { [Op.or]: [whereClause] } : {},
       include,
       order: orderClause,
       offset,
