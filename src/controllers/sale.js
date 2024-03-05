@@ -73,10 +73,16 @@ module.exports = {
 
     const { requestedDate } = req.body
 
-    const existingOrders = await Sale.findAll({ where: { requestedDate } })
-    const nextOrderNumber = existingOrders.length + 1
+    if (requestedDate) {
+      req.body.orderDate = requestedDate
 
-    req.body.orderNumber = nextOrderNumber
+      const existingOrders = await Sale.findAll({ where: { orderDate: req.body.orderDate } })
+      const nextOrderNumber = existingOrders.length + 1
+
+      req.body.orderNumber = nextOrderNumber
+    }
+
+
     req.body.creatorId = req.user.id;
 
     const data = await Sale.create(req.body);
@@ -119,11 +125,11 @@ module.exports = {
           in: 'body',
           description: '
             <ul> 
-              <li>Only admin can update status and confirmDate.</li>
-              <li>When confirmDate updated, status also should updated./</li>
+              <li>Only admin can update status and orderDate.</li>
+              <li>When orderDate updated, status also should updated./</li>
               <li>sale account will be created when status of sale is approved./</li>
               <li>Send the object includes attributes that should be updated.</li>
-              <li>You can update : FirmId, ProductId, quantity, location, requestedDate, status, sideContact and confirmDate.</li>
+              <li>You can update : FirmId, ProductId, quantity, location, requestedDate, status, sideContact and orderDate.</li>
             </ul> ',
           required: true,
           schema: {
@@ -133,42 +139,61 @@ module.exports = {
             location:"string",
             requestedDate:"string",
             sideContact:"string",
-            confirmDate:"string",
+            orderDate:"string",
             status:"number"
           }
         }
       } 
     */
-    req.body.updaterId = req.user.id;
+
     const user = req.user;
     let msg;
 
     const sale = await Sale.findByPk(req.params.id);
 
-    if (req.body.status || req.body.confirmDate) {
+    const { status, orderDate } = req.body
+
+    if (status || orderDate) {
       // Checking for auth
       if (user.role !== 5) {
-        throw new Error(
-          "You are not athorized to change Status or Confirm-Date !"
-        );
+        throw new Error("You are not athorized to change Status or Confirm-Date !");
       }
 
       // check confirm date when status changing
-      if (req.body.status === 2) {
-        if (!(req.body.confirmDate || sale.confirmDate)) {
-          throw new Error("Confirm Date is missing ");
+      if (status === 2) {
+        if (!(orderDate || sale.orderDate)) {
+          throw new Error("Order Date is missing ");
         }
       }
 
       // check if confirm date is past
-      if (new Date() > new Date(req.body.confirmDate)) {
+      if (new Date() > new Date(orderDate)) {
         throw new Error("Confirm date can not be past !");
       }
+
+      // update orderNumber if orderDate changes
+      if (orderDate) {
+        const existingOrders = await Sale.findAll({ where: { orderDate } })
+        const newOrderNumber = existingOrders.length + 1
+        req.body.orderNumber = newOrderNumber
+
+      }
+
+      req.body.updaterId = req.user.id;
 
       const isUpdated = await Sale.update(req.body, {
         where: { id: req.params.id },
         individualHooks: true,
       });
+
+      // change the orderNumbers for remaing sale
+      const prevOrderNumber = sale.orderNumber
+      await Sale.update({ orderNumber: sequelize.literal('"orderNumber" - 1') }, {
+        where: {
+          orderDate:sale.orderDate,
+          orderNumber: { [Op.gt]: prevOrderNumber, },
+        }
+      })
 
       // check conditions for creating production
       try {

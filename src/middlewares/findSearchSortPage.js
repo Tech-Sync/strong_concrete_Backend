@@ -1,10 +1,28 @@
 const { Op } = require("sequelize");
+const moment = require("moment");
+
+function getDateRange(filter) {
+  switch (filter) {
+    case 'today':
+      return [moment().startOf('day').toDate(), moment().endOf('day').toDate()];
+    case 'lastWeek':
+      return [
+        moment().subtract(1, 'weeks').startOf('isoWeek').toDate(),
+        moment().subtract(1, 'weeks').endOf('isoWeek').toDate()
+      ];
+    case 'nextWeek':
+      return [
+        moment().add(1, 'weeks').startOf('isoWeek').toDate(),
+        moment().add(1, 'weeks').endOf('isoWeek').toDate()
+      ];
+    default:
+      return null;
+  }
+}
 
 module.exports = (req, res, next) => {
-  let { search, startDate, endDate, sort, page, limit, offset, showDeleted } =
-    req.query;
+  let { search, startDate, endDate, sort, page, limit, offset, showDeleted, dateField, preDefined } = req.query;
 
-  //? Başlangıç olarak bir boş filtre nesnesi oluşturun
   //* ?search[status]=SALER
   //! SEARCHING: URL?search[key1]=value1&search[key2]=value2
   let whereClause = {};
@@ -18,11 +36,29 @@ module.exports = (req, res, next) => {
       whereClause[key] = { [Op.like]: `%${value}%` };
     }
   }
-  //!tarih filtresi URL?startDate=2023-07-13&endDate=2023-10-01  tarih yıl-ay-gün formatında olmalı
-  if (startDate && endDate) {
-    whereClause["createdAt"] = {
-      [Op.between]: [new Date(startDate), new Date(endDate)],
+
+  //! DATE RANGE: URL?startDate=2023-07-13&endDate=2023-10-01  tarih yıl-ay-gün formatında olmalı
+  // endpoint?preDefined=today&dateField=createdAt
+  // endpoint?preDefined=lastWeek&dateField=orderDate
+  // endpoint?startDate=2023-01-01&endDate=2023-01-07&dateField=requestedDate
+
+  const allowedDateFields = ['requestedDate', 'orderDate', 'createdAt', 'updatedAt'];
+
+
+  if (preDefined) {
+    const dateRange = getDateRange(preDefined);
+    if (dateRange && allowedDateFields.includes(dateField)) {
+      console.log(dateRange);
+      whereClause[dateField] = {
+        [Op.between]: dateRange,
+      };
+    }
+  } else if (startDate && endDate && dateField && allowedDateFields.includes(dateField)) {
+    whereClause[dateField] = {
+      [Op.between]: [moment(startDate).startOf('day').toDate(), moment(endDate).endOf('day').toDate()],
     };
+  } else {
+    console.error('Invalid date field or range');
   }
 
   //! SORTING: URL?sort[key1]=desc&sort[key2]=asc

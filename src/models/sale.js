@@ -46,13 +46,12 @@ const Sale = sequelize.define(
     },
     requestedDate: {
       type: DataTypes.DATEONLY,
-      allowNull: false,
     },
     sideContact: {
       type: DataTypes.STRING(13),
       allowNull: false,
     },
-    confirmDate: {
+    orderDate: {
       type: DataTypes.DATEONLY,
     },
     orderNumber: {
@@ -119,6 +118,6 @@ module.exports = Sale;
 }
 {
   "status": 2,
-  "confirmDate": "2024-01-15T08:15:11.218Z"
+  "orderDate": "2024-01-15T08:15:11.218Z"
 }
 */
