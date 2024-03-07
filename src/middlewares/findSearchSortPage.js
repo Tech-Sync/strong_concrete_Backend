@@ -49,9 +49,9 @@ module.exports = (req, res, next) => {
 
   const allowedDateFields = ['requestedDate', 'orderDate', 'createdAt', 'updatedAt'];
 
-  if (!showQuote || showQuote !== 'true') {
-    whereClause['orderDate'] = { [Op.not]: null };
-  }
+  // if (!showQuote || showQuote !== 'true') {
+  //   whereClause['orderDate'] = { [Op.not]: null };
+  // }
 
 
   if (preDefined) {
@@ -96,7 +96,6 @@ module.exports = (req, res, next) => {
 
     if (showDeleted === "true" && req.user.role === 5) paranoid = false;
 
-    console.log(whereClause);
 
     whereClause = { ...whereClause, ...filters };
 
