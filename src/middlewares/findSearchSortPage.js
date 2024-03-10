@@ -49,9 +49,12 @@ module.exports = (req, res, next) => {
 
   const allowedDateFields = ['requestedDate', 'orderDate', 'createdAt', 'updatedAt'];
 
-  // if (!showQuote || showQuote !== 'true') {
-  //   whereClause['orderDate'] = { [Op.not]: null };
-  // }
+  if (req.url.startsWith('/sales')) {
+    if (!showQuote || showQuote !== 'true') {
+      whereClause['orderDate'] = { [Op.not]: null };
+    }
+  }
+
 
 
   if (preDefined) {
@@ -67,8 +70,6 @@ module.exports = (req, res, next) => {
       ...whereClause[dateField],
       [Op.between]: [moment(startDate).startOf('day').toDate(), moment(endDate).endOf('day').toDate()],
     };
-  } else {
-    console.error('Invalid date field or range');
   }
 
   //! SORTING: URL?sort[key1]=desc&sort[key2]=asc
@@ -96,10 +97,7 @@ module.exports = (req, res, next) => {
 
     if (showDeleted === "true" && req.user.role === 5) paranoid = false;
 
-
     whereClause = { ...whereClause, ...filters };
-
-    console.log(whereClause);
 
     return await Model.findAll({
       where: Object.keys(whereClause).length > 0 ? { [Op.or]: [whereClause] } : {},
