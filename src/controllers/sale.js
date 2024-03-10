@@ -136,7 +136,7 @@ module.exports = {
       include: [
         {
           model: Firm,
-          attributes: ["name"],
+          attributes: ["name","address","email","phoneNo"],
         },
         {
           model: Product,
@@ -340,7 +340,16 @@ module.exports = {
       message: !!isDeleted
         ? `The sasle id ${sale.id} has been deleted.`
         : "Sale not found or something went wrong.",
-      data: await req.getModelList(Sale),
+      data: await req.getModelList(Sale, {}, [
+        {
+          model: Firm,
+          attributes: ["name"],
+        },
+        {
+          model: Product,
+          attributes: ["name"],
+        },
+      ]),
     });
   },
 
@@ -362,7 +371,7 @@ module.exports = {
         : "Sale not found or something went wrong.",
     });
   },
-  
+
   multipleDelete: async (req, res) => {
     /* 
       #swagger.tags = ['Sale']
