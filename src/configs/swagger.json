@@ -2005,6 +2005,34 @@
         }
       }
     },
+    "/sales/w": {
+      "get": {
+        "tags": [
+          "Sale"
+        ],
+        "summary": " Sale List Weekly",
+        "description": "For custom range needed queries are startDate and endDate.It is ranged for orderDate\r  <ul> Examples:\r  <li>endpoint?startDate=2023-01-01&endDate=2023-01-07</b></li>\r  </ul>\r  ",
+        "parameters": [
+          {
+            "name": "startDate",
+            "in": "query",
+            "type": "string",
+            "description": "Format is YEAR-MONTH-DAY"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "type": "string",
+            "description": "Format is YEAR-MONTH-DAY"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/sales/{id}": {
       "get": {
         "tags": [

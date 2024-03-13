@@ -67,8 +67,6 @@ module.exports = (req, res, next) => {
       ...whereClause[dateField],
       [Op.between]: [moment(startDate).startOf('day').toDate(), moment(endDate).endOf('day').toDate()],
     };
-  } else {
-    console.error('Invalid date field or range');
   }
 
   //! SORTING: URL?sort[key1]=desc&sort[key2]=asc

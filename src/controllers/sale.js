@@ -8,6 +8,7 @@ const Firm = require("../models/firm");
 const Product = require("../models/product");
 const { sequelize } = require("../configs/dbConnection");
 const { col, Op } = require("sequelize");
+const filterDataForWeek = require("../helpers/filterDataForWeek");
 
 
 module.exports = {
@@ -61,8 +62,6 @@ module.exports = {
       }
     */
 
-
-
     const data = await req.getModelList(Sale, {}, [
       {
         model: Firm,
@@ -74,9 +73,55 @@ module.exports = {
       },
     ]);
 
+
     res.status(200).send({
       details: await req.getModelListDetails(Sale),
       data,
+    });
+  },
+
+  weeklySale: async (req, res) => {
+    /* 
+        #swagger.tags = ['Sale']
+        #swagger.summary = ' Sale List Weekly'
+        #swagger.description = `For custom range needed queries are startDate and endDate.It is ranged for orderDate
+          <ul> Examples:
+              <li>endpoint?startDate=2023-01-01&endDate=2023-01-07</b></li>
+          </ul>
+        `
+        #swagger.parameters['startDate'] = {
+        in: 'query',
+        type: 'string',
+        description:'Format is YEAR-MONTH-DAY'
+      }
+        #swagger.parameters['endDate'] = {
+        in: 'query',
+        type: 'string',
+        description:'Format is YEAR-MONTH-DAY'
+      }
+    */
+
+    const startDate = req.query.startDate
+    const endDate = req.query.endDate
+
+
+    const data = await Sale.findAll({
+      include: [
+        {
+          model: Firm,
+          attributes: ["name"],
+        },
+        {
+          model: Product,
+          attributes: ["name"],
+        },
+      ]
+    })
+    const weeklyData = filterDataForWeek(data, startDate, endDate);
+
+    res.status(200).send({
+      details: await req.getModelListDetails(Sale),
+      weeklyData
     });
   },
 
@@ -136,7 +181,7 @@ module.exports = {
       include: [
         {
           model: Firm,
-          attributes: ["name","address","email","phoneNo"],
+          attributes: ["name", "address", "email", "phoneNo"],
         },
         {
           model: Product,
