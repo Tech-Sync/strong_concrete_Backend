@@ -11,6 +11,9 @@ router
   .route("/")
   .get(permissions.CRU_AS, sale.list)
   .post(permissions.CRU_AS, sale.create);
+  
+router.route("/w").get(permissions.CRU_AS, sale.weeklySale);
+
 router
   .route("/:id")
   .get(permissions.CRU_AS, sale.read)
