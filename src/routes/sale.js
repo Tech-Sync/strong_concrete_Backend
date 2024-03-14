@@ -10,6 +10,10 @@ if (process.env.NODE_ENV !== 'development') {
 
 
 
+
+
+
+
 router
   .route("/")
   .get(permissions.CRU_AS, sale.list)
