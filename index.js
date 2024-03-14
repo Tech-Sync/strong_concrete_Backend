@@ -20,7 +20,7 @@ app.use(require("./src/middlewares/authentication"));
 app.use(require("./src/middlewares/findSearchSortPage"));
 // app.use(require("./src/middlewares/logger"));
 app.use(require('cors')({
-  origin: 'https://strong-concrete.onrender.com/',
+  origin: process.env.BASE_URL,
   credentials: true
 }))
 
