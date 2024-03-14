@@ -19,10 +19,7 @@ app.use(express.json());
 app.use(require("./src/middlewares/authentication"));
 app.use(require("./src/middlewares/findSearchSortPage"));
 // app.use(require("./src/middlewares/logger"));
-app.use(require('cors')({
-  origin: process.env.BASE_URL,
-  credentials: true
-}))
+app.use(require('cors')())
 
 
 // HOME
