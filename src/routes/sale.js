@@ -7,13 +7,6 @@ if (process.env.NODE_ENV !== 'development') {
   router.use(permissions.isLogin);
 }
 
-
-
-
-
-
-
-
 router
   .route("/")
   .get(permissions.CRU_AS, sale.list)
