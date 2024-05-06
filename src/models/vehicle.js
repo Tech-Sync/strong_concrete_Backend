@@ -15,10 +15,10 @@ const Vehicle = sequelize.define(
         model: User,
         key: "id",
       },
-      unique: {
-        name: "unique_driver_constraint",
-        msg: "The selected user is already assigned to another whicle.",
-      },
+      // unique: {
+      //   name: "unique_driver_constraint",
+      //   msg: "The selected user is already assigned to another whicle.",
+      // },
     },
     plateNumber: {
       type: DataTypes.STRING(32),

@@ -22,7 +22,7 @@ const document = {
     },
     license: { name: packageJson.license },
   },
-  host: `${HOST}`,
+  host: `${HOST}:${PORT}`,
   basePath: "/",
   schemes: ["http", "https"],
   consumes: ["application/json"],

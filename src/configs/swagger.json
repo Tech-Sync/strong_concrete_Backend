@@ -14,7 +14,7 @@
       "name": "BSD Licence"
     }
   },
-  "host": "strong-concrete.onrender.com",
+  "host": "127.0.0.1:8000",
   "basePath": "/",
   "schemes": [
     "http",
