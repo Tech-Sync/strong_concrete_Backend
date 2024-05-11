@@ -38,7 +38,10 @@ module.exports = {
       },
     ])
 
-    res.status(200).send(data);
+    res.status(200).send({
+      details: await req.getModelListDetails(Firm),
+      data,
+    });
   },
 
   create: async (req, res) => {
