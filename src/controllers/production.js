@@ -34,7 +34,7 @@ module.exports = {
 
       const vehicles = await Vehicle.findAll({
         model: Vehicle,
-        attributes: ['DriverId', 'plateNumber', 'model', 'capacity', 'status'],
+        attributes: ['DriverId', 'plateNumber', 'model', 'capacity', 'status','id'],
         where: {
           id: vehicleIds
         },
@@ -73,7 +73,6 @@ module.exports = {
       }
 
     }
-    console.log(data);
 
 
     res.status(200).send({
