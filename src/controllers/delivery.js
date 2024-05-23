@@ -1,6 +1,10 @@
 "use strict";
 
 const Delivery = require("../models/delivery");
+const Product = require("../models/product");
+const Production = require("../models/production");
+const Sale = require("../models/sale");
+const User = require("../models/user");
 const Vehicle = require("../models/vehicle");
 
 module.exports = {
@@ -21,7 +25,28 @@ module.exports = {
         description:'Send true to show deleted data as well, default value is false'
       }
     */
-    const data = await req.getModelList(Delivery);
+    const data = await req.getModelList(Delivery, {}, [{
+      model: Vehicle,
+      attributes: ["id", "plateNumber", "status"],
+      include: [{
+        model: User,
+        as: 'driver',
+        attributes: ["firstName", "lastName"],
+      }]
+    },
+      {
+        model: Production,
+        attributes: ["id",],
+        include: [{
+          model: Sale,
+          attributes: ["id", "location", "sideContact", "orderDate",],
+          include: [{
+            model: Product,
+            attributes:["id","name",]
+          }]
+        }]
+    }
+    ]);
 
     res.status(200).send({
       details: await req.getModelListDetails(Delivery),
