@@ -92,10 +92,18 @@ module.exports = {
         } 
     */
     req.body.updaterId = req.user.id;
-    const isUpdated = await Vehicle.update(req.body, {
-      where: { id: req.params.id },
-      individualHooks: true,
-    });
+    const delivery = await Vehicle.findByPk(req.params.id);
+    console.log('delivery',delivery);
+    let isUpdated
+    if ((req.user.role === 1 && delivery.DriverId === req.user.id) || req.user.role === 5) {
+      isUpdated = await Vehicle.update(req.body, {
+        where: { id: req.params.id },
+        individualHooks: true,
+      });
+    } else {
+      throw new Error("You are not authorized for this action.");
+    }
+
 
     res.status(202).send({
       isUpdated: Boolean(isUpdated[0]),
