@@ -69,7 +69,7 @@ module.exports = {
         } 
      */
 
-    const allowedUpdates = ['firstName', 'lastName', 'nrcNo', 'phoneNo', 'address', 'role'];
+    const allowedUpdates = ['firstName', 'lastName', 'nrcNo', 'phoneNo', 'address', 'role', 'isActive', 'email'];
 
     const updates = Object.keys(req.body);
 
