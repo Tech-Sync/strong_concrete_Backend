@@ -4,6 +4,7 @@ const path = require("path");
 const { encode } = require("../helpers/encode&decode");
 
 function sendEmail(user, fileName, subject) {
+
   const templatePath = path.join(__dirname, `../templates/${fileName}.html`);
   const htmlTemplate = fs.readFileSync(templatePath, "utf8");
 
@@ -21,6 +22,7 @@ function sendEmail(user, fileName, subject) {
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       console.log(error.nessage);
+      console.log("Email did not go trough!");
       // throw new Error("Email did not go trough!");
     } else {
       console.log("Email sent to " + user.email);
