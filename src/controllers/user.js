@@ -69,7 +69,7 @@ module.exports = {
         } 
      */
 
-    const allowedUpdates = ['firstName', 'lastName', 'nrcNo', 'phoneNo', 'address', 'role', 'isActive', 'email'];
+    const allowedUpdates = ['firstName', 'lastName', 'nrcNo', 'phoneNo', 'address', 'role', 'isActive', 'email', 'profilePic'];
 
     const updates = Object.keys(req.body);
 
@@ -80,6 +80,10 @@ module.exports = {
     }
 
     try {
+      if (req.file) req.body.profilePic = req.file.filename;
+
+      console.log(req.body);
+
       const isUpdated = await User.update(req.body, {
         where: { id: req.params.id },
         individualHooks: true,

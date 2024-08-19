@@ -1,10 +1,10 @@
 "use strict";
 // Required packages
 const express = require("express");
+require("dotenv").config();
 const app = express();
 
 // ENV
-require("dotenv").config();
 const BASE_URL = process.env.BASE_URL;
 const PORT = process.env.PORT;
 const HOST = process.env.HOST;
@@ -35,6 +35,9 @@ app.all("/", (req, res) => {
     },
   });
 });
+
+// Static Files
+app.use("/image", express.static("./uploads"));
 
 // ROUTES
 app.use(require("./src/routes"));
