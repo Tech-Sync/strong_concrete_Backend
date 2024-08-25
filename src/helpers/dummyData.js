@@ -1,4 +1,5 @@
 const { sequelize } = require("../configs/dbConnection");
+const { Op } = require("sequelize");
 const Firm = require("../models/firm");
 const Material = require("../models/material");
 const Product = require("../models/product");
@@ -9,6 +10,10 @@ const crypto = require("crypto");
 const moment = require("moment");
 const Vehicle = require("../models/vehicle");
 const models = sequelize.models;
+const passwordEncrypt = require("./passEncrypt");
+const Production = require("../models/production");
+const SaleAccount = require("../models/saleAccount");
+const Delivery = require("../models/delivery");
 
 
 // common data and functions
@@ -44,148 +49,67 @@ async function deleteAllTablesData() {
 }
 
 async function createUsers() {
+
+    const zambianFirstNames = ["Chanda", "Mwansa", "Mutale", "Bwalya", "Kabwe"];
+    const zambianLastNames = ["Mulenga", "Phiri", "Tembo", "Zimba", "Mumba"];
+
+    function getRandomElement(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+    }
+
     const usersData = [
         {
-            firstName: "Chipo",
-            lastName: "Mwanza",
-            profilePic: "https://example.com/pic1.jpg",
-            nrcNo: "1234567890",
+            firstName: "Admin",
+            lastName: "Admin",
+            profilePic: "profilePic1.jpg",
+            nrcNo: "1234567890123",
             phoneNo: "0971234567",
-            address: "Plot 12, Lusaka",
-            role: 1,
-            email: "chipo.mwanza@gmail.com",
-            password: "Sconcrete2024.,?",
+            address: "Lusaka, Zambia",
+            role: 5,
+            email: "admin@gmail.com",
+            password: passwordEncrypt("Sconcrete2024.,?"),
             isActive: true,
             isVerified: true,
-            emailToken: crypto.randomBytes(64).toString("hex"),
         },
-        {
-            firstName: "Mulenga",
-            lastName: "Banda",
-            profilePic: "https://example.com/pic2.jpg",
-            nrcNo: "1234567891",
-            phoneNo: "0961234567",
-            address: "Plot 45, Kitwe",
-            role: 2,
-            email: "mulenga.banda@gmail.com",
-            password: "Sconcrete2024.,?",
-            isActive: true,
-            isVerified: true,
-            emailToken: crypto.randomBytes(64).toString("hex"),
-        },
-        {
-            firstName: "Mwansa",
-            lastName: "Kalunga",
-            profilePic: "https://example.com/pic3.jpg",
-            nrcNo: "1234567892",
-            phoneNo: "0951234567",
-            address: "Plot 32, Ndola",
-            role: 3,
-            email: "mwansa.kalunga@gmail.com",
-            password: "Sconcrete2024.,?",
-            isActive: true,
-            isVerified: true,
-            emailToken: crypto.randomBytes(64).toString("hex"),
-        },
-        {
-            firstName: "Tafadzwa",
-            lastName: "Phiri",
-            profilePic: "https://example.com/pic4.jpg",
-            nrcNo: "1234567893",
-            phoneNo: "0972234567",
-            address: "Plot 21, Chingola",
-            role: 4,
-            email: "tafadzwa.phiri@gmail.com",
-            password: "Sconcrete2024.,?",
-            isActive: true,
-            isVerified: true,
-            emailToken: crypto.randomBytes(64).toString("hex"),
-        },
-        {
-            firstName: "Zanele",
-            lastName: "Ngoma",
-            profilePic: "https://example.com/pic5.jpg",
-            nrcNo: "1234567894",
-            phoneNo: "0963234567",
-            address: "Plot 8, Livingstone",
-            role: 1,
-            email: "zanele.ngoma@gmail.com",
-            password: "Sconcrete2024.,?",
-            isActive: true,
-            isVerified: true,
-            emailToken: crypto.randomBytes(64).toString("hex"),
-        },
-        {
-            firstName: "Kabaso",
-            lastName: "Tembo",
-            profilePic: "https://example.com/pic6.jpg",
-            nrcNo: "1234567895",
-            phoneNo: "0954234567",
-            address: "Plot 55, Mufulira",
-            role: 1,
-            email: "kabaso.tembo@gmail.com",
-            password: "Sconcrete2024.,?",
-            isActive: true,
-            isVerified: true,
-            emailToken: crypto.randomBytes(64).toString("hex"),
-        },
-        {
-            firstName: "Chanda",
-            lastName: "Nkandu",
-            profilePic: "https://example.com/pic7.jpg",
-            nrcNo: "1234567896",
-            phoneNo: "0975234567",
-            address: "Plot 14, Solwezi",
-            role: 2,
-            email: "chanda.nkandu@gmail.com",
-            password: "Sconcrete2024.,?",
-            isActive: true,
-            isVerified: true,
-            emailToken: crypto.randomBytes(64).toString("hex"),
-        },
-        {
-            firstName: "Mable",
-            lastName: "Zimba",
-            profilePic: "https://example.com/pic8.jpg",
-            nrcNo: "1234567897",
-            phoneNo: "0966234567",
-            address: "Plot 23, Kasama",
-            role: 1,
-            email: "mable.zimba@gmail.com",
-            password: "Sconcrete2024.,?",
-            isActive: true,
-            isVerified: true,
-            emailToken: crypto.randomBytes(64).toString("hex"),
-        },
-        {
-            firstName: "Kasonde",
-            lastName: "Musonda",
-            profilePic: "https://example.com/pic9.jpg",
-            nrcNo: "1234567898",
-            phoneNo: "0957234567",
-            address: "Plot 89, Chipata",
-            role: 4,
-            email: "kasonde.musonda@gmail.com",
-            password: "Sconcrete2024.,?",
-            isActive: true,
-            isVerified: true,
-            emailToken: crypto.randomBytes(64).toString("hex"),
-        },
-        {
-            firstName: "Bwalya",
-            lastName: "Mukuka",
-            profilePic: "https://example.com/pic10.jpg",
-            nrcNo: "1234567899",
-            phoneNo: "0978234567",
-            address: "Plot 67, Mongu",
-            role: 4,
-            email: "bwalya.mukuka@gmail.com",
-            password: "Sconcrete2024.,?",
-            isActive: true,
-            isVerified: true,
-            emailToken: crypto.randomBytes(64).toString("hex"),
-        },
+        ...Array.from({ length: 5 }, (_, i) => {
+            const firstName = getRandomElement(zambianFirstNames);
+            const lastName = getRandomElement(zambianLastNames);
+            return {
+                firstName: firstName,
+                lastName: lastName,
+                profilePic: `profilePic${i + 2}.jpg`,
+                nrcNo: `12345678901${i + 2}`,
+                phoneNo: `097123456${i + 2}`,
+                address: `Lusaka, Zambia`,
+                role: 1,
+                email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}${i + 1}@gmail.com`,
+                password: passwordEncrypt("Sconcrete2024.,?"),
+                isActive: true,
+                isVerified: true,
+            };
+        }),
+        // Two users for each of the other roles (2, 3, 4)
+        ...[2, 3, 4].flatMap(role =>
+            Array.from({ length: 2 }, (_, i) => {
+                const firstName = getRandomElement(zambianFirstNames);
+                const lastName = getRandomElement(zambianLastNames);
+                return {
+                    firstName: firstName,
+                    lastName: lastName,
+                    profilePic: `profilePic${role}${i + 1}.jpg`,
+                    nrcNo: `1234567890${role}${i + 1}`,
+                    phoneNo: `09712345${role}${i + 1}`,
+                    address: `Lusaka, Zambia`,
+                    role: role,
+                    email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}${role}${i + 1}@gmail.com`,
+                    password: passwordEncrypt("Sconcrete2024.,?"),
+                    isActive: true,
+                    isVerified: true,
+                };
+            })
+        ),
     ];
+
 
     const res = await User.bulkCreate(usersData);
 
@@ -309,8 +233,6 @@ async function createMaterials() {
     else console.log('Someting went wrong with Materials creation!');
 }
 
-
-
 async function createPurchases() {
     const purchasesData = [];
 
@@ -320,7 +242,8 @@ async function createPurchases() {
         cement: 2000,
     };
 
-    const firmIds = [2, 5, 7, 9];
+    const firms = await Firm.findAll({ where: { status: 2 } });
+    const firmIds = firms.map(firm => firm.id);
 
     const materialIds = {
         sand: 3,
@@ -397,7 +320,6 @@ async function createPurchases() {
     else console.log('Something went wrong with Purchases creation!');
 }
 
-
 async function createProducts() {
 
     const productsData = [];
@@ -422,14 +344,15 @@ async function createProducts() {
     else console.log('Someting went wrong with Products creation!');
 }
 
-
-
 async function createSales() {
+
 
     const salesData = [];
 
-    const firmIds = [1, 3, 4, 6, 8, 10];
-    const productIds = [1, 2, 3, 4, 5, 6, 7, 8];
+    const firms = await Firm.findAll({ where: { status: 1 } });
+    const firmIds = firms.map(firm => firm.id);
+    const products = await Product.findAll();
+    const productIds = products.map(product => product.id);
 
     function getRandomDateIn2024() {
         const start = new Date('2024-01-01T00:00:00Z').getTime();
@@ -449,7 +372,7 @@ async function createSales() {
         const discount = Math.floor(Math.random() * 50);
         const requestedDate = getRandomDateIn2024();
         const sideContact = `+097-088-229-549`;
-        const status = 1
+        const status = 2;
         const location = "Makeni, Kasama Road";
 
         const existingOrders = await Sale.findAll({ where: { orderDate: requestedDate } });
@@ -475,16 +398,60 @@ async function createSales() {
             orderNumber,
             creatorId: 1,
         });
+    }
 
-        const res = await Sale.bulkCreate(salesData)
+    const res = await Sale.bulkCreate(salesData)
 
 
-        if (res) console.log('Sales createed successfully!');
-        else console.log('Someting went wrong with Sales creation!');
+    if (res) {
+        console.log('line 407 res-->', res);
+        for (const sale of res) {
+            const prevOrderNumber = sale.dataValues.orderNumber;
+            await Sale.update({ orderNumber: sequelize.literal('"orderNumber" - 1') }, {
+                where: {
+                    orderDate: sale.dataValues.orderDate,
+                    orderNumber: { [Op.gt]: prevOrderNumber },
+                }
+            });
+            // console.log('sale id ', sale.dataValues.id);
+            // console.log('sale', sale);
+            const productionData = {
+                SaleId: sale.dataValues.id,
+                creatorId: 1,
+                status: 4
+            };
+
+            const createdProduction = await Production.create(productionData);
+            // console.log(createdProduction);
+            const vehicles = await Vehicle.findAll();
+            const randomIndex = Math.floor(Math.random() * 5) + 1;
+            const selectedVehicle = vehicles[randomIndex];
+            // console.log('selectedVehicle', selectedVehicle);
+            const vehicleId = selectedVehicle?.dataValues?.id;
+            // console.log('vehicleId', vehicleId);
+
+            await Delivery.create({
+                ProductionId: createdProduction.id,
+                VehicleId: vehicleId,
+                creatorId: 1,
+                status: 4
+            });
+
+            const saleAccData = {
+                SaleId: sale.dataValues.id,
+                creatorId: 1
+            };
+
+            const data = await SaleAccount.create(saleAccData);
+            // console.log(data);
+
+        }
+        console.log('Sales, Production and Sale Account created successfully!');
 
     }
-}
+    else console.log('Someting went wrong with Sales creation!');
 
+}
 
 async function createVehicles() {
     const drivers = await User.findAll({ where: { role: 1 } });
@@ -511,14 +478,18 @@ async function createVehicles() {
 
 
 module.exports = async function createDatabases() {
-    // await createUsers()
-    // await createFirms()
-    // await createMaterials()
-    // await createPurchases()
-    // await createProducts()
-    // await createSales()
-    // await createVehicles()
 
+
+    await Promise.all([
+        createUsers(),
+        createFirms(),
+        createMaterials(),
+        createPurchases(),
+        createProducts(),
+        createSales(),
+        createVehicles(),
+        createSales()
+    ]);
 
     // deleteAllTablesData()
 }

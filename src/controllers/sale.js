@@ -229,7 +229,7 @@ module.exports = {
 
     const user = req.user;
     let msg;
-    
+
 
     const sale = await Sale.findByPk(req.params.id);
 
@@ -259,7 +259,6 @@ module.exports = {
         const existingOrders = await Sale.findAll({ where: { orderDate } })
         const newOrderNumber = existingOrders.length + 1
         req.body.orderNumber = newOrderNumber
-
       }
 
       req.body.updaterId = req.user.id;
@@ -294,6 +293,8 @@ module.exports = {
             await Production.create(productionData);
             let msg = "Production has been created !";
           }
+
+          // check if sale account is created
           const isExistAccount = await SaleAccount.findOne({
             where: { SaleId: req.params.id },
           });

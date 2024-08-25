@@ -25,8 +25,8 @@ const Delivery = sequelize.define(
   }
 );
 
-Vehicle.hasMany(Delivery);
-Delivery.belongsTo(Vehicle);
+// Vehicle.hasMany(Delivery);
+// Delivery.belongsTo(Vehicle);
 
 // user - delivery
 User.hasMany(Delivery, { foreignKey: "creatorId", as: "createdDeliverys" });
