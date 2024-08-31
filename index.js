@@ -24,7 +24,7 @@ app.use(require('cors')())
 
 
 //! Dummy SCRIPT (FOR TESTING) 
-require("./src/helpers/dummyData")()
+// require("./src/helpers/dummyData")()
 
 // HOME
 app.all("/", (req, res) => {

@@ -229,6 +229,7 @@ module.exports = {
 
     const user = req.user;
     let msg;
+    
 
     const sale = await Sale.findByPk(req.params.id);
 
@@ -248,7 +249,8 @@ module.exports = {
       }
 
       // check if confirm date is past
-      if (new Date() > new Date(orderDate)) {
+
+      if (new Date() > new Date(orderDate) && process.env.NODE_ENV !== 'development') {
         throw new Error("Confirm date can not be past !");
       }
 
@@ -574,7 +576,7 @@ module.exports = {
 
     res.status(200).send({
       isError: false,
-      data:'Order Number Updated.'
+      data: 'Order Number Updated.'
     });
   },
 
