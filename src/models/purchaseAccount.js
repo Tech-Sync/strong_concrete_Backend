@@ -64,11 +64,11 @@ PurchaseAccount.belongsTo(User, { foreignKey: "creatorId", as: "creator" });
 PurchaseAccount.belongsTo(User, { foreignKey: "updaterId", as: "updater" });
 
 // Purchase  - PurchaseAccount
-Purchase.hasOne(PurchaseAccount);
-PurchaseAccount.belongsTo(Purchase);
+// Purchase.hasOne(PurchaseAccount, { foreignKey: 'PurchaseId' });
+// PurchaseAccount.belongsTo(Purchase, { foreignKey: 'PurchaseId' });
 
 // Firm - PurchaseAccount
-Firm.hasMany(PurchaseAccount);
-PurchaseAccount.belongsTo(Firm);
+Firm.hasMany(PurchaseAccount, { foreignKey: 'FirmId' });
+PurchaseAccount.belongsTo(Firm, { foreignKey: 'FirmId' });
 
 module.exports = PurchaseAccount;

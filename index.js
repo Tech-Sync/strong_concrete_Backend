@@ -23,6 +23,9 @@ app.use(require("./src/middlewares/findSearchSortPage"));
 app.use(require('cors')())
 
 
+//! Dummy SCRIPT (FOR TESTING) 
+require("./src/helpers/dummyData")()
+
 // HOME
 app.all("/", (req, res) => {
   res.send({

@@ -50,8 +50,7 @@ module.exports = {
     const material = await Material.findOne({
       where: { name: req.body.name.toUpperCase() },
     });
-    if (material)
-      throw new Error("This material is already exist in DataBase !");
+    if (material) throw new Error("This material is already exist in DataBase !");
 
     req.body.creatorId = req.user.id;
     const data = await Material.create(req.body);
@@ -112,12 +111,12 @@ module.exports = {
           type: 'boolean',
           description:'Send true for hard deletion, default value is false which is soft delete.'}
     */
-    
+
     const hardDelete = req.query.hardDelete === "true";
-    if(req.user.role !== 5 && hardDelete ) throw new Error('You are not authorized for permanent deletetion!')
+    if (req.user.role !== 5 && hardDelete) throw new Error('You are not authorized for permanent deletetion!')
 
     const material = await Material.findByPk(req.params.id);
-    if(!material) throw new Error('Material not found or already deleted.')
+    if (!material) throw new Error('Material not found or already deleted.')
     material.updaterId = req.user.id;
     const isDeleted = await material.destroy({ force: hardDelete });
 
