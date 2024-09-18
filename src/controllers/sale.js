@@ -117,11 +117,11 @@ module.exports = {
         },
       ]
     })
-    const weeklyData = filterDataForWeek(data, startDate, endDate);
+    const weeklySale = filterDataForWeek(data, startDate, endDate);
 
     res.status(200).send({
-      details: await req.getModelListDetails(Sale),
-      weeklyData
+      isError: false,
+      weeklySale
     });
   },
 
@@ -573,11 +573,8 @@ module.exports = {
 
 
     res.status(200).send({
-      // details: await req.getModelListDetails(Sale),
-      newOrderNumber: req.body.newOrderNumber,
-      query: req.params.id,
-      data: await req.getModelList(Sale)
-
+      isError: false,
+      data:'Order Number Updated.'
     });
   },
 

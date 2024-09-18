@@ -5,6 +5,10 @@ const Sale = require("../models/sale");
 const Product = require("../models/product");
 const Material = require("../models/material");
 const Vehicle = require("../models/vehicle");
+const User = require("../models/user");
+
+
+
 
 module.exports = {
   list: async (req, res) => {
@@ -25,6 +29,27 @@ module.exports = {
       }
     */
 
+    async function fetchVehicleDetails(vehicleIds) {
+      if (!vehicleIds) return [];
+
+      const vehicles = await Vehicle.findAll({
+        model: Vehicle,
+        attributes: ['DriverId', 'plateNumber', 'model', 'capacity', 'status','id'],
+        where: {
+          id: vehicleIds
+        },
+        include: [
+          {
+            model: User,
+            attributes: ['firstName', 'lastName', 'phoneNo'],
+            as: 'driver',
+          },
+        ],
+      });
+
+      return vehicles;
+    }
+
     const data = await req.getModelList(Production, {}, [
       {
         model: Sale,
@@ -38,7 +63,22 @@ module.exports = {
       },
     ])
 
-    res.status(200).send(data);
+    for (let production of data) {
+
+      if (production.VehicleIds) {
+        const vehicleDetails = await fetchVehicleDetails(production.VehicleIds);
+        // console.log(vehicleDetails);
+        production.VehicleIds = vehicleDetails;
+        // console.log(production.VehicleInfo);
+      }
+
+    }
+
+
+    res.status(200).send({
+      details: await req.getModelListDetails(Production),
+      data,
+    });
   },
 
   create: async (req, res) => {

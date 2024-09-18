@@ -13,6 +13,7 @@ const User = sequelize.define(
       type: DataTypes.STRING(64),
       allowNull: false,
     },
+    profilePic: { type: DataTypes.STRING }, 
     nrcNo: {
       type: DataTypes.STRING(20),
       allowNull: false,

@@ -1,12 +1,13 @@
 "use strict";
 // Required packages
 const express = require("express");
+require("dotenv").config();
 const app = express();
 
 // ENV
-require("dotenv").config();
-const BASE_URL = process.env.BASE_URL;
+const BE_BASE_URL = process.env.BE_BASE_URL;
 const PORT = process.env.PORT;
+const HOST = process.env.HOST;
 
 // ASYNC ERRORS
 require("express-async-errors");
@@ -35,12 +36,15 @@ app.all("/", (req, res) => {
   });
 });
 
+// Static Files
+app.use("/image", express.static("./uploads"));
+
 // ROUTES
 app.use(require("./src/routes"));
 
 // ERROR HANDLER
 app.use(require("./src/middlewares/errorHandler"));
 
-app.listen(PORT, () => console.log(`Running on http://${BASE_URL}`));
+app.listen(PORT, () => console.log(`Running on http://${HOST}:${PORT}`));
 
 module.exports = app
