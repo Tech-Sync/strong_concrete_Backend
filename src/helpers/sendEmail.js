@@ -7,7 +7,6 @@ function sendEmail(user, fileName, subject) {
 
   const templatePath = path.join(__dirname, `../templates/${fileName}.html`);
   const htmlTemplate = fs.readFileSync(templatePath, "utf8");
-  console.log(process.env.FE_BASE_URL);
   const mailOptions = {
     from: { name: "Strong Concrete", address: process.env.EMAIL_ADDRESS },
     to: user.email,

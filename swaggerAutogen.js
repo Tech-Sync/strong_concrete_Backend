@@ -1,6 +1,6 @@
 "use strict";
 require("dotenv").config();
-const HOST = process.env.BASE_URL || process.env.HOST || "127.0.0.1";
+const HOST = process.env.BE_BASE_URL || process.env.HOST || "127.0.0.1";
 const PORT = process.env.PORT || 8000;
 
 const options = {

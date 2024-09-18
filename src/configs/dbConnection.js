@@ -26,6 +26,7 @@ const dbConnection = () => {
   // sequelize.sync({ alter: true });
 };
 
+/* testing db connection */
 /* const dbConnection = () => {
   return new Promise((resolve, reject) => {
     sequelize
