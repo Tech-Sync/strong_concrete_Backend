@@ -34,12 +34,17 @@ module.exports = {
         } 
     */
     const { email } = req.body;
-
+    
     const user = await User.findOne({ where: { email } });
-
+    
     if (user) throw new Error("A user is already exist with this email !");
-
+    
     req.body.emailToken = cyrpto.randomBytes(64).toString("hex");
+    
+    if (req.file) req.body.profilePic = req.file.filename;
+    
+    
+
 
     const data = await User.create(req.body);
 

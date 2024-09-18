@@ -24,6 +24,8 @@ router.use('/sale_accounts', require('./saleAccount'))
 router.use('/productions', require('./production'))
 // Delivery
 router.use('/deliveries', require('./delivery'))
+// Dashboard
+router.use('/dashboard', require('./dashboard'))
 
 // document:
 router.use('/documents', require('./document'))

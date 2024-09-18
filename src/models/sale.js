@@ -48,7 +48,7 @@ const Sale = sequelize.define(
       type: DataTypes.DATEONLY,
     },
     sideContact: {
-      type: DataTypes.STRING(13),
+      type: DataTypes.STRING(16),
       allowNull: false,
     },
     orderDate: {

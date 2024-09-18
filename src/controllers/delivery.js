@@ -1,6 +1,10 @@
 "use strict";
 
 const Delivery = require("../models/delivery");
+const Product = require("../models/product");
+const Production = require("../models/production");
+const Sale = require("../models/sale");
+const User = require("../models/user");
 const Vehicle = require("../models/vehicle");
 
 module.exports = {
@@ -21,7 +25,28 @@ module.exports = {
         description:'Send true to show deleted data as well, default value is false'
       }
     */
-    const data = await req.getModelList(Delivery);
+    const data = await req.getModelList(Delivery, {}, [{
+      model: Vehicle,
+      attributes: ["id", "plateNumber", "status"],
+      include: [{
+        model: User,
+        as: 'driver',
+        attributes: ["firstName", "lastName"],
+      }]
+    },
+    {
+      model: Production,
+      attributes: ["id",],
+      include: [{
+        model: Sale,
+        attributes: ["id", "location", "sideContact", "orderDate",],
+        include: [{
+          model: Product,
+          attributes: ["id", "name",]
+        }]
+      }]
+    }
+    ]);
 
     res.status(200).send({
       details: await req.getModelListDetails(Delivery),
@@ -99,16 +124,15 @@ module.exports = {
     const { Vehicle } = delivery;
     let isUpdated;
 
-    if (req.user.role === 1 && delivery.Vehicle.DriverId === req.user.id) {
+    if ((req.user.role === 1 && delivery.Vehicle.DriverId === req.user.id) || req.user.role === 5) {
       const status = req.body.status;
-
-      if ([2, 3, 4].includes(status)) {
+      if (delivery.status > status && req.user.role !== 5) {
+        throw new Error("You can not update status to previous value.");
+      } else if ([2, 3, 4].includes(status)) {
         Vehicle.status = status + 1;
         await Vehicle.save();
-      } else if ([5].includes(status)) {
-        throw new Error(
-          "Delivery can not be cancelled from here, talk to saler or admin."
-        );
+      } else if ([5].includes(status) && req.user.role !== 5) {
+        throw new Error("Delivery can not be cancelled from here, talk to saler or admin.");
       }
 
       isUpdated = await Delivery.update(
@@ -118,6 +142,8 @@ module.exports = {
           individualHooks: true,
         }
       );
+    } else if (delivery.Vehicle.DriverId !== req.user.id && req.body.status) {
+      throw new Error("You are not authorized for this action.");
     } else {
       isUpdated = await Delivery.update(req.body, {
         where: { id: req.params.id },
@@ -150,7 +176,7 @@ module.exports = {
       throw new Error("You are not authorized for permanent deletetion!");
 
     const delivery = await Delivery.findByPk(req.params.id);
-    if(!delivery) throw new Error('Delivery not found or already deleted.')
+    if (!delivery) throw new Error('Delivery not found or already deleted.')
     delivery.updaterId = req.user.id;
     const isDeleted = await delivery.destroy({ force: hardDelete });
 
