@@ -42,9 +42,6 @@ module.exports = {
     req.body.emailToken = cyrpto.randomBytes(64).toString("hex");
     
     if (req.file) req.body.profilePic = req.file.filename;
-    
-    
-
 
     const data = await User.create(req.body);
 

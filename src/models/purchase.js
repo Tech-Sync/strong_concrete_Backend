@@ -70,12 +70,13 @@ Purchase.belongsTo(User, { foreignKey: "creatorId", as: "creator" });
 Purchase.belongsTo(User, { foreignKey: "updaterId", as: "updater" });
 
 // material - purchase
-Material.hasMany(Purchase);
-Purchase.belongsTo(Material);
+Material.hasMany(Purchase, { foreignKey: 'MaterialId' });
+Purchase.belongsTo(Material, { foreignKey: 'MaterialId' });
+
 
 // firm - purchase
-Firm.hasMany(Purchase);
-Purchase.belongsTo(Firm);
+Firm.hasMany(Purchase, { foreignKey: 'FirmId' });
+Purchase.belongsTo(Firm, { foreignKey: 'FirmId' });
 
 module.exports = Purchase;
 
