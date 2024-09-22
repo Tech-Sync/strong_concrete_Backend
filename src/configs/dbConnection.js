@@ -7,13 +7,13 @@ const DB_HOST = process.env.DB_HOST;
 const HOST = process.env.HOST;
 const DB = process.env.DB;
 
-//! Local db connection
+//? Local db connection
 const sequelize = new Sequelize(DB_NAME, DB_USERNAME, DB_PASSWORD, {
   host: HOST,
   dialect: DB,
 });
 
-//! Live db connection
+//? Live db connection
 // const sequelize = new Sequelize(`${DB}://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}.oregon-postgres.render.com/${DB_NAME}?ssl=true`)
 
 
@@ -22,12 +22,15 @@ const dbConnection = async () => {
     await sequelize.authenticate();
     console.log("* DB Connected *");
 
-    // Drop all tables
-    // await sequelize.dropAllSchemas();
-    // console.log("* All tables dropped *");
+    //! Drop all tables
+    // await sequelize.drop();
 
+    //! Truncate all tables
+    // await sequelize.truncate({ cascade: true });
 
+    //! Sync all tables
     // await sequelize.sync({ force: true });
+
 
   } catch (err) {
     console.log("* DB Not Connected *", err);

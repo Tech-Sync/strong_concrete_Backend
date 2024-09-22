@@ -1,9 +1,9 @@
 "use strict";
 
+const User = require("../models/user");
 const { decode } = require("../helpers/encode&decode");
 const sendEmail = require("../helpers/sendEmail");
 const passwordEncrypt = require("../helpers/passEncrypt");
-const User = require("../models/user");
 
 module.exports = {
   list: async (req, res) => {

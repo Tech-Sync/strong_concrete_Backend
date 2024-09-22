@@ -26,6 +26,8 @@ router.use('/productions', require('./production'))
 router.use('/deliveries', require('./delivery'))
 // Dashboard
 router.use('/dashboard', require('./dashboard'))
+// Chat
+router.use('/chat', require('./chat'))
 
 // document:
 router.use('/documents', require('./document'))

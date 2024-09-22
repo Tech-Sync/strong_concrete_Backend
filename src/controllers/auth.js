@@ -5,6 +5,7 @@ const passwordEncrypt = require("../helpers/passEncrypt");
 const setToken = require("../helpers/setToken");
 const jwt = require("jsonwebtoken");
 
+
 module.exports = {
   register: async (req, res) => {
     /* 
