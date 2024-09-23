@@ -34,20 +34,6 @@ function getRandomDateIn2024() {
     return new Date(start + Math.random() * (end - start)).toISOString()
 }
 
-
-async function deleteAllTablesData() {
-    for (const modelName in models) {
-        if (models.hasOwnProperty(modelName)) {
-            await models[modelName].destroy({
-                where: {},
-                truncate: true,
-                cascade: true
-            });
-        }
-    }
-    console.log("All tables' data deleted successfully!");
-}
-
 async function createUsers() {
 
     const zambianFirstNames = ["Chanda", "Mwansa", "Mutale", "Bwalya", "Kabwe"];
@@ -480,17 +466,18 @@ async function createVehicles() {
 module.exports = async function createDatabases() {
 
 
-    await Promise.all([
-        createUsers(),
-        createFirms(),
-        createMaterials(),
-        createPurchases(),
-        createProducts(),
-        createSales(),
-        createVehicles(),
-        createSales()
-    ]);
+    // await Promise.all([
+    //     createUsers(),
+    //     createFirms(),
+    //     createMaterials(),
+    //     createPurchases(),
+    //     createProducts(),
+    //     createSales(),
+    //     createVehicles(),
+    //     createSales()
+    // ]);
 
-    // deleteAllTablesData()
+    await createUsers()
+
 }
 

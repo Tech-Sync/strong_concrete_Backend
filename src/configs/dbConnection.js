@@ -30,6 +30,7 @@ const dbConnection = async () => {
 
     //! Sync all tables
     // await sequelize.sync({ force: true });
+    // await sequelize.sync({ alter: true });
 
 
   } catch (err) {
