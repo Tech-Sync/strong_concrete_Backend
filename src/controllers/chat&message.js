@@ -1,5 +1,6 @@
 const { Chat, Message, ChatUsers, ReadReceipts, User } = require('../models/associations');
 const sequelize = require('sequelize');
+const { Op, Sequelize } = sequelize;
 
 module.exports = {
     list: async (req, res) => {
@@ -41,30 +42,37 @@ module.exports = {
                         model: User,
                         as: 'chatUsers',
                         through: { attributes: [] },
-                        where: { id: [currentUserId, receiverId] },
+                        where: {
+                            id: {
+                                [Op.in]: [currentUserId, receiverId]
+                            }
+                        }
                     }
                 ],
-                group: ['Chat.id'],  // Ensure the results are grouped to avoid duplicates
+                group: ['Chat.id'],
+                having: Sequelize.literal(
+                    `(SELECT COUNT(DISTINCT "ChatUsers"."UserId") 
+                      FROM "ChatUsers" 
+                      WHERE "ChatUsers"."ChatId" = "Chat"."id") = 2`
+                ), // Ensure exactly 2 users are in the chat
             });
 
 
-
-            if (existingChat) {
+            if (existingChat ) {
                 return res.status(200).send({
                     message: 'Chat already exists between these users.',
                     chat: existingChat,
                 });
             }
-
+            
             chatData.chatName = null
 
             chat = await Chat.create(chatData)
 
 
             const chatUsersData = [{ UserId: receiverId, ChatId: chat.id }, { UserId: req.user.id, ChatId: chat.id }]
-            
+
             chatUsers = await ChatUsers.bulkCreate(chatUsersData)
-            console.log('params geldi');
 
         } else if (req.body.userIds) {
             console.log('burasi caliti');

@@ -11,7 +11,7 @@ User.hasMany(Chat, { foreignKey: 'groupAdmin' });
 Chat.belongsTo(User, { foreignKey: 'groupAdmin' });
 
 Chat.belongsToMany(User, { through: ChatUsers, as: 'chatUsers' });
-User.belongsToMany(Chat, { through: ChatUsers });
+User.belongsToMany(Chat, { through: ChatUsers , as : 'chatUsers'});
 
 // MESSAGE - CHAT
 Message.hasOne(Chat, { foreignKey: 'latestMessage', constraints: false, defaultValue: null });
@@ -24,6 +24,9 @@ Message.belongsToMany(User, { through: ReadReceipts });
 // USER - MESSAGE
 User.hasMany(Message, { foreignKey: 'SenderId' });
 Message.belongsTo(User, { foreignKey: 'SenderId' });
+
+ChatUsers.belongsTo(User, { foreignKey: 'UserId' });
+User.hasMany(ChatUsers, { foreignKey: 'UserId' });
 
 
 module.exports = { Chat, Message, ChatUsers, ReadReceipts, User };
