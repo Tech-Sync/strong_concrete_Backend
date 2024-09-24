@@ -3,11 +3,12 @@ const sequelize = require('sequelize');
 const { Op, Sequelize } = sequelize;
 
 module.exports = {
-    list: async (req, res) => {
+    chatList: async (req, res) => {
+        const currentUser = req.user;
 
-        const userChatIds = await ChatUsers.findAll({ where: { UserId: req.user.id }, attributes: ['ChatId'] });
+        const userChatIds = await ChatUsers.findAll({ where: { userId: currentUser.id }, attributes: ['chatId'] });
 
-        const chatIds = userChatIds.map(chatUser => chatUser.ChatId);
+        const chatIds = userChatIds.map(chatUser => chatUser.chatId);
 
         const userChats = await Chat.findAll({
             where: { id: chatIds },
@@ -25,82 +26,9 @@ module.exports = {
             userChats,
         });
     },
+    chatDelete: async (req, res) => {
 
-    create: async (req, res) => {
-        let chat
-        let chatUsers;
-        const { userIds, ...chatData } = req.body
-        const receiverId = req.params.id
-        const currentUserId = req.user.id;
-
-        if (receiverId) {
-
-            const existingChat = await Chat.findOne({
-                where: { isGroupChat: false },
-                include: [
-                    {
-                        model: User,
-                        as: 'chatUsers',
-                        through: { attributes: [] },
-                        where: {
-                            id: {
-                                [Op.in]: [currentUserId, receiverId]
-                            }
-                        }
-                    }
-                ],
-                group: ['Chat.id'],
-                having: Sequelize.literal(
-                    `(SELECT COUNT(DISTINCT "ChatUsers"."UserId") 
-                      FROM "ChatUsers" 
-                      WHERE "ChatUsers"."ChatId" = "Chat"."id") = 2`
-                ), // Ensure exactly 2 users are in the chat
-            });
-
-
-            if (existingChat ) {
-                return res.status(200).send({
-                    message: 'Chat already exists between these users.',
-                    chat: existingChat,
-                });
-            }
-            
-            chatData.chatName = null
-
-            chat = await Chat.create(chatData)
-
-
-            const chatUsersData = [{ UserId: receiverId, ChatId: chat.id }, { UserId: req.user.id, ChatId: chat.id }]
-
-            chatUsers = await ChatUsers.bulkCreate(chatUsersData)
-
-        } else if (req.body.userIds) {
-            console.log('burasi caliti');
-
-            chatData.groupAdmin = req.user.id
-
-            if (Array.isArray(userIds) && userIds.length >= 2) {
-                chatData.isGroupChat = true
-                chat = await Chat.create(chatData)
-                const chatUsersData = userIds.map(UserId => ({ UserId, ChatId: chat.id }))
-                chatUsersData.push({ UserId: req.user.id, ChatId: chat.id })
-                chatUsers = await ChatUsers.bulkCreate(chatUsersData)
-            } else if (userIds.length < 2) {
-                throw new Error('Group chat must have at least 2 users.')
-            }
-        }
-
-
-
-        res.status(200).send({
-            chat,
-            chatUsers
-        });
-    },
-
-    delete: async (req, res) => {
-
-        const chat = await Chat.findByPk(req.params.id)
+        const chat = await Chat.findByPk(req.params.chatId)
         if (!chat) throw new Error('Delivery not found or already deleted.')
         const isDeleted = await chat.destroy()
 
@@ -111,5 +39,95 @@ module.exports = {
                 : "chat not found or something went wrong.",
             // data: await req.getModelList(chat),
         });
-    }
+    },
+
+    groupCreate: async (req, res) => {
+        const { userIds, ...groupData } = req.body
+        const currentUserId = req.user.id;
+
+        let chat;
+        let chatUsers;
+
+        groupData.groupAdmin = currentUserId
+
+        if (Array.isArray(userIds) && userIds.length >= 2) {
+            groupData.isGroupChat = true
+
+            chat = await Chat.create(groupData)
+
+            const chatUsersData = userIds.map(userId => ({ userId, chatId: chat.id }))
+
+            chatUsersData.push({ userId: currentUserId, chatId: chat.id })
+
+            chatUsers = await ChatUsers.bulkCreate(chatUsersData)
+
+        } else if (userIds.length < 2) {
+            throw new Error('Group chat must have at least 2 users.')
+        }
+
+        res.status(200).send({
+            chat,
+        });
+
+    },
+
+    messageCreate: async (req, res) => {
+
+        const { receiverId, chatId, ...chatData } = req.body
+        const SenderId = req.user.id;
+
+        let chat
+        let chatUsers;
+        let message;
+
+        if (chatId) {
+
+            if (!receiverId) throw new Error('ReceiverId is required.')
+
+            chat = await Chat.findOne({ where: { id: chatId } })
+
+            if (!chat) throw new Error('Chat not found with ID: ' + chatId)
+
+            message = await Message.create({ ...chatData, SenderId, chatId: chat.id })
+
+        } else {
+            /*  const existingChat = await Chat.findOne({
+                 where: { isGroupChat: false },
+                 include: [
+                     {
+                         model: User,
+                         as: 'chatUsers',
+                         through: { attributes: [] },
+                         where: {
+                             id: {
+                                 [Op.in]: [senderId, receiverId]
+                             }
+                         }
+                     }
+                 ],
+                 group: ['Chat.id'],
+                 having: Sequelize.literal(
+                     `(SELECT COUNT(DISTINCT "ChatUsers"."userId") 
+                     FROM "ChatUsers" 
+                     WHERE "ChatUsers"."chatId" = "Chat"."id" 
+                     AND "ChatUsers"."userId" IN (${senderId}, ${receiverId})) = 2`
+                 ),
+             });
+             chat = await Chat.create(chatData)
+ 
+             const chatUsersData = [{ userId: receiverId, chatId: chat.id }, { userId: req.user.id, chatId: chat.id }]
+ 
+             chatUsers = await ChatUsers.bulkCreate(chatUsersData) */
+
+            console.log('manule getiong chatId');
+        }
+
+        res.status(200).send({
+            chat,
+            message,
+            chatUsers
+        });
+    },
+
+
 }

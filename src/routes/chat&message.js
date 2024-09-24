@@ -1,15 +1,16 @@
 "use strict";
 const router = require("express").Router();
-const chat = require("../controllers/chat&message");
+const { chatList, chatDelete, messageCreate, groupCreate } = require("../controllers/chat&message");
 
 
-router.route("/")
-    .get(chat.list)
-    .post(chat.create);
+router.route("/chat").get(chatList).post(groupCreate);
+router.delete('/chat/:chatId', chatDelete)
 
-router.route('/:id')
-    .post(chat.create)
-    .delete(chat.delete)
+
+router.route('/message')
+    .post(messageCreate)
+
+
 
 
 module.exports = router;
