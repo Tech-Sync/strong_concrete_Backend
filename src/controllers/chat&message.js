@@ -18,7 +18,10 @@ module.exports = {
                 as: 'chatUsers',
                 through: { attributes: [] },
                 attributes: ['id', 'firstName', 'lastName', 'email', 'profilePic', 'phoneNo', 'role', 'email'],
-            }],
+            }, {
+                model: Message,
+                as: 'latestMessage',
+            },]
         });
 
 
@@ -27,6 +30,22 @@ module.exports = {
             userChats,
         });
     },
+
+    messageList: async (req, res) => {
+
+        const { chatId } = req.params
+        let messages;
+
+        if (!chatId) throw new CustomError('ChatId is required.', 400)
+
+        messages = await Message.findAll({ where: { chatId } })
+
+        res.status(200).send({
+            isError: false,
+            messages
+        })
+    },
+
     chatDelete: async (req, res) => {
 
         const chat = await Chat.findByPk(req.params.chatId)
@@ -83,13 +102,14 @@ module.exports = {
         let message;
 
         if (chatId) {
-            if (!receiverId) throw new Error('ReceiverId is required.')
 
             chat = await Chat.findOne({ where: { id: chatId } })
 
             if (!chat) throw new CustomError(`Chat not Found with ID: ${chatId}`, 404)
 
         } else {
+
+            if (!receiverId) throw new Error('ReceiverId is required.')
 
             chat = await Chat.findOne({
                 where: { isGroupChat: false },
@@ -123,7 +143,6 @@ module.exports = {
                 if (!chat) throw new CustomError('Chat not created.', 400)
 
                 chatUsers = await ChatUsers.bulkCreate(chatUsersData)
-
             }
 
         }

@@ -14,8 +14,8 @@ Chat.belongsToMany(User, { through: ChatUsers, as: 'chatUsers', foreignKey: 'cha
 User.belongsToMany(Chat, { through: ChatUsers, as: 'chatUsers', foreignKey: 'userId', otherKey: 'chatId' });
 
 // MESSAGE - CHAT
-Message.hasOne(Chat, { foreignKey: 'latestMessageId', constraints: false });
-Chat.belongsTo(Message, { foreignKey: 'latestMessageId', constraints: false });
+Message.hasOne(Chat, { foreignKey: 'latestMessageId', as: 'latestMessage', constraints: false });
+Chat.belongsTo(Message, { foreignKey: 'latestMessageId', as: 'latestMessage', constraints: false });
 
 // USER - MESSAGE
 User.belongsToMany(Message, { through: ReadReceipts });
