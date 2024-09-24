@@ -1,3 +1,4 @@
+const CustomError = require('../helpers/customError');
 const { Chat, Message, ChatUsers, ReadReceipts, User } = require('../models/associations');
 const sequelize = require('sequelize');
 const { Op, Sequelize } = sequelize;
@@ -73,57 +74,71 @@ module.exports = {
 
     messageCreate: async (req, res) => {
 
-        const { receiverId, chatId, ...chatData } = req.body
-        const SenderId = req.user.id;
+        const { receiverId, ...chatData } = req.body
+        let { chatId } = req.body
+        const senderId = req.user.id;
 
         let chat
         let chatUsers;
         let message;
 
         if (chatId) {
-
             if (!receiverId) throw new Error('ReceiverId is required.')
 
             chat = await Chat.findOne({ where: { id: chatId } })
 
-            if (!chat) throw new Error('Chat not found with ID: ' + chatId)
-
-            message = await Message.create({ ...chatData, SenderId, chatId: chat.id })
+            if (!chat) throw new CustomError(`Chat not Found with ID: ${chatId}`, 404)
 
         } else {
-            /*  const existingChat = await Chat.findOne({
-                 where: { isGroupChat: false },
-                 include: [
-                     {
-                         model: User,
-                         as: 'chatUsers',
-                         through: { attributes: [] },
-                         where: {
-                             id: {
-                                 [Op.in]: [senderId, receiverId]
-                             }
-                         }
-                     }
-                 ],
-                 group: ['Chat.id'],
-                 having: Sequelize.literal(
-                     `(SELECT COUNT(DISTINCT "ChatUsers"."userId") 
+
+            chat = await Chat.findOne({
+                where: { isGroupChat: false },
+                include: [
+                    {
+                        model: User,
+                        as: 'chatUsers',
+                        through: { attributes: [] },
+                        where: {
+                            id: {
+                                [Op.in]: [senderId, receiverId]
+                            }
+                        }
+                    }
+                ],
+                group: ['Chat.id'],
+                having: Sequelize.literal(
+                    `(SELECT COUNT(DISTINCT "ChatUsers"."userId") 
                      FROM "ChatUsers" 
                      WHERE "ChatUsers"."chatId" = "Chat"."id" 
                      AND "ChatUsers"."userId" IN (${senderId}, ${receiverId})) = 2`
-                 ),
-             });
-             chat = await Chat.create(chatData)
- 
-             const chatUsersData = [{ userId: receiverId, chatId: chat.id }, { userId: req.user.id, chatId: chat.id }]
- 
-             chatUsers = await ChatUsers.bulkCreate(chatUsersData) */
+                ),
+            });
 
-            console.log('manule getiong chatId');
+
+            if (!chat) {
+                chat = await Chat.create(chatData)
+
+                const chatUsersData = [{ userId: receiverId, chatId: chat.id }, { userId: req.user.id, chatId: chat.id }]
+
+                if (!chat) throw new CustomError('Chat not created.', 400)
+
+                chatUsers = await ChatUsers.bulkCreate(chatUsersData)
+
+            }
+
         }
 
+
+        chatId = chat.id
+
+        message = await Message.create({ ...chatData, senderId, chatId: chat.id })
+
+        if (!message) throw new CustomError('Message not created.', 400)
+
+        chat = await Chat.update({ latestMessageId: message.id }, { where: { id: chat.id } })
+
         res.status(200).send({
-            chat,
+            chat: await Chat.findByPk(chatId),
             message,
             chatUsers
         });
