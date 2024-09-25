@@ -1,10 +1,14 @@
 "use strict";
 const router = require("express").Router();
-const { chatList, chatDelete, messageCreate, groupCreate, messageList } = require("../controllers/chat&message");
+const { chatList, chatDelete, messageCreate, groupCreate, messageList, groupUpdate } = require("../controllers/chat&message");
 
 
-router.route("/chat").get(chatList).post(groupCreate);
+router.route("/chat").get(chatList)
 router.delete('/chat/:chatId', chatDelete)
+
+router.post("/chat/group", groupCreate)
+router.route('/chat/group/:groupId')
+    .patch(groupUpdate)
 
 
 router.route('/message')

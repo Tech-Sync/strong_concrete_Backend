@@ -70,20 +70,28 @@ module.exports = {
 
         groupData.groupAdmin = currentUserId
 
-        if (Array.isArray(userIds) && userIds.length >= 2) {
-            groupData.isGroupChat = true
+        if (!(Array.isArray(userIds) && userIds.length >= 2)) throw new CustomError('Users are less than 2 or data type is wrong !', 400)
 
-            chat = await Chat.create(groupData)
+        groupData.isGroupChat = true
+        groupData.chatName = groupData.chatName.toLowerCase()
 
-            const chatUsersData = userIds.map(userId => ({ userId, chatId: chat.id }))
+        chat = await Chat.create(groupData)
 
-            chatUsersData.push({ userId: currentUserId, chatId: chat.id })
+        if (!chat) throw new CustomError('Chat not created.', 400)
 
-            chatUsers = await ChatUsers.bulkCreate(chatUsersData)
+        const chatUsersData = userIds.map(userId => ({ userId, chatId: chat.id }))
 
-        } else if (userIds.length < 2) {
-            throw new Error('Group chat must have at least 2 users.')
+        chatUsersData.push({ userId: currentUserId, chatId: chat.id })
+
+        chatUsers = await ChatUsers.bulkCreate(chatUsersData)
+
+        if (!chatUsers) {
+            await chat.destroy()
+            throw new CustomError('ChatUsers not created. Group chat deleted! Try Again.', 400)
         }
+
+
+
 
         res.status(200).send({
             chat,
@@ -91,6 +99,28 @@ module.exports = {
 
     },
 
+    groupUpdate: async (req, res) => {
+
+        const { groupId } = req.params
+
+        const group = await Chat.findByPk(groupId)
+
+        if (!group) throw new CustomError('Group not found.', 404)
+
+
+        const updatedGroup = await group.update(req.body)
+        console.log(updatedGroup);
+
+        if (!updatedGroup) throw new CustomError('Group not updated.', 400)
+
+
+        res.status(200).send({
+            isError: false,
+            updatedGroup
+        })
+    },
+
+    // creating message and chat if not exist
     messageCreate: async (req, res) => {
 
         const { receiverId, ...chatData } = req.body
@@ -101,6 +131,7 @@ module.exports = {
         let chatUsers;
         let message;
 
+        // if chat id is provided
         if (chatId) {
 
             chat = await Chat.findOne({ where: { id: chatId } })
@@ -134,7 +165,7 @@ module.exports = {
                 ),
             });
 
-
+            // if chat not found creating new chat with receiverId
             if (!chat) {
                 chat = await Chat.create(chatData)
 
@@ -144,9 +175,7 @@ module.exports = {
 
                 chatUsers = await ChatUsers.bulkCreate(chatUsersData)
             }
-
         }
-
 
         chatId = chat.id
 
