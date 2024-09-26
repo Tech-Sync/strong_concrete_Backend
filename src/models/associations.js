@@ -7,8 +7,8 @@ Chat.hasMany(Message, { foreignKey: { name: 'chatId', allowNull: false } });
 Message.belongsTo(Chat, { foreignKey: { name: 'chatId', allowNull: false } });
 
 // USER - CHAT
-User.hasMany(Chat, { foreignKey: 'groupAdmin' });
-Chat.belongsTo(User, { foreignKey: 'groupAdmin' });
+User.hasMany(Chat, { foreignKey: 'groupAdminId', as: 'groupAdmin' });
+Chat.belongsTo(User, { foreignKey: 'groupAdminId', as: 'groupAdmin' });
 
 Chat.belongsToMany(User, { through: ChatUsers, as: 'chatUsers', foreignKey: 'chatId', otherKey: 'userId' });
 User.belongsToMany(Chat, { through: ChatUsers, as: 'chatUsers', foreignKey: 'userId', otherKey: 'chatId' });

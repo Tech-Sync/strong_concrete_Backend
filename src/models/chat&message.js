@@ -18,12 +18,12 @@ const ChatUsers = sequelize.define('ChatUsers', {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     chatId: { type: DataTypes.INTEGER, allowNull: false },
     userId: { type: DataTypes.INTEGER, allowNull: false },
-}, { paranoid: true })
+})
 
 // ReadReceipts Model
 const ReadReceipts = sequelize.define('ReadReceipts', {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-}, { paranoid: true })
+})
 
 
 module.exports = { Chat, Message, ChatUsers, ReadReceipts };
