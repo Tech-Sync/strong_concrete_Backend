@@ -1,23 +1,24 @@
 "use strict";
 const router = require("express").Router();
 const { chatList, chatDelete, messageCreate, groupCreate, messageList, groupUpdate } = require("../controllers/chat&message");
+const permissions = require("../middlewares/permissions");
 
 
-router.route("/chat").get(chatList)
-router.delete('/chat/:chatId', chatDelete)
-
-router.post("/chat/group", groupCreate)
-router.route('/chat/group/:groupId')
-    .patch(groupUpdate)
+if (process.env.NODE_ENV !== 'development') {
+    router.use(permissions.isLogin);
+}
 
 
-router.route('/message')
-    .post(messageCreate)
+router.route("/").get(chatList)
+router.delete('/:chatId', chatDelete)
 
-router.route('/message/:chatId')
-    .get(messageList)
+router.post("/group", groupCreate)
+router.route('/group/:groupId').patch(groupUpdate)
 
 
+router.route('/message').post(messageCreate)
+
+router.route('/message/:chatId').get(messageList)
 
 
 module.exports = router;

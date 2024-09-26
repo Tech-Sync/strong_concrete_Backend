@@ -27,7 +27,7 @@ router.use('/deliveries', require('./delivery'))
 // Dashboard
 router.use('/dashboard', require('./dashboard'))
 // Chat
-router.use(require('./chat&message'))
+router.use('/chats', require('./chat&message'))
 
 // document:
 router.use('/documents', require('./document'))

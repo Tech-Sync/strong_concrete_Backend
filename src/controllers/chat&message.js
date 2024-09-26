@@ -31,7 +31,7 @@ module.exports = {
 
 
         res.status(200).send({
-            details: await req.getModelListDetails(Chat),
+            isError: false,
             userChats,
         });
     },
