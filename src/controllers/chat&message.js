@@ -36,6 +36,38 @@ module.exports = {
         });
     },
 
+    readChat: async (req, res) => {
+
+        const { chatId } = req.params
+
+        if (!chatId) throw new CustomError('ChatId is required.', 400)
+
+        const chat = await Chat.findOne({
+            where: { id: chatId },
+            include: [{
+                model: User,
+                as: 'chatUsers',
+                through: { attributes: [] },
+                attributes: ['id', 'firstName', 'lastName', 'email', 'profilePic', 'phoneNo', 'role', 'email'],
+            }, {
+                model: Message,
+                as: 'latestMessage',
+            }, {
+                model: User,
+                as: 'groupAdmin',
+                attributes: ['id', 'firstName', 'lastName', 'email', 'profilePic', 'phoneNo', 'role', 'email'],
+            }]
+        });
+
+        const messages = await Message.findAll({ where: { chatId } })
+
+        res.status(200).send({
+            isError: false,
+            selectedChat: chat,
+            messages
+        });
+    },
+
     messageList: async (req, res) => {
 
         const { chatId } = req.params
