@@ -4,6 +4,7 @@ const { sequelize, DataTypes } = require("../configs/dbConnection");
 const Chat = sequelize.define('Chat', {
     latestMessageId: { type: DataTypes.INTEGER, allowNull: true, defaultValue: null },
     chatName: { type: DataTypes.STRING, allowNull: true, defaultValue: null },
+    chatPicture: { type: DataTypes.STRING, allowNull: true, defaultValue: null },
     isGroupChat: { type: DataTypes.BOOLEAN, defaultValue: false },
 }, { paranoid: true });
 

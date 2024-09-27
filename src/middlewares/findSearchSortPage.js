@@ -34,11 +34,11 @@ module.exports = (req, res, next) => {
   let include = null;
 
   for (const key in search) {
-    const value = search[key];
+    let value = search[key];
     if (['model', 'DriverId', 'capacity', 'status', 'creatorId', 'role'].includes(key)) {
       whereClause[key] = value;
     } else {
-      whereClause[key] = { [Op.like]: `%${value}%` };
+      whereClause[key] = { [Op.iLike]: `%${value}%` };
     }
   }
 
@@ -54,8 +54,6 @@ module.exports = (req, res, next) => {
       whereClause['orderDate'] = { [Op.not]: null };
     }
   }
-
-
 
   if (preDefined) {
     const dateRange = getDateRange(preDefined);

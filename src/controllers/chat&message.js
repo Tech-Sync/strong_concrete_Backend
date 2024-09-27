@@ -43,7 +43,7 @@ module.exports = {
 
         if (!chatId) throw new CustomError('ChatId is required.', 400)
 
-        messages = await Message.findAll({ where: { chatId } })
+        if (chatId !== 'null') messages = await Message.findAll({ where: { chatId } })
 
         res.status(200).send({
             isError: false,
@@ -198,7 +198,7 @@ module.exports = {
     messageCreate: async (req, res) => {
 
         const { receiverId, ...chatData } = req.body
-        let { chatId } = req.body
+        let { chatId } = req.params
         const senderId = req.user.id;
 
         let chat
@@ -206,14 +206,14 @@ module.exports = {
         let message;
 
         // if chat id is provided
-        if (chatId) {
+        if (chatId && chatId !== 'null') {
 
             chat = await Chat.findOne({ where: { id: chatId } })
 
             if (!chat) throw new CustomError(`Chat not Found with ID: ${chatId}`, 404)
 
         } else {
-
+            console.log('buarsi calisti');
             if (!receiverId) throw new Error('ReceiverId is required.')
 
             chat = await Chat.findOne({
@@ -248,6 +248,11 @@ module.exports = {
                 if (!chat) throw new CustomError('Chat not created.', 400)
 
                 chatUsers = await ChatUsers.bulkCreate(chatUsersData)
+
+                if (!chatUsers) {
+                    await chat.destroy()
+                    throw new CustomError('ChatUsers not created. Chat deleted! Try Again.', 400)
+                }
             }
         }
 
@@ -260,9 +265,10 @@ module.exports = {
         chat = await Chat.update({ latestMessageId: message.id }, { where: { id: chat.id } })
 
         res.status(200).send({
-            chat: await Chat.findByPk(chatId),
+            isError: false,
             message,
-            chatUsers
+            // chat: await Chat.findByPk(chatId),
+            // messages: await Message.findAll({ where: { chatId } }),
         });
     },
 

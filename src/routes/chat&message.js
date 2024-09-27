@@ -16,9 +16,10 @@ router.post("/group", groupCreate)
 router.route('/group/:groupId').patch(groupUpdate)
 
 
-router.route('/message').post(messageCreate)
+router.route('/message/:chatId')
+    .get(messageList)
+    .post(messageCreate)
 
-router.route('/message/:chatId').get(messageList)
 
 
 module.exports = router;
