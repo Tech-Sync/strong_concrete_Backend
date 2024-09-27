@@ -47,7 +47,7 @@ async function createUsers() {
         {
             firstName: "Admin",
             lastName: "Admin",
-            profilePic: "profilePic1.jpg",
+            profilePic: "profile-1.jpeg",
             nrcNo: "1234567890123",
             phoneNo: "0971234567",
             address: "Lusaka, Zambia",
@@ -63,7 +63,7 @@ async function createUsers() {
             return {
                 firstName: firstName,
                 lastName: lastName,
-                profilePic: `profilePic${i + 2}.jpg`,
+                profilePic: `profile-${i + 2}.jpeg`,
                 nrcNo: `12345678901${i + 2}`,
                 phoneNo: `097123456${i + 2}`,
                 address: `Lusaka, Zambia`,
@@ -82,7 +82,7 @@ async function createUsers() {
                 return {
                     firstName: firstName,
                     lastName: lastName,
-                    profilePic: `profilePic${role}${i + 1}.jpg`,
+                    profilePic: `profile-${role}${i + 1}.jpeg`,
                     nrcNo: `1234567890${role}${i + 1}`,
                     phoneNo: `09712345${role}${i + 1}`,
                     address: `Lusaka, Zambia`,
@@ -466,18 +466,18 @@ async function createVehicles() {
 module.exports = async function createDatabases() {
 
 
-    // await Promise.all([
-    //     createUsers(),
-    //     createFirms(),
-    //     createMaterials(),
-    //     createPurchases(),
-    //     createProducts(),
-    //     createSales(),
-    //     createVehicles(),
-    //     createSales()
-    // ]);
+    await Promise.all([
+        createUsers(),
+        createFirms(),
+        createMaterials(),
+        createPurchases(),
+        createProducts(),
+        createSales(),
+        createVehicles(),
+        createSales()
+    ]);
 
-    await createUsers()
+    // await createUsers()
 
 }
 
