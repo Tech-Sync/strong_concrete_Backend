@@ -59,6 +59,8 @@ module.exports = {
             }]
         });
 
+        if (!chat) throw new CustomError('Chat not found.', 404)
+
         const messages = await Message.findAll({ where: { chatId } })
 
         res.status(200).send({
@@ -227,9 +229,9 @@ module.exports = {
     },
 
     // creating message and chat if not exist
-    messageCreate: async (req, res) => {
+    MessageChatCreate: async (req, res) => {
 
-        const { receiverId, ...chatData } = req.body
+        const { receiverId, content } = req.body
         let { chatId } = req.params
         const senderId = req.user.id;
 
@@ -245,7 +247,6 @@ module.exports = {
             if (!chat) throw new CustomError(`Chat not Found with ID: ${chatId}`, 404)
 
         } else {
-            console.log('buarsi calisti');
             if (!receiverId) throw new Error('ReceiverId is required.')
 
             chat = await Chat.findOne({
@@ -273,7 +274,7 @@ module.exports = {
 
             // if chat not found creating new chat with receiverId
             if (!chat) {
-                chat = await Chat.create(chatData)
+                chat = await Chat.create()
 
                 const chatUsersData = [{ userId: receiverId, chatId: chat.id }, { userId: req.user.id, chatId: chat.id }]
 
@@ -290,16 +291,17 @@ module.exports = {
 
         chatId = chat.id
 
-        message = await Message.create({ ...chatData, senderId, chatId: chat.id })
-
-        if (!message) throw new CustomError('Message not created.', 400)
-
-        chat = await Chat.update({ latestMessageId: message.id }, { where: { id: chat.id } })
+        /* this is creating chat without chat */
+        if (content) {
+            message = await Message.create({ content, senderId, chatId: chat.id })
+            if (!message) throw new CustomError('Message not created.', 400)
+            chat = await Chat.update({ latestMessageId: message.id }, { where: { id: chat.id } })
+        }
 
         res.status(200).send({
             isError: false,
             message,
-            // chat: await Chat.findByPk(chatId),
+            chat: await Chat.findByPk(chatId),
             // messages: await Message.findAll({ where: { chatId } }),
         });
     },
