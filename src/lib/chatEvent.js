@@ -20,7 +20,7 @@ io.on("connection", (socket) => {
     console.log(`Socket ${socket.id} left room ${chatId}`);
   })
 
-  socket.on('sendMessage', (message, receiverId) => {
+  socket.on('sendMessage', (message, receiverId, selectedChat) => {
     console.log(`Message received from ${message.senderId} userId  for chat ${message.chatId} id`);
     socket.to(message.chatId).emit('receiveMessage', message)
 
@@ -31,7 +31,14 @@ io.on("connection", (socket) => {
       const isRecipientInChat = io.sockets.sockets.get(recipientSocketId)?.rooms.has(message.chatId)
       // not in chat
       if (!isRecipientInChat) {
-        io.to(recipientSocketId).emit('receiveNotification', message)
+        const notificationData = {
+          ...message,
+          isGroupChat: selectedChat.isGroupChat,
+          chatPicture: selectedChat.chatPicture,
+          chatName: selectedChat.chatName,
+          sender: selectedChat.chatUsers.find(user => user.id === message.senderId),
+        }
+        io.to(recipientSocketId).emit('receiveNotification', notificationData)
       }
       // not active not in chat
     } else {
