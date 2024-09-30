@@ -101,8 +101,16 @@ module.exports = {
     },
 
     groupCreate: async (req, res) => {
-        const { userIds, ...groupData } = req.body
+        let { userIds, ...groupData } = req.body
         const currentUserId = req.user.id;
+
+        if (typeof userIds === 'string') {
+            try {
+                userIds = JSON.parse(userIds);
+            } catch (error) {
+                throw new CustomError('Invalid userIds format', 400);
+            }
+        }
 
         let chat;
         let chatUsers;
@@ -142,6 +150,10 @@ module.exports = {
 
         if (group) throw new CustomError('Group already exist with these users. Group name: ' + group.chatName, 400)
 
+        if (req.file) {
+            console.log("req file --", req.file);
+            groupData.chatPicture = req.file.filename;
+        }
         group = await Chat.create(groupData);
 
         if (!group) throw new CustomError('Chat not created.', 400)
@@ -174,7 +186,32 @@ module.exports = {
             }]
         });
 
-        res.status(200).send({ group });
+        const userChatIds = await ChatUsers.findAll({ where: { userId: currentUserId }, attributes: ['chatId'] });
+
+        const chatIds = userChatIds.map(chatUser => chatUser.chatId);
+
+        const userChats = await Chat.findAll({
+            where: { id: chatIds },
+            include: [{
+                model: User,
+                as: 'chatUsers',
+                through: { attributes: [] },
+                attributes: ['id', 'firstName', 'lastName', 'email', 'profilePic', 'phoneNo', 'role', 'email'],
+            }, {
+                model: Message,
+                as: 'latestMessage',
+            }, {
+                model: User,
+                as: 'groupAdmin',
+                attributes: ['id', 'firstName', 'lastName', 'email', 'profilePic', 'phoneNo', 'role', 'email'],
+            }]
+        });
+
+        res.status(200).send({
+            isError: false,
+            group,
+            userChats
+        });
 
     },
 
@@ -291,7 +328,7 @@ module.exports = {
 
         chatId = chat.id
 
-        /* this is creating chat without chat */
+        // this is creating chat without chat
         if (content) {
             message = await Message.create({ content, senderId, chatId: chat.id })
             if (!message) throw new CustomError('Message not created.', 400)

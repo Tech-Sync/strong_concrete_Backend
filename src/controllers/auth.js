@@ -41,6 +41,7 @@ module.exports = {
     if (user) throw new Error("A user is already exist with this email !");
     
     req.body.emailToken = cyrpto.randomBytes(64).toString("hex");
+    console.log('req file ---',req.file);
     
     if (req.file) req.body.profilePic = req.file.filename;
 
