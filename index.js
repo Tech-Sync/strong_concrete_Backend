@@ -23,6 +23,7 @@ app.use(require("./src/middlewares/findSearchSortPage"));
 app.use(require('cors')())
 
 
+
 //! Dummy SCRIPT (FOR TESTING) 
 // require("./src/helpers/dummyData")()
 
@@ -50,6 +51,45 @@ app.use(require("./src/middlewares/errorHandler"));
 
 
 
-app.listen(PORT, () => console.log(`Running on http://${HOST}:${PORT}`));
+const server = app.listen(PORT, () => console.log(`Running on http://${HOST}:${PORT}`));
+
+const io = require("socket.io")(server, {
+  pingTimeout: 60000,
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+    // credentials: true // Allow cookies and other credentials to be sent
+  }
+
+})
+
+io.on("connection", (socket) => {
+  console.log('---socket connected---' + socket.id);
+
+
+  socket.on('joinRoom', (chatId) => {
+    socket.join(chatId)
+    console.log(`Socket ${socket.id} joined room ${chatId}`);
+
+  })
+
+  socket.on('leaveRoom', (chatId) => {
+    socket.leave(chatId)
+    console.log(`Socket ${socket.id} left room ${chatId}`);
+  })
+
+  socket.on('sendMessage', (message) => {
+    console.log(`Message received from ${message.senderId} for chat ${message.chatId}`);
+
+    socket.to(message.chatId).emit('receiveMessage', message)
+  })
+
+
+  socket.on('disconnect', () => {
+    console.log('---socket disconnected---' + socket.id);
+  });
+
+});
+
 
 module.exports = app

@@ -279,7 +279,22 @@ module.exports = {
         // if chat id is provided
         if (chatId && chatId !== 'null') {
 
-            chat = await Chat.findOne({ where: { id: chatId } })
+            chat = await Chat.findOne({
+                where: { id: chatId },
+                include: [{
+                    model: User,
+                    as: 'chatUsers',
+                    through: { attributes: [] },
+                    attributes: ['id', 'firstName', 'lastName', 'email', 'profilePic', 'phoneNo', 'role', 'email'],
+                }, {
+                    model: Message,
+                    as: 'latestMessage',
+                }, {
+                    model: User,
+                    as: 'groupAdmin',
+                    attributes: ['id', 'firstName', 'lastName', 'email', 'profilePic', 'phoneNo', 'role', 'email'],
+                }]
+            });
 
             if (!chat) throw new CustomError(`Chat not Found with ID: ${chatId}`, 404)
 
@@ -293,11 +308,20 @@ module.exports = {
                         model: User,
                         as: 'chatUsers',
                         through: { attributes: [] },
+                        attributes: ['id', 'firstName', 'lastName', 'email', 'profilePic', 'phoneNo', 'role', 'email'],
                         where: {
                             id: {
                                 [Op.in]: [senderId, receiverId]
                             }
                         }
+                    },
+                    {
+                        model: User,
+                        as: 'groupAdmin',
+                        attributes: ['id', 'firstName', 'lastName', 'email', 'profilePic', 'phoneNo', 'role', 'email'],
+                    }, {
+                        model: Message,
+                        as: 'latestMessage',
                     }
                 ],
                 group: ['Chat.id'],
@@ -311,11 +335,28 @@ module.exports = {
 
             // if chat not found creating new chat with receiverId
             if (!chat) {
-                chat = await Chat.create()
+                newChat = await Chat.create()
 
-                const chatUsersData = [{ userId: receiverId, chatId: chat.id }, { userId: req.user.id, chatId: chat.id }]
+                const chatUsersData = [{ userId: receiverId, chatId: newChat.id }, { userId: req.user.id, chatId: newChat.id }]
 
-                if (!chat) throw new CustomError('Chat not created.', 400)
+                if (!newChat) throw new CustomError('Chat not created.', 400)
+
+                chat = await Chat.findOne({
+                    where: { id: chat.id },
+                    include: [{
+                        model: User,
+                        as: 'chatUsers',
+                        through: { attributes: [] },
+                        attributes: ['id', 'firstName', 'lastName', 'email', 'profilePic', 'phoneNo', 'role', 'email'],
+                    }, {
+                        model: Message,
+                        as: 'latestMessage',
+                    }, {
+                        model: User,
+                        as: 'groupAdmin',
+                        attributes: ['id', 'firstName', 'lastName', 'email', 'profilePic', 'phoneNo', 'role', 'email'],
+                    }]
+                });
 
                 chatUsers = await ChatUsers.bulkCreate(chatUsersData)
 
@@ -332,14 +373,13 @@ module.exports = {
         if (content) {
             message = await Message.create({ content, senderId, chatId: chat.id })
             if (!message) throw new CustomError('Message not created.', 400)
-            chat = await Chat.update({ latestMessageId: message.id }, { where: { id: chat.id } })
+            await Chat.update({ latestMessageId: message.id }, { where: { id: chat.id } })
         }
 
         res.status(200).send({
             isError: false,
             message,
-            chat: await Chat.findByPk(chatId),
-            // messages: await Message.findAll({ where: { chatId } }),
+            chat,
         });
     },
 
