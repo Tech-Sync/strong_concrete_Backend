@@ -79,4 +79,21 @@ io.on("connection", (socket) => {
 
 });
 
+
+// Function to manually reset a socket connection by its ID
+function resetSocketConnection(socketId) {
+  const socket = io.sockets.sockets.get(socketId);
+  if (socket) {
+    console.log(`Manually resetting connection for socket ${socketId}`);
+    socket.disconnect();
+    // Optionally, reconnect the socket
+    // socket.connect();
+  } else {
+    console.log(`Socket with ID ${socketId} not found`);
+  }
+}
+
+// Example usage
+// resetSocketConnection('sTwHQ94L3LdLFYTFAAAB');
+
 module.exports = io
