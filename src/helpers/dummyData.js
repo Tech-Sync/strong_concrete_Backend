@@ -36,8 +36,9 @@ function getRandomDateIn2024() {
 
 async function createUsers() {
 
-    const zambianFirstNames = ["Chanda", "Mwansa", "Mutale", "Bwalya", "Kabwe"];
-    const zambianLastNames = ["Mulenga", "Phiri", "Tembo", "Zimba", "Mumba"];
+    const zambianFirstNames = ["Chanda", "Mwansa", "Mutale", "Bwalya", "Kabwe", "Lombe", "Gift", "Faruk", "Moses", "John", "Peter", "Paul"];
+    const zambianLastNames = ["Mulenga", "Phiri", "Tembo", "Zimba", "Mumba", "Ngoma", "Banda", "Kamanga", "Sakala", "Chirwa", "Lungu", "Mwanza"];
+
 
     function getRandomElement(arr) {
         return arr[Math.floor(Math.random() * arr.length)];
@@ -53,13 +54,13 @@ async function createUsers() {
             address: "Lusaka, Zambia",
             role: 5,
             email: "admin@gmail.com",
-            password: passwordEncrypt("Sconcrete2024.,?"),
+            password: passwordEncrypt("Admin2024.,?"),
             isActive: true,
             isVerified: true,
         },
         ...Array.from({ length: 5 }, (_, i) => {
-            const firstName = getRandomElement(zambianFirstNames);
-            const lastName = getRandomElement(zambianLastNames);
+            const firstName = zambianFirstNames[i % zambianFirstNames.length];
+            const lastName = zambianLastNames[i % zambianLastNames.length];
             return {
                 firstName: firstName,
                 lastName: lastName,
@@ -77,8 +78,8 @@ async function createUsers() {
         // Two users for each of the other roles (2, 3, 4)
         ...[2, 3, 4].flatMap(role =>
             Array.from({ length: 2 }, (_, i) => {
-                const firstName = getRandomElement(zambianFirstNames);
-                const lastName = getRandomElement(zambianLastNames);
+                const firstName = zambianFirstNames[(role * 2 + i) % zambianFirstNames.length];
+                const lastName = zambianLastNames[(role * 2 + i) % zambianLastNames.length];
                 return {
                     firstName: firstName,
                     lastName: lastName,
@@ -223,9 +224,9 @@ async function createPurchases() {
     const purchasesData = [];
 
     const totalQuantities = {
-        sand: 900,
-        stone: 900,
-        cement: 2000,
+        sand: 300,
+        stone: 300,
+        cement: 1000,
     };
 
     const firms = await Firm.findAll({ where: { status: 2 } });
@@ -238,9 +239,9 @@ async function createPurchases() {
     };
 
     const unitPriceRanges = {
-        sand: { min: 100, max: 220 },
-        stone: { min: 110, max: 240 },
-        cement: { min: 200, max: 270 },
+        sand: { min: 110, max: 210 },
+        stone: { min: 110, max: 210 },
+        cement: { min: 200, max: 300 },
     };
 
     function getRandomUnitPrice(min, max) {
@@ -311,7 +312,7 @@ async function createProducts() {
     const productsData = [];
 
     function calculatePrice(materials) {
-        return (materials.STONE * 100 + materials.SAND * 100 + materials.CEMENT).toFixed(2);
+        return (materials.STONE * 140 + materials.SAND * 140 + materials.CEMENT).toFixed(2);
     }
 
     productNames.forEach((name, index) => {
@@ -331,8 +332,6 @@ async function createProducts() {
 }
 
 async function createSales() {
-
-
     const salesData = [];
 
     const firms = await Firm.findAll({ where: { status: 1 } });
@@ -350,10 +349,26 @@ async function createSales() {
         return (quantity * unitPrice + otherCharges - discount).toFixed(2);
     }
 
-    for (let i = 0; i < 8; i++) {
+    const totalQuantities = {
+        sand: 300,
+        stone: 300,
+        cement: 1000,
+    };
+
+    const materialSales = {
+        sand: 0,
+        stone: 0,
+        cement: 0,
+    };
+
+    let totalSalesValue = 0;
+    const totalPurchaseCost = 353162 
+    const targetSalesValue = totalPurchaseCost * 1.2; 
+
+    while (totalSalesValue < targetSalesValue) {
         const FirmId = firmIds[Math.floor(Math.random() * firmIds.length)];
         const ProductId = productIds[Math.floor(Math.random() * productIds.length)];
-        const quantity = Math.floor(Math.random() * 10) + 1;
+        const quantity = Math.floor(Math.random() * 10) + 5; 
         const otherCharges = Math.floor(Math.random() * 100);
         const discount = Math.floor(Math.random() * 50);
         const requestedDate = getRandomDateIn2024();
@@ -367,6 +382,18 @@ async function createSales() {
         const product = await Product.findByPk(ProductId);
         const unitPrice = product.price;
         const totalPrice = calculateTotalPrice(quantity, unitPrice, otherCharges, discount);
+
+        if (materialSales.sand + quantity <= totalQuantities.sand) {
+            materialSales.sand += quantity;
+        } else if (materialSales.stone + quantity <= totalQuantities.stone) {
+            materialSales.stone += quantity;
+        } else if (materialSales.cement + quantity <= totalQuantities.cement) {
+            materialSales.cement += quantity;
+        } else {
+            continue; // Skip this sale if it exceeds purchased quantities
+        }
+
+        totalSalesValue += parseFloat(totalPrice);
 
         salesData.push({
             FirmId,
@@ -386,11 +413,10 @@ async function createSales() {
         });
     }
 
-    const res = await Sale.bulkCreate(salesData)
-
+    const res = await Sale.bulkCreate(salesData);
 
     if (res) {
-        console.log('line 407 res-->', res);
+        console.log('Sales created successfully!');
         for (const sale of res) {
             const prevOrderNumber = sale.dataValues.orderNumber;
             await Sale.update({ orderNumber: sequelize.literal('"orderNumber" - 1') }, {
@@ -399,8 +425,6 @@ async function createSales() {
                     orderNumber: { [Op.gt]: prevOrderNumber },
                 }
             });
-            // console.log('sale id ', sale.dataValues.id);
-            // console.log('sale', sale);
             const productionData = {
                 SaleId: sale.dataValues.id,
                 creatorId: 1,
@@ -408,13 +432,10 @@ async function createSales() {
             };
 
             const createdProduction = await Production.create(productionData);
-            // console.log(createdProduction);
             const vehicles = await Vehicle.findAll();
-            const randomIndex = Math.floor(Math.random() * 5) + 1;
+            const randomIndex = Math.floor(Math.random() * vehicles.length);
             const selectedVehicle = vehicles[randomIndex];
-            // console.log('selectedVehicle', selectedVehicle);
             const vehicleId = selectedVehicle?.dataValues?.id;
-            // console.log('vehicleId', vehicleId);
 
             await Delivery.create({
                 ProductionId: createdProduction.id,
@@ -428,15 +449,12 @@ async function createSales() {
                 creatorId: 1
             };
 
-            const data = await SaleAccount.create(saleAccData);
-            // console.log(data);
-
+            await SaleAccount.create(saleAccData);
         }
         console.log('Sales, Production and Sale Account created successfully!');
-
+    } else {
+        console.log('Something went wrong with Sales creation!');
     }
-    else console.log('Someting went wrong with Sales creation!');
-
 }
 
 async function createVehicles() {
@@ -457,10 +475,6 @@ async function createVehicles() {
     else console.log('Something went wrong with Vehicles creation!');
 
 }
-
-
-
-
 
 
 module.exports = async function createDatabases() {

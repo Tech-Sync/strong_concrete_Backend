@@ -94,6 +94,6 @@ function resetSocketConnection(socketId) {
 }
 
 // Example usage
-// resetSocketConnection('sTwHQ94L3LdLFYTFAAAB');
+// resetSocketConnection('2GM0KNX69zOZyfTeAAAB');
 
 module.exports = io
