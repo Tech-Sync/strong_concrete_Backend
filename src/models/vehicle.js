@@ -1,8 +1,9 @@
 "use strict";
 const { sequelize, DataTypes } = require("../configs/dbConnection");
-// const { User } = require('./index')
 
 const { vehicleStatuses } = require("../constraints/roles&status");
+const { User } = sequelize.models;
+
 
 const Vehicle = sequelize.define(
   "Vehicle",

@@ -1,18 +1,13 @@
 "use strict";
 const { sequelize, DataTypes } = require("../configs/dbConnection");
 
-// const {Firm, Material} = require('./index')
+const { Material, Firm } = sequelize.models;
+
 
 const Purchase = sequelize.define(
   "Purchase",
   {
-    // MaterialId: {
-    //   type: DataTypes.INTEGER,
-    //   references: {
-    //     model: Material,
-    //     key: "id",
-    //   },
-    // },
+
     quantity: {
       type: DataTypes.FLOAT,
       allowNull: false,
@@ -24,21 +19,16 @@ const Purchase = sequelize.define(
     totalPrice: {
       type: DataTypes.FLOAT,
     },
-    // FirmId: {
-    //   type: DataTypes.INTEGER,
-    //   references: {
-    //     model: Firm,
-    //     key: "id",
-    //   },
-    // },
+
   },
   {
     paranoid: true,
     hooks: {
-      beforeCreate: async(purchase) => {
+      beforeCreate: async (purchase) => {
+
         const firm = await Firm.findByPk(purchase.FirmId);
-        if(!firm) throw new Error('The firm is not found.')
-        if (firm.status !== 2)throw new Error("The firm type shoul be supplier.");
+        if (!firm) throw new Error('The firm is not found.')
+        if (firm.status !== 2) throw new Error("The firm type shoul be supplier.");
         purchase.totalPrice = (purchase.unitPrice * purchase.quantity).toFixed(2);
       },
       beforeUpdate: async (purchase) => {

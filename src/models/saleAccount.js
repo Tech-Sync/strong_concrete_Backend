@@ -1,25 +1,11 @@
 "use strict";
 const { sequelize, DataTypes } = require("../configs/dbConnection");
-const { Sale } = require('./index');
+const { Sale } = sequelize.models;
 
 
 const SaleAccount = sequelize.define(
   "SaleAccount",
   {
-    // SaleId: {
-    //   type: DataTypes.INTEGER,
-    //   references: {
-    //     model: Sale,
-    //     key: "id",
-    //   },
-    // },
-    // FirmId: {
-    //   type: DataTypes.INTEGER,
-    //   references: {
-    //     model: Firm,
-    //     key: "id",
-    //   },
-    // },
     totalPrice: {
       type: DataTypes.FLOAT,
       defaultValue: 0,

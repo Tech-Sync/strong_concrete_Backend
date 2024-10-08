@@ -1,26 +1,13 @@
 "use strict";
 const { sequelize, DataTypes } = require("../configs/dbConnection");
-// const {Firm, Product} = require('./index')
 
 const { saleStatuses } = require("../constraints/roles&status");
+const { Firm, Product } = sequelize.models;
+
 
 const Sale = sequelize.define(
   "Sale",
   {
-    // FirmId: {
-    //   type: DataTypes.INTEGER,
-    //   references: {
-    //     model: Firm,
-    //     key: "id",
-    //   },
-    // },
-    // ProductId: {
-    //   type: DataTypes.INTEGER,
-    //   references: {
-    //     model: Product,
-    //     key: "id",
-    //   },
-    // },
     quantity: {
       type: DataTypes.FLOAT,
       allowNull: false,
