@@ -1,21 +1,19 @@
 "use strict";
 const { sequelize, DataTypes } = require("../configs/dbConnection");
-const Sale = require("./sale");
-const User = require("./user");
-const Delivery = require("./delivery");
+// const { Sale } = require("./index");
 
 const { productionStatuses } = require("../constraints/roles&status");
 
 const Production = sequelize.define(
   "Production",
   {
-    SaleId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: Sale,
-        key: "id",
-      },
-    },
+    // SaleId: {
+    //   type: DataTypes.INTEGER,
+    //   references: {
+    //     model: Sale,
+    //     key: "id",
+    //   },
+    // },
     VehicleIds: {
       type: DataTypes.ARRAY(DataTypes.INTEGER),
     },
@@ -36,18 +34,6 @@ const Production = sequelize.define(
   }
 );
 
-// Sale - production
-Sale.hasOne(Production);
-Production.belongsTo(Sale);
-
-Production.hasMany(Delivery);
-Delivery.belongsTo(Production);
-
-// user - production
-User.hasMany(Production, { foreignKey: "creatorId", as: "createdProductions" });
-User.hasMany(Production, { foreignKey: "updaterId", as: "updatedProductions" });
-Production.belongsTo(User, { foreignKey: "creatorId", as: "creator" });
-Production.belongsTo(User, { foreignKey: "updaterId", as: "updater" });
 
 module.exports = Production;
 

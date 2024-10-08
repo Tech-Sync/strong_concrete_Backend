@@ -1,20 +1,18 @@
 "use strict";
 const { sequelize, DataTypes } = require("../configs/dbConnection");
-const PurchaseAccount = require("./purchaseAccount");
-const Firm = require("./firm");
-const Material = require("./material");
-const User = require("./user");
+
+// const {Firm, Material} = require('./index')
 
 const Purchase = sequelize.define(
   "Purchase",
   {
-    MaterialId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: Material,
-        key: "id",
-      },
-    },
+    // MaterialId: {
+    //   type: DataTypes.INTEGER,
+    //   references: {
+    //     model: Material,
+    //     key: "id",
+    //   },
+    // },
     quantity: {
       type: DataTypes.FLOAT,
       allowNull: false,
@@ -26,13 +24,13 @@ const Purchase = sequelize.define(
     totalPrice: {
       type: DataTypes.FLOAT,
     },
-    FirmId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: Firm,
-        key: "id",
-      },
-    },
+    // FirmId: {
+    //   type: DataTypes.INTEGER,
+    //   references: {
+    //     model: Firm,
+    //     key: "id",
+    //   },
+    // },
   },
   {
     paranoid: true,
@@ -63,20 +61,7 @@ const Purchase = sequelize.define(
   }
 );
 
-// user - Purchase
-User.hasMany(Purchase, { foreignKey: "creatorId", as: "createdPurchases" });
-User.hasMany(Purchase, { foreignKey: "updaterId", as: "updatedPurchases" });
-Purchase.belongsTo(User, { foreignKey: "creatorId", as: "creator" });
-Purchase.belongsTo(User, { foreignKey: "updaterId", as: "updater" });
 
-// material - purchase
-Material.hasMany(Purchase, { foreignKey: 'MaterialId' });
-Purchase.belongsTo(Material, { foreignKey: 'MaterialId' });
-
-
-// firm - purchase
-Firm.hasMany(Purchase, { foreignKey: 'FirmId' });
-Purchase.belongsTo(Firm, { foreignKey: 'FirmId' });
 
 module.exports = Purchase;
 

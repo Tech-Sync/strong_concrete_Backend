@@ -1,27 +1,26 @@
 "use strict";
 const { sequelize, DataTypes } = require("../configs/dbConnection");
-const Firm = require("./firm");
-const Product = require("./product");
-const User = require("./user");
+// const {Firm, Product} = require('./index')
+
 const { saleStatuses } = require("../constraints/roles&status");
 
 const Sale = sequelize.define(
   "Sale",
   {
-    FirmId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: Firm,
-        key: "id",
-      },
-    },
-    ProductId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: Product,
-        key: "id",
-      },
-    },
+    // FirmId: {
+    //   type: DataTypes.INTEGER,
+    //   references: {
+    //     model: Firm,
+    //     key: "id",
+    //   },
+    // },
+    // ProductId: {
+    //   type: DataTypes.INTEGER,
+    //   references: {
+    //     model: Product,
+    //     key: "id",
+    //   },
+    // },
     quantity: {
       type: DataTypes.FLOAT,
       allowNull: false,
@@ -91,19 +90,7 @@ const Sale = sequelize.define(
   }
 );
 
-// Firm - sale
-Firm.hasMany(Sale);
-Sale.belongsTo(Firm);
 
-// Product - sale
-Product.hasMany(Sale);
-Sale.belongsTo(Product);
-
-// user - sale
-User.hasMany(Sale, { foreignKey: "creatorId", as: "createdSales" });
-User.hasMany(Sale, { foreignKey: "updaterId", as: "updatedSales" });
-Sale.belongsTo(User, { foreignKey: "creatorId", as: "creator" });
-Sale.belongsTo(User, { foreignKey: "updaterId", as: "updater" });
 
 module.exports = Sale;
 

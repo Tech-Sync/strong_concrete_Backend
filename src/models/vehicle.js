@@ -1,9 +1,8 @@
 "use strict";
 const { sequelize, DataTypes } = require("../configs/dbConnection");
-const User = require("./user");
+// const { User } = require('./index')
+
 const { vehicleStatuses } = require("../constraints/roles&status");
-const Production = require("./production");
-const Delivery = require("./delivery");
 
 const Vehicle = sequelize.define(
   "Vehicle",
@@ -12,7 +11,7 @@ const Vehicle = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: User,
+        model: "Users",
         key: "id",
       },
       unique: {
@@ -66,15 +65,6 @@ const Vehicle = sequelize.define(
   }
 );
 
-
-
-// user - account
-User.hasMany(Vehicle, { foreignKey: "DriverId", as: "driverVehicles" });
-User.hasMany(Vehicle, { foreignKey: "creatorId", as: "createdVehicles" });
-User.hasMany(Vehicle, { foreignKey: "updaterId", as: "updatedVehicles" });
-Vehicle.belongsTo(User, { foreignKey: "creatorId", as: "creator" });
-Vehicle.belongsTo(User, { foreignKey: "updaterId", as: "updater" });
-Vehicle.belongsTo(User, { foreignKey: "DriverId", as: "driver" });
 
 module.exports = Vehicle;
 

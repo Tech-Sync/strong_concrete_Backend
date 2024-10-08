@@ -1,9 +1,7 @@
 "use strict";
 
-const PurchaseAccount = require("../models/purchaseAccount");
-const Material = require("../models/material");
-const Purchase = require("../models/purchase");
-const Firm = require("../models/firm");
+
+const { Firm, Purchase, Material, PurchaseAccount } = require('../models')
 
 module.exports = {
   list: async (req, res) => {
@@ -94,7 +92,7 @@ module.exports = {
       include: [
         {
           model: Material,
-          attributes: ["name",'unitType'],
+          attributes: ["name", 'unitType'],
         },
         {
           model: Firm,

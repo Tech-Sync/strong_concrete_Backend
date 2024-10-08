@@ -11,7 +11,7 @@ const DB = process.env.DB;
 const sequelize = new Sequelize(DB_NAME, DB_USERNAME, DB_PASSWORD, {
   host: HOST,
   dialect: DB,
-  // logging: false, 
+  logging: false, 
 });
 
 //? Live db connection

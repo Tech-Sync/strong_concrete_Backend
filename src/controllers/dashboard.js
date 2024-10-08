@@ -1,14 +1,10 @@
 "use strict";
 
-const e = require("express");
-const Firm = require("../models/firm");
-const Purchase = require("../models/purchase");
-const Sale = require("../models/sale");
-const sale = require("./sale");
-const purchase = require("./purchase");
 const { Op, fn, col } = require("sequelize");
 const moment = require("moment");
-const Product = require("../models/product");
+
+const { Product, Sale, Purchase, } = require('../models');
+
 
 
 async function getStatsData() {

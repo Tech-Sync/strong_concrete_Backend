@@ -1,9 +1,7 @@
 "use strict";
 
-const Firm = require("../models/firm");
-const Material = require("../models/material");
-const Purchase = require("../models/purchase");
-const PurchaseAccount = require("../models/purchaseAccount");
+const {PurchaseAccount, Purchase, Material, Firm} = require('../models')
+
 
 module.exports = {
   list: async (req, res) => {

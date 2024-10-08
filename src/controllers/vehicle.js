@@ -1,8 +1,5 @@
 "use strict";
-
-const Production = require("../models/production");
-const User = require("../models/user");
-const Vehicle = require("../models/vehicle");
+const { User, Vehicle } = require('../models')
 
 module.exports = {
   list: async (req, res) => {
@@ -93,7 +90,6 @@ module.exports = {
     */
     req.body.updaterId = req.user.id;
     const delivery = await Vehicle.findByPk(req.params.id);
-    console.log('delivery',delivery);
     let isUpdated
     if ((req.user.role === 1 && delivery.DriverId === req.user.id) || req.user.role === 5) {
       isUpdated = await Vehicle.update(req.body, {

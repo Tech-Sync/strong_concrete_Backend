@@ -1,5 +1,5 @@
 const CustomError = require('../helpers/customError');
-const { Chat, Message, ChatUsers, ReadReceipts, User } = require('../models/associations');
+const { Chat, Message, ChatUsers, User } = require('../models');
 const sequelize = require('sequelize');
 const { Op, Sequelize } = sequelize;
 
@@ -186,31 +186,30 @@ module.exports = {
             }]
         });
 
-        const userChatIds = await ChatUsers.findAll({ where: { userId: currentUserId }, attributes: ['chatId'] });
+        // const userChatIds = await ChatUsers.findAll({ where: { userId: currentUserId }, attributes: ['chatId'] });
 
-        const chatIds = userChatIds.map(chatUser => chatUser.chatId);
+        // const chatIds = userChatIds.map(chatUser => chatUser.chatId);
 
-        const userChats = await Chat.findAll({
-            where: { id: chatIds },
-            include: [{
-                model: User,
-                as: 'chatUsers',
-                through: { attributes: [] },
-                attributes: ['id', 'firstName', 'lastName', 'email', 'profilePic', 'phoneNo', 'role', 'email'],
-            }, {
-                model: Message,
-                as: 'latestMessage',
-            }, {
-                model: User,
-                as: 'groupAdmin',
-                attributes: ['id', 'firstName', 'lastName', 'email', 'profilePic', 'phoneNo', 'role', 'email'],
-            }]
-        });
+        // const userChats = await Chat.findAll({
+        //     where: { id: chatIds },
+        //     include: [{
+        //         model: User,
+        //         as: 'chatUsers',
+        //         through: { attributes: [] },
+        //         attributes: ['id', 'firstName', 'lastName', 'email', 'profilePic', 'phoneNo', 'role', 'email'],
+        //     }, {
+        //         model: Message,
+        //         as: 'latestMessage',
+        //     }, {
+        //         model: User,
+        //         as: 'groupAdmin',
+        //         attributes: ['id', 'firstName', 'lastName', 'email', 'profilePic', 'phoneNo', 'role', 'email'],
+        //     }]
+        // });
 
         res.status(200).send({
             isError: false,
-            group,
-            userChats
+            group
         });
 
     },
@@ -299,6 +298,7 @@ module.exports = {
             if (!chat) throw new CustomError(`Chat not Found with ID: ${chatId}`, 404)
 
         } else {
+
             if (!receiverId) throw new Error('ReceiverId is required.')
 
             chat = await Chat.findOne({
@@ -335,14 +335,17 @@ module.exports = {
 
             // if chat not found creating new chat with receiverId
             if (!chat) {
+
                 newChat = await Chat.create()
 
                 const chatUsersData = [{ userId: receiverId, chatId: newChat.id }, { userId: req.user.id, chatId: newChat.id }]
 
                 if (!newChat) throw new CustomError('Chat not created.', 400)
 
+                chatUsers = await ChatUsers.bulkCreate(chatUsersData)
+
                 chat = await Chat.findOne({
-                    where: { id: chat.id },
+                    where: { id: newChat.id },
                     include: [{
                         model: User,
                         as: 'chatUsers',
@@ -357,8 +360,6 @@ module.exports = {
                         attributes: ['id', 'firstName', 'lastName', 'email', 'profilePic', 'phoneNo', 'role', 'email'],
                     }]
                 });
-
-                chatUsers = await ChatUsers.bulkCreate(chatUsersData)
 
                 if (!chatUsers) {
                     await chat.destroy()

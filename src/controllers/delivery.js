@@ -1,11 +1,7 @@
 "use strict";
 
-const Delivery = require("../models/delivery");
-const Product = require("../models/product");
-const Production = require("../models/production");
-const Sale = require("../models/sale");
-const User = require("../models/user");
-const Vehicle = require("../models/vehicle");
+const { Delivery, Product, Production, Sale, User, Vehicle } = require('../models');
+
 
 module.exports = {
   list: async (req, res) => {

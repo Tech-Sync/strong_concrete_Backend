@@ -1,6 +1,7 @@
 "use strict";
 
-const Firm = require("../models/firm");
+const { Firm } = require('../models');
+
 
 module.exports = {
   list: async (req, res) => {
@@ -49,7 +50,7 @@ module.exports = {
       */
     const name = req.body?.name.toUpperCase();
     const firm = await Firm.findOne({ where: { name } });
-    
+
     if (firm) throw new Error(`${firm.name} name is already in used!`);
     req.body.creatorId = req.user.id;
     const data = await Firm.create(req.body);

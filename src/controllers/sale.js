@@ -1,15 +1,10 @@
 "use strict";
 
-const Sale = require("../models/sale");
-const Production = require("../models/production");
-const SaleAccount = require("../models/saleAccount");
-const Delivery = require("../models/delivery");
-const Firm = require("../models/firm");
-const Product = require("../models/product");
 const { sequelize } = require("../configs/dbConnection");
-const { col, Op } = require("sequelize");
+const { Op } = require("sequelize");
 const filterDataForWeek = require("../helpers/filterDataForWeek");
 
+const { Sale, Production, SaleAccount, Firm, Product, Delivery } = require("../models");
 
 module.exports = {
   list: async (req, res) => {

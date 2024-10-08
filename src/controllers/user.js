@@ -1,6 +1,6 @@
 "use strict";
 
-const User = require("../models/user");
+const { User } = require("../models");
 const { decode } = require("../helpers/encode&decode");
 const sendEmail = require("../helpers/sendEmail");
 const passwordEncrypt = require("../helpers/passEncrypt");

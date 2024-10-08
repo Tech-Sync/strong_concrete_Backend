@@ -1,6 +1,5 @@
 "use strict";
 const { sequelize, DataTypes } = require("../configs/dbConnection");
-const User = require("./user");
 const { firmStatuses } = require("../constraints/roles&status");
 
 const Firm = sequelize.define(
@@ -62,12 +61,6 @@ const Firm = sequelize.define(
     paranoid: true,
   }
 );
-
-// user - firm
-User.hasMany(Firm, { foreignKey: "creatorId", as: "createdFirms" });
-User.hasMany(Firm, { foreignKey: "updaterId", as: "updatedFirms" });
-Firm.belongsTo(User, { foreignKey: "creatorId", as: "creator" });
-Firm.belongsTo(User, { foreignKey: "updaterId", as: "updater" });
 
 module.exports = Firm;
 

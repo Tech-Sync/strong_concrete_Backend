@@ -1,26 +1,25 @@
 "use strict";
 const { sequelize, DataTypes } = require("../configs/dbConnection");
-const Firm = require("./firm");
-const Sale = require("./sale");
-const User = require("./user");
+const { Sale } = require('./index');
+
 
 const SaleAccount = sequelize.define(
   "SaleAccount",
   {
-    SaleId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: Sale,
-        key: "id",
-      },
-    },
-    FirmId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: Firm,
-        key: "id",
-      },
-    },
+    // SaleId: {
+    //   type: DataTypes.INTEGER,
+    //   references: {
+    //     model: Sale,
+    //     key: "id",
+    //   },
+    // },
+    // FirmId: {
+    //   type: DataTypes.INTEGER,
+    //   references: {
+    //     model: Firm,
+    //     key: "id",
+    //   },
+    // },
     totalPrice: {
       type: DataTypes.FLOAT,
       defaultValue: 0,
@@ -54,18 +53,6 @@ const SaleAccount = sequelize.define(
   }
 );
 
-// user - account
-User.hasMany(SaleAccount, {foreignKey: "creatorId",as: "createdSaleAccounts",});
-User.hasMany(SaleAccount, {foreignKey: "updaterId",as: "updatedSaleAccounts",});
-SaleAccount.belongsTo(User, { foreignKey: "creatorId", as: "creator" });
-SaleAccount.belongsTo(User, { foreignKey: "updaterId", as: "updater" });
 
-// Sale  - SaleAccount
-Sale.hasOne(SaleAccount);
-SaleAccount.belongsTo(Sale);
-
-// Firm - SaleAccount
-Firm.hasMany(SaleAccount);
-SaleAccount.belongsTo(Firm);
 
 module.exports = SaleAccount;
